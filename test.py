@@ -3,7 +3,7 @@
 import mysql.connector
 from mysql.connector import Error
 
-DB_HOST = "213.217.7.185"
+DB_HOST = "127.0.0.1"
 DB_PORT = 3306
 DB_NAME = "AziendaEdile"
 DB_USER = "Amministratore"
