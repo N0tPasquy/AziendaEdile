@@ -1,0 +1,34 @@
+/* -------------------------------------------
+   CSS NATIVO PER SFONDO E OVERLAY
+   (Gli stili di layout e componenti sono gestiti da Tailwind nell'HTML)
+------------------------------------------- */
+
+/* Contenitore principale con immagine di sfondo sfocata */
+.background-container {
+    /*
+     * Nota: L'URL dell'immagine è qui solo come placeholder. 
+     * Nel codice HTML abbiamo usato placehold.co, ma potresti volerlo cambiare 
+     * con un percorso locale (es: url('../img/cantiere.jpg')).
+     */
+    background-image: url('https://www.napolita.it/wp-content/uploads/2025/04/formazione-sito-1-1.jpg');
+    background-size: cover;
+    background-position: center;
+    /* filter: blur(4px);  Applica una sfocatura all'immagine */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Metti sotto il contenuto */
+}
+
+/* Stile primario del pulsante (Blu) - Definito anche nell'HTML per coerenza */
+.btn-primary {
+    background-color: #3b82f6; 
+    transition: background-color 0.2s;
+}
+
+/* Effetto hover per il pulsante */
+.btn-primary:hover {
+    background-color: #2563eb; 
+}

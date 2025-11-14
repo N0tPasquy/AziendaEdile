@@ -18,7 +18,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     {
         switch(result.role){
             case "AS" :
-                window.location.href = "/dashboard_sysadmin";
+                window.location.href = "/dashboard_sysadmin"
                 break;
             case "AA" :
                 window.location.href = "/dashboard_adminaziendale"

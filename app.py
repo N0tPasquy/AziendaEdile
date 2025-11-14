@@ -7,7 +7,27 @@ app = Flask(__name__)
 def home():
     return render_template("index.html")
 
-@app.route("/index", methods=["POST"])
+# rotta per la dashboard del sysadmin
+@app.route("/dashboard_sysadmin", methods=["GET"])
+def dashboard_sysadmin():
+    return render_template("dashboard_sysadmin.html")
+
+# rotta per la dashboard dell'admin aziendale
+@app.route("/dashboard_adminaziendale", methods=["GET"])
+def dashboard_adminaziendale():
+    return render_template("dashboard_adminaziendale.html")
+
+# rotta per la dashboard del capocantiere
+@app.route("/dashboard_capocantiere", methods=["GET"])
+def dashboard_capocantiere():
+    return render_template("dashboard_capocantiere.html")
+
+# rotta per la dashboard dell'operaio
+@app.route("/dashboard_operaio", methods=["GET"])
+def dashboard_operaio():
+    return render_template("dashboard_operaio.html")
+
+@app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     cf = data.get("CF")
@@ -20,7 +40,7 @@ def login():
     
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT Password, TipoUtente, Capocantiere FROM utente WHERE CF = ?", 
+        "SELECT Password, TipoUtente FROM utente WHERE CF = ?", 
         (cf,)
     )
     row = cursor.fetchone()
@@ -30,7 +50,7 @@ def login():
     if row is None: 
         return jsonify({"success": False, "message": "Utente non trovato"})
     
-    db_password, tipo, capo = row
+    db_password, tipo = row
 
     # Controllo password (da migliorare con hash in produzione)
     if password != db_password:
@@ -40,7 +60,7 @@ def login():
     ruoli = {
         "AS": "AS",
         "AA": "AA",
-        "CC": "CC" if capo else None,
+        "CC": "CC",
         "OP": "OP"
     }
 
