@@ -14,7 +14,6 @@
 """
 
 #File per la connessione al database
-
 import mariadb
 
 def connessione() :

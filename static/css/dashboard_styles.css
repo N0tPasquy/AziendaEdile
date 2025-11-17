@@ -15,10 +15,14 @@
 
 /* ====== CARD PRINCIPALE (Effetto Glassmorphism) ====== */
 .dashboard-card {
-    width: 100%;                 /* lascia spazio ai lati */
-    max-width: 1600px;          /* limite per monitor grandi */
-    height: 95%;               /* si adatta ai contenuti */
-    min-height: 95vh;           /* quasi full-screen */
+    width: 100%;
+    /* lascia spazio ai lati */
+    max-width: 1600px;
+    /* limite per monitor grandi */
+    height: auto;
+    /* Si adatta all'altezza del contenuto */
+    min-height: 60vh;
+    /* Altezza minima */
 
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(8px);
@@ -27,9 +31,11 @@
     border-radius: 30px;
     padding: 3rem;
 
-    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
-}
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+}
 
 /* ====== SFONDO GENERALE ====== */
 body {
@@ -38,29 +44,34 @@ body {
     background-size: cover;
 }
 
-.navbar-glass {
-    /* Stile Glassmorphism */
-    background: rgba(245, 245, 245, 0.50); /* Trasparenza */
-    backdrop-filter: blur(5px); /* Sfocatura */
-    -webkit-backdrop-filter: blur(5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-    border: none;
-    
-    /* Altezza Sottile tramite padding */
-    padding: 0.5rem 3rem; /* 0.5rem (8px) verticale per renderla "secca" */
-    
-    /* Posizionamento e Larghezza */
-    width: 100%; 
-    max-width: 1600px; /* Utilizza lo stesso max-width della card per coerenza */
-    margin: 0 auto;
-    border-radius: 0 0 30px 30px; /* Arrotonda solo i bordi inferiori */
-    
-    /* Fissa in alto */
-    position: fixed; 
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 50;
+/* ====== STRISCIA DI INTESTAZIONE (NUOVA IMPLEMENTAZIONE) ====== */
+.header-strip {
+    width: calc(100% + 6rem);
+    margin: -3rem -3rem 3rem -3rem;
+    padding: 0.5rem 3rem;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(3px);
+    border-radius: 30px 30px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    /* necessario */
+    overflow: visible;
+    /* permette al logo di uscire */
+}
+
+/*  */
+.header-content {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+/* LOGO GRANDE SENZA RIDURSI */
+.logo-contained {
+    width: 8.5rem;
+    height: auto;
+    object-fit: contain;
+    position: relative;
 }
 
 .table-card {
@@ -81,13 +92,13 @@ body {
 .admin-table th {
     padding: 12px 10px;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     font-size: 0.9rem;
 }
 
 .admin-table td {
     padding: 15px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .actions {

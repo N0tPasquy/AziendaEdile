@@ -14,34 +14,35 @@
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard</title>
 
-        <!-- Tailwind -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        
-        <!-- CSS PERSONALIZZATO -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
-    </head>
-<body class="min-h-screen flex items-center justify-center p-3 relative overflow-hidden font-sans">
-    <div class="dashboard-card text-center z-10">
-        <nav class="navbar-glass flex items-center justify-between">
-        <div class="flex items-center">
-            <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}"
-                class="w-16 h-auto scale-100"
-                alt="Logo Azienda Edile">
-            <span class="ml-4 font-semibold text-lg">Azienda Edile</span> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
+</head>
+
+<body class="min-h-screen flex justify-center px-3 relative overflow-hidden font-sans">
+
+    <div class="dashboard-card text-center z-10 mx-auto">
+        <div class="header-strip flex items-center justify-start">
+            <div class="flex items-center header-content">
+                <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}" class="logo-contained"
+                    alt="Logo Azienda Edile">
+
+                <span class="ml-4 font-bold text-2xl">Azienda Edile</span>
+            </div>
         </div>
-        </nav>
-        
-        <div class="pt-10"> 
+
+
+        <div class="">
             <h1 class="text-3xl font-bold">Contenuto della Pagina</h1>
-            <!-- STILE DELLA TABELLA DA MODIFICARE-->
-            <div class = "table-card">
-                <h2 class = "section-title">Gestione Amministratori</h2>
-                <table class = "admin-table">
+            <div class="table-card">
+                <h2 class="section-title">Gestione Amministratori</h2>
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>CF</th>
@@ -53,14 +54,13 @@
                         </tr>
                     </thead>
 
-                    <tbody id = "admin-table-body">
-                        <!--Da popolare con JS-->
+                    <tbody id="admin-table-body">
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
 
-        </div>
-    
 </body>
+
 </html>

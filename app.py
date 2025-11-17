@@ -111,14 +111,6 @@ def get_admins():
         })
     return jsonify({"success" : True , "admins" : admins})
 
-
-
-
-
-
-
-
-
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
