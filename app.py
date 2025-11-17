@@ -83,6 +83,41 @@ def login():
 
     return jsonify({"success": True, "role": ruolo})
 
+@app.route("/get_admins",methods = ["GET"])
+def get_admins():
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore DB"})
+    
+    cursor = conn.cursor()
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente" \
+                    " FROM utente" \
+                    "WHERE TipoUtente = 'AA'"
+     )
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    admins = []
+
+    for row in rows:
+        admins.append({
+            "cf" : row[0],
+            "nome" : row[1],
+            "cognome" : row[2],
+            # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
+            "data_nascita" : row[4],
+            "ruolo" : "Admin Aziendale"
+        })
+    return jsonify({"success" : True , "admins" : admins})
+
+
+
+
+
+
+
+
 
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale
 if __name__ == "__main__":

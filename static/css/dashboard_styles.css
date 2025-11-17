@@ -62,3 +62,53 @@ body {
     right: 0;
     z-index: 50;
 }
+
+.table-card {
+    background: rgba(255, 255, 255, 0.40);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem auto;
+    width: 95%;
+    max-width: 1300px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    padding: 12px 10px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+}
+
+.admin-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.icon-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.icon-btn.delete:hover {
+    color: red;
+}
