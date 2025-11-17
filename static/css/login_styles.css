@@ -1,34 +1,110 @@
-/* -------------------------------------------
-   CSS NATIVO PER SFONDO E OVERLAY
-   (Gli stili di layout e componenti sono gestiti da Tailwind nell'HTML)
-------------------------------------------- */
-
-/* Contenitore principale con immagine di sfondo sfocata */
-.background-container {
-    /*
-     * Nota: L'URL dell'immagine è qui solo come placeholder. 
-     * Nel codice HTML abbiamo usato placehold.co, ma potresti volerlo cambiare 
-     * con un percorso locale (es: url('../img/cantiere.jpg')).
-     */
-    background-image: url('https://www.napolita.it/wp-content/uploads/2025/04/formazione-sito-1-1.jpg');
-    background-size: cover;
-    background-position: center;
-    /* filter: blur(4px);  Applica una sfocatura all'immagine */
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2; /* Metti sotto il contenuto */
+/* ====== SFONDO GENERALE ====== */
+body {
+    background: #143A5A; /* Blu scuro */
+    font-family: 'Inter', sans-serif;
 }
 
-/* Stile primario del pulsante (Blu) - Definito anche nell'HTML per coerenza */
+/* ====== CARD PRINCIPALE ====== */
+.login-card {
+    background: #D8F3FF; /* azzurro chiaro */
+    width: 480px;
+    padding: 3rem 3rem;
+    padding-top: 1rem;
+    border-radius: 55px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    min-height: 500px; 
+}
+
+/* ====== LOGO ====== */
+.w-full.max-w-sm svg {
+    color: #0E6BA8;
+}
+
+/* ====== TITOLI E TESTI ====== */
+h1 {
+    color: #0E2F44 !important;
+    font-weight: 700 !important;
+}
+
+p {
+    letter-spacing: 2px;
+}
+
+/* ====== INPUT ====== */
+input[type="text"],
+input[type="password"] {
+    background: #FFFFFF;
+    border: 1px solid #C7D5E0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    border-color: #0E6BA8;
+    box-shadow: 0 0 5px rgba(14, 107, 168, 0.3);
+}
+
+/* ====== CHECKBOX ====== */
+#remember-cf {
+    accent-color: #0E6BA8;
+}
+
+/* ====== BOTTONE LOGIN ====== */
 .btn-primary {
-    background-color: #3b82f6; 
-    transition: background-color 0.2s;
+    background: #0E6BA8 !important;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    transition: 0.2s ease;
 }
 
-/* Effetto hover per il pulsante */
 .btn-primary:hover {
-    background-color: #2563eb; 
+    background: #0B5788 !important;
+}
+
+/* ====== LINK PASSWORD DIMENTICATA ====== */
+a {
+    font-weight: 500;
+}
+
+/* ====== FOOTER ====== */
+.text-xs {
+    opacity: 0.7;
+}
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.input-with-icon {
+    padding-left: 48px !important; /* spazio per l'icona */
+}
+
+/* Placeholder spostato */
+.input-with-icon::placeholder {
+    color: #9ca3af;
+}
+
+/* Per superare qualsiasi reset Tailwind */
+.input-with-icon::-webkit-input-placeholder { padding-left: 2px; }
+.input-with-icon::-moz-placeholder { padding-left: 2px; }
+.input-with-icon:-ms-input-placeholder { padding-left: 2px; }
+.input-with-icon::placeholder { padding-left: 2px; }
+
+.title-access {
+    color: #0B5788 !important;
+    font-size: 2 rem;
+    font-weight: 600;
 }
