@@ -90,10 +90,9 @@ def get_admins():
         return jsonify({"success" : False , "message" : "Errore DB"})
     
     cursor = conn.cursor()
-    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente" \
-                    " FROM utente" \
-                    "WHERE TipoUtente = 'AA'"
-    )
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente "
+                   "FROM utente "
+                   "WHERE TipoUtente = 'AA'")
     
     rows = cursor.fetchall()
     conn.close()

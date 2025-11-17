@@ -41,7 +41,9 @@
         <div class="">
             <h1 class="text-3xl font-bold">Contenuto della Pagina</h1>
             <div class="table-card">
-                <h2 class="section-title">Gestione Amministratori</h2>
+                <div class = "flex justify-between items-center mb-4">
+                     <h2 class="section-title">Gestione Amministratori</h2>
+                </div>
                 <table class="admin-table">
                     <thead>
                         <tr>
@@ -60,7 +62,7 @@
             </div>
         </div>
     </div>
-
+<script src = "{{url_for( 'static', filename= 'dashboard_sysadmin.js')}}"></script>
 </body>
 
 </html>
