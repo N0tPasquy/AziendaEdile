@@ -1,13 +1,47 @@
+<!--
+- Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+-->
+
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard</title>
-    </head>
-    <body>
 
-        <h1>
-            DASHBOARD SYSADMIN
-        </h1>
+        <!-- Tailwind -->
+        <script src="https://cdn.tailwindcss.com"></script>
         
-    </body>
+        <!-- CSS PERSONALIZZATO -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
+    </head>
+<body class="min-h-screen flex items-center justify-center p-3 relative overflow-hidden font-sans">
+    <div class="dashboard-card text-center z-10">
+        <nav class="navbar-glass flex items-center justify-between">
+        <div class="flex items-center">
+            <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}"
+                class="w-16 h-auto scale-100"
+                alt="Logo Azienda Edile">
+            <span class="ml-4 font-semibold text-lg">Azienda Edile</span> 
+        </div>
+        </nav>
+        
+        <div class="pt-10"> 
+            <h1 class="text-3xl font-bold">Contenuto della Pagina</h1>
+            <p class="mt-4 text-gray-700">Il contenuto inizia qui.</p>
+        </div>
+
+        </div>
+    
+</body>
 </html>

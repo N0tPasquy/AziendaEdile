@@ -1,13 +1,40 @@
+<!--
+- Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+-->
+
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Dashboard</title>
-    </head>
-    <body>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard capocantiere</title>
 
-        <h1>
-            DASHBOARD CAPOCANTIERE
-        </h1>
+        <!-- Tailwind -->
+        <script src="https://cdn.tailwindcss.com"></script>
         
+        <!-- CSS PERSONALIZZATO -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
+    </head>
+    <body class="min-h-screen flex items-center justify-center p-3 relative overflow-hidden font-sans">
+        <div class="dashboard-card text-center z-10 ">
+            <!-- CODE HERE -->
+             <nav class="navbar bg-body-tertiary">
+                 <div class="mb-4">
+                     <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}"
+                        class = "w-40 h-auto mx-auto scale-150"
+                        alt="Logo Azienda Edile">
+                </div>
+            </nav>
+        </div>
     </body>
 </html>

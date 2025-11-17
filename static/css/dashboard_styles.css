@@ -1,0 +1,64 @@
+/* Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+
+*/
+
+/* ====== CARD PRINCIPALE (Effetto Glassmorphism) ====== */
+.dashboard-card {
+    width: 100%;                 /* lascia spazio ai lati */
+    max-width: 1600px;          /* limite per monitor grandi */
+    height: 95%;               /* si adatta ai contenuti */
+    min-height: 95vh;           /* quasi full-screen */
+
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    border-radius: 30px;
+    padding: 3rem;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+}
+
+
+/* ====== SFONDO GENERALE ====== */
+body {
+    font-family: 'Inter', sans-serif;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+.navbar-glass {
+    /* Stile Glassmorphism */
+    background: rgba(245, 245, 245, 0.50); /* Trasparenza */
+    backdrop-filter: blur(5px); /* Sfocatura */
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+    border: none;
+    
+    /* Altezza Sottile tramite padding */
+    padding: 0.5rem 3rem; /* 0.5rem (8px) verticale per renderla "secca" */
+    
+    /* Posizionamento e Larghezza */
+    width: 100%; 
+    max-width: 1600px; /* Utilizza lo stesso max-width della card per coerenza */
+    margin: 0 auto;
+    border-radius: 0 0 30px 30px; /* Arrotonda solo i bordi inferiori */
+    
+    /* Fissa in alto */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+}

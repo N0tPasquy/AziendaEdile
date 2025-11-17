@@ -1,19 +1,37 @@
+/* Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+
+*/
+
 /* ====== SFONDO GENERALE ====== */
 body {
-    background: #143A5A; /* Blu scuro */
     font-family: 'Inter', sans-serif;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
 }
 
-/* ====== CARD PRINCIPALE ====== */
+/* ====== CARD PRINCIPALE (Effetto Glassmorphism) ====== */
 .login-card {
-    background: #D8F3FF; /* azzurro chiaro */
+    background: rgba(245, 245, 245, 0.60); /* Sfondo bianco, opacità 15% */
+    backdrop-filter: blur(10px); /* Sfoca l'area sottostante la card */
+    -webkit-backdrop-filter: blur(10px); /* Per la compatibilità con Safari */
     width: 480px;
     padding: 3rem 3rem;
     padding-top: 1rem;
     border-radius: 55px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    min-height: 500px; 
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Aumenta leggermente il bordo per farlo risaltare */
+    min-height: 500px;
 }
 
 /* ====== LOGO ====== */
@@ -42,18 +60,18 @@ input[type="password"] {
 }
 
 input:focus {
-    border-color: #0E6BA8;
+    border-color: #0B5788;
     box-shadow: 0 0 5px rgba(14, 107, 168, 0.3);
 }
 
 /* ====== CHECKBOX ====== */
 #remember-cf {
-    accent-color: #0E6BA8;
+    accent-color: #0B5788;
 }
 
 /* ====== BOTTONE LOGIN ====== */
 .btn-primary {
-    background: #0E6BA8 !important;
+    background: #0B5788 !important;
     border-radius: 14px;
     font-size: 1.1rem;
     letter-spacing: 1px;
@@ -71,7 +89,7 @@ a {
 
 /* ====== FOOTER ====== */
 .text-xs {
-    opacity: 0.7;
+    opacity: 0.8;
 }
 .input-wrapper {
     position: relative;
