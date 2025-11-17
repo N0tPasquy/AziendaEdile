@@ -93,7 +93,7 @@ def get_admins():
     cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente" \
                     " FROM utente" \
                     "WHERE TipoUtente = 'AA'"
-     )
+    )
     
     rows = cursor.fetchall()
     conn.close()

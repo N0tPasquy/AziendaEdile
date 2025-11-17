@@ -29,8 +29,11 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     const result = await response.json();
 
-    if(result.success === true)
-    {
+    if(result.success === true){
+        
+        // Inserire una variabile salvate nella cache del browser per tenere traccia del login
+        // oppure usare un token JWT/sessione
+
         switch(result.role){
             case "AS" :
                 window.location.href = "/dashboard_sysadmin"
