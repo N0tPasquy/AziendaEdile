@@ -22,10 +22,10 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_sysadmin.css') }}">
 </head>
 
-<body class="min-h-screen flex justify-center px-3 relative overflow-hidden font-sans">
+<body class="min-h-screen flex justify-center px-3 relative overflow-y-auto font-sans">
 
     <div class="dashboard-card text-center z-10 mx-auto">
         <div class="header-strip flex items-center justify-start">
@@ -37,30 +37,74 @@
             </div>
         </div>
 
+        <div class = "inte">
+            <h1 class="text-3xl font-bold text-left mb-5">Gestione amministratori</h1>
+            <!-- PULSANTE AGGIUNGI AMMINISTRATORE AZIENDALE -->
+            <div class="text-left">
+                <button onclick="openAddModal()" class="add-btn">
+                    + Aggiungi Amministratore
+                </button>
+            </div>
+        </div>
+
         <div class="">
-            <h1 class="text-3xl font-bold">Contenuto della Pagina</h1>
+            <!-- TABELLA AMMINISTRATORI AZIENDALI -->
             <div class="table-card">
                 <div class = "flex justify-between items-center mb-4">
-                    <h2 class="section-title">Gestione Amministratori</h2>
+                    <h2 class="header-table admin-table td">Amministratori aziendali</h2>
                 </div>
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>CF</th>
+                            <th>Codice Fiscale</th>
                             <th>Nome</th>
                             <th>Cognome</th>
                             <th>Data Nascita</th>
-                            <th>Ruolo</th>
                             <th>Azione</th>
                         </tr>
                     </thead>
-
-                    <tbody id="admin-table-body">
-                    </tbody>
+                    <tbody id="admin-table-body"></tbody>
                 </table>
             </div>
         </div>
     </div>
+
+    <!-- MODALE AGGIUNGI AMMINISTRATORE AZIENDALE -->
+    <div id="add-admin-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4">Nuovo Amministratore</h3>
+
+            <input id="new_cf" class="input-field" type="text" placeholder="Codice Fiscale">
+            <input id="new_nome" class="input-field" type="text" placeholder="Nome">
+            <input id="new_cognome" class="input-field" type="text" placeholder="Cognome">
+            <input id="new_password" class="input-field" type="password" placeholder="Password">
+            <input id="new_dataNascita" class="input-field" type="date">
+
+            <div class="flex justify-end mt-4 gap-3">
+                <button onclick="closeAddModal()" class="cancel-btn">Annulla</button>
+                <button onclick="createAdmin()" class="confirm-btn">Crea</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE MODIFICA AMMINISTRATORE -->
+    <div id="edit-admin-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4">Modifica Amministratore</h3>
+
+            <input id="edit_cf" class="input-field" type="text" disabled>
+            <input id="edit_nome" class="input-field" type="text">
+            <input id="edit_cognome" class="input-field" type="text">
+            <input id="edit_password" class="input-field" type="password">
+            <input id="edit_dataNascita" class="input-field" type="date">
+
+            <div class="flex justify-end mt-4 gap-3">
+                <button onclick="closeEditModal()" class="cancel-btn">Annulla</button>
+                <button onclick="updateAdmin()" class="confirm-btn">Salva</button>
+            </div>
+        </div>
+    </div>
+
 <script src = "{{url_for( 'static', filename= 'dashboard_sysadmin.js')}}"></script>
 </body>
 

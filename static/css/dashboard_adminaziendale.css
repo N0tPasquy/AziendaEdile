@@ -1,0 +1,55 @@
+/* Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+    /* Rimuoviamo margin e padding dal body per evitare bordi bianchi */
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.dashboard-card {
+    /* ORA: Occupa tutto lo spazio */
+    width: 100%;
+    height: 100vh; /* Forza l'altezza a tutto lo schermo */
+    display: flex; 
+}
+
+/* Stile per il logo contenuto nella barra laterale */
+.logo-contained {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+/* Media query per mobile */
+@media (max-width: 768px) {
+    .dashboard-card {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto; /* Riabilita lo scroll su mobile */
+    }
+    
+    body {
+        overflow: auto;
+    }
+}

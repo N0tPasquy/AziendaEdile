@@ -110,6 +110,89 @@ def get_admins():
         })
     return jsonify({"success" : True , "admins" : admins})
 
+# Route per creare un nuovo amministratore aziendale
+@app.route("/create_adminAziendale", methods = ["POST"])
+def create_AdminAziendale():
+    data = request.get_json()
+    cf = data.get("cf")
+    nome = data.get("nome")
+    cognome = data.get("cognome")
+    password = data.get("password")
+    data_nascita = data.get("data_nascita")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
+    
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente) VALUES (?, ?, ?, ?, ?, 'AA')",
+                        (cf, nome, cognome, password, data_nascita))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success" : True})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+    
+
+
+@app.route("/delete_adminAziendale", methods = ["DELETE"])
+def delete_adminAziendale():
+    data = request.get_json()
+    cf = data.get("cf")
+
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
+    
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("DELETE FROM utente WHERE CF = ? AND TipoUtente = 'AA'", (cf,))
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+
+
+@app.route("/update_adminAziendale", methods=["PUT"])
+def update_adminAziendale():
+    data = request.get_json()
+
+    cf = data.get("cf")
+    nome = data.get("nome")
+    cognome = data.get("cognome")
+    password = data.get("password")
+    data_nascita = data.get("data_nascita")
+
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
+    
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("UPDATE utente "
+                       "SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ? "
+                       "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, cf))
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+
+
+
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

@@ -33,7 +33,6 @@
 
     margin-top: 2rem;
     margin-bottom: 2rem;
-
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
 }
 
@@ -57,6 +56,8 @@ body {
     /* necessario */
     overflow: visible;
     /* permette al logo di uscire */
+
+    color: rgb(20, 100, 150);
 }
 
 .header-content {
@@ -73,6 +74,7 @@ body {
     position: relative;
 }
 
+/* ====== TABELLA AMMINISTRATORI ====== */
 .table-card {
     background: rgba(255, 255, 255, 0.40);
     backdrop-filter: blur(8px);
@@ -81,16 +83,23 @@ body {
     margin: 2rem auto;
     width: 95%;
     max-width: 1300px;
+    color: rgb(80, 80, 80);
+}
+
+/* INTESTAZIONE TABELLA AMMINISTRATORI */
+.header-table{
+    color: rgb(0, 143, 190);
 }
 
 .admin-table {
     width: 100%;
     border-collapse: collapse;
+    text-align: left;
 }
 
+/* ====== Elementi tabella ====== */
 .admin-table th {
     padding: 12px 10px;
-    text-align: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     font-size: 0.9rem;
 }
@@ -100,25 +109,69 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.actions {
+/* ====== Stile intestazione e pulsante ====== */
+.inte{
+    color: rgb(11, 65, 99);
+
+}
+
+.add-btn {
+    background: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: .2s;
+    border: none; /* Aggiungi anche un reset del bordo predefinito */
+    cursor: pointer; /* Per assicurare che sembri un pulsante */
+}
+.add-btn:hover {
+    background: #1d4ed8;
+}
+
+/* ====== Stile modale ====== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
     display: flex;
-    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
 }
 
-.icon-btn {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: 0.2s;
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 380px;
 }
 
-.icon-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
+.input-field {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
 }
 
-.icon-btn.delete:hover {
-    color: red;
+.cancel-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #e5e7eb;
+}
+
+.confirm-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #2563eb;
+    color: white;
+}
+
+.add-btn {
+    background: #2563eb;
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
 }
