@@ -198,4 +198,13 @@ function closeAddModal(){
     document.getElementById("add-operaio-modal").classList.add("hidden");
 }
 
+function openSuccessModal(message) {
+    document.getElementById("success-message").innerText = message;
+    document.getElementById("success-modal").classList.remove("hidden");
+}
+
+function closeSuccessModal() {
+    document.getElementById("success-modal").classList.add("hidden");
+}
+
 window.onload = () => caricaSezione("dashboard");
