@@ -72,6 +72,7 @@ body {
     height: auto;
     object-fit: contain;
     position: relative;
+    top: 0.5rem;          /* Aumenta questo valore per scendere, diminuisci per salire */
 }
 
 /* ====== TABELLA AMMINISTRATORI ====== */
@@ -86,33 +87,45 @@ body {
     color: rgb(80, 80, 80);
 }
 
-/* INTESTAZIONE TABELLA AMMINISTRATORI */
-.header-table{
+.header-table {
     color: rgb(0, 143, 190);
 }
 
 .admin-table {
     width: 100%;
-    border-collapse: collapse;
     text-align: left;
+    border-collapse: collapse; /* Importante per evitare doppi bordi */
+    table-layout: fixed; /* Manteniamo fixed, ma ora le larghezze sono gestite dall'HTML */
 }
 
-/* ====== Elementi tabella ====== */
 .admin-table th {
-    padding: 12px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-    font-size: 0.9rem;
+    font-style: bold;
+    padding: 12px;
 }
 
 .admin-table td {
-    padding: 15px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 16px 12px; /* Aumentato leggermente il padding verticale per respiro */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Bordo più sottile e delicato */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle; /* Allinea il testo verticalmente al centro */
+}
+
+/* Specifica che l'ultima colonna (Azione) deve essere centrata anche nelle righe, non solo nell'header */
+.admin-table td:last-child {
+    text-align: center;
+}
+
+/* Effetto hover sulle righe per migliorare la leggibilità */
+.admin-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: background-color 0.2s ease;
 }
 
 /* ====== Stile intestazione e pulsante ====== */
 .inte{
     color: rgb(11, 65, 99);
-
 }
 
 .add-btn {

@@ -29,70 +29,101 @@
 
 <body class="min-h-screen relative font-sans">
 
-    <div class="dashboard-card w-full h-screen flex flex-col md:flex-row overflow-hidden bg-white/20 backdrop-blur-[30px]">
+    <div
+        class="dashboard-card w-full h-screen flex flex-col md:flex-row overflow-hidden bg-white/20 backdrop-blur-[30px]">
 
         <!-- Barra laterale -->
-        <aside class="w-full md:w-80 bg-[#154c79] text-white p-8 flex flex-col text-left relative z-20 h-full">
-            <!-- Logo e titolo -->
-            <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}" class="logo-contained"
-                alt="Logo Azienda Edile">
-            <h1 class="text-2xl font-semibold mb-10">Azienda Edile</h1>
+        <aside id="sidebar"
+            class="w-24 bg-[#1E293B] text-white flex flex-col transition-all duration-300 ease-in-out relative z-20 h-full overflow-hidden border-r border-white/10 shadow-xl">
 
-            <!-- Navigazione -->
-            <nav class="flex flex-col gap-4 space-y-1">
-                <a href="#"
-                    class="flex items-center gap-4 px-4 py-3 rounded-lg bg-white/20 text-white font-medium transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="currentColor">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                    </svg>
-                    Dashboard
-                </a>
+            <div class="flex flex-col items-center justify-center py-6 gap-4 w-full">
+                <img id="sidebar-logo" src="{{ url_for('static', filename = 'img/logo.png') }}"
+                    class="h-160px w-auto object-contain transition-colors duration-300" alt="Logo Azienda">
+            </div>
 
-                <a href="#"
-                    class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="3" y1="9" x2="21" y2="9"></line>
-                        <line x1="9" y1="21" x2="9" y2="9"></line>
-                    </svg>
-                    Cantieri
-                </a>
+            <span id="brand-text"
+                class="hidden font-bold text-xl tracking-wide transition-colors duration-300 whitespace-nowrap text-left pl-6 w-full block">
+                Azienda Edile
+            </span>
 
-                <a href="#"
-                    class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                        </path>
-                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                    </svg>
-                    Beni
-                </a>
+            <div class="flex flex-col items-center justify-center py-6 gap-4 w-full">
+                <div id="toggle-wrap" class="w-full flex justify-center mt-2 transition-colors duration-300">
+                    <button onclick="toggleSidebar()"
+                        class="p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-                <a href="#"
-                    class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12h20" />
-                        <path d="M6 12v-2a6 6 0 0 1 12 0v2" />
-                        <rect x="9" y="12" width="6" height="4" rx="1" />
-                    </svg>
-                    Operai
-                </a>
+            <nav class="flex flex-col gap-2 px-5 space-y-1 mt-2 w-full">
+
+                <button id="btn-dashboard" onclick="caricaSezione('dashboard')"
+                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all overflow-hidden whitespace-nowrap">
+                    <div class="min-w-[24px] flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                        </svg>
+                    </div>
+                    <span class="link-text hidden transition-all duration-300">Dashboard</span>
+                </button>
+
+                <button id="btn-cantieri" onclick="caricaSezione('cantieri')"
+                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all overflow-hidden whitespace-nowrap">
+                    <div class="min-w-[24px] flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                    </div>
+                    <span class="link-text hidden transition-all duration-300">Cantieri</span>
+                </button>
+
+                <button id="btn-beni" onclick="caricaSezione('beni')"
+                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all overflow-hidden whitespace-nowrap">
+                    <div class="min-w-[24px] flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <span class="link-text hidden transition-all duration-300">Beni</span>
+                </button>
+
+                <button id="btn-operai" onclick="caricaSezione('operai')"
+                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-white/10 text-gray-200 hover:text-white transition-all overflow-hidden whitespace-nowrap">
+                    <div class="min-w-[24px] flex justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12h20" />
+                            <path d="M6 12v-2a6 6 0 0 1 12 0v2" />
+                            <rect x="9" y="12" width="6" height="4" rx="1" />
+                        </svg>
+                    </div>
+                    <span class="link-text hidden transition-all duration-300">Operai</span>
+                </button>
+
             </nav>
         </aside>
 
         <!-- Contenuto principale -->
-        <main class="flex-1 p-12 flex flex-col justify-center items-start text-left relative z-20 h-full">
-            <h2 class="text-4xl font-bold text-[#0f172a] mb-4">Dashboard</h2>
-            <p class="text-lg text-[#334155]">Benvenuto nella dashboard aziendale.</p>
+        <main class="flex-1 p-12 flex flex-col justify-center items-start text-left relative z-20 h-full content-area">
+            <div id="content-container"></div>
         </main>
 
     </div>
+    <script src="{{url_for( 'static', filename= 'dashboard_adminaziendale.js')}}"></script>
 </body>
 
 </html>

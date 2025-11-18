@@ -1,3 +1,17 @@
+//Funzione per il formato della data
+function formatoData(dateString){
+    if(!dateString) return "";
+
+    const d = new Date(dateString);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+
+    return `${year}-${month}-${day}`;
+}
+
+
 function caricaAdmins(){
     fetch("/get_admins")
         .then(response => response.json())
@@ -20,13 +34,15 @@ function caricaAdmins(){
                 }); 
                 const row = `
                     <tr>
-                        <td><strong>${admin.cf}</strong></td>
-                        <td><strong>${admin.nome}</strong></td>
-                        <td><strong>${admin.cognome}</strong></td>
-                        <td><strong>${formattedDate}</strong></td>
+                        <td>${admin.cf}</td>
+                        <td>${admin.nome}</td>
+                        <td>${admin.cognome}</td>
+                        <td>${formattedDate}</td>
                         <td class = "actions">
-                            <button class = "icon-btn" onclick = "editAdmin('${admin.cf}')">✏️</button>
-                            <button class = "icon-btn delete" onclick = "deleteAdmin('${admin.cf}')">🗑️</button>
+                            <button class = "icon-btn" onclick = "editAdmin('${admin.cf}')">
+                                <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
+                            <button class = "icon-btn delete" onclick = "deleteAdmin('${admin.cf}')">
+                                <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
                         </td>
                     </tr>
                 `;
@@ -40,12 +56,13 @@ function editAdmin(cf){
         .then(res => res.json())
         .then(data => {
             const admin = data.admins.find(a => a.cf === cf); 
+
             //popolo il modale
             document.getElementById("edit_cf").value = admin.cf;
             document.getElementById("edit_nome").value = admin.nome;
             document.getElementById("edit_cognome").value = admin.cognome;
             document.getElementById("edit_password").value ="";
-            document.getElementById("edit_dataNascita").value = admin.data_nascita;
+            document.getElementById("edit_dataNascita").value = formatoData(admin.data_nascita);
 
             //mostro il modale
             document.getElementById("edit-admin-modal").classList.remove("hidden");
@@ -74,7 +91,8 @@ function updateAdmin(){
         if(data.success){
             closeEditModal();
             caricaAdmins();
-            alert("Dati aggiornati con successo!");
+            
+            openSuccessModal("Amministratore aggiornato con successo!");
         }else{
             alert("Errore" + data.message);
         }
@@ -95,8 +113,8 @@ function deleteAdmin(cf){
     .then(res => res.json())
     .then(data => {
         if(data.success){
-            alert("Amministratore eliminato!");
             caricaAdmins(); //ricarica la tabella
+            openSuccessModal("Amministratore eliminato con successo!")
         }else{
             alert("Errore" + data.message)
         }
@@ -135,6 +153,16 @@ function createAdmin(){
             alert("Errore" + data.message)
         }
     }); // Fine funzioni per il modal di aggiunta admin aziendale
+}
+
+
+function openSuccessModal(message) {
+    document.getElementById("success-message").innerText = message;
+    document.getElementById("success-modal").classList.remove("hidden");
+}
+
+function closeSuccessModal() {
+    document.getElementById("success-modal").classList.add("hidden");
 }
 
 

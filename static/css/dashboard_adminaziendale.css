@@ -24,21 +24,22 @@ body {
     padding: 0;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
+    /* Importante per evitare scrollbar durante l'animazione */
 }
 
 .dashboard-card {
     /* ORA: Occupa tutto lo spazio */
     width: 100%;
-    height: 100vh; /* Forza l'altezza a tutto lo schermo */
-    display: flex; 
+    height: 100vh;
+    /* Forza l'altezza a tutto lo schermo */
+    display: flex;
 }
 
 /* Stile per il logo contenuto nella barra laterale */
 .logo-contained {
-    width: 200px;
+    width: 100%;
     height: auto;
-    margin-bottom: 20px;
-    margin-left: 20px;
 }
 
 /* Media query per mobile */
@@ -46,10 +47,23 @@ body {
     .dashboard-card {
         flex-direction: column;
         height: auto;
-        overflow-y: auto; /* Riabilita lo scroll su mobile */
+        overflow-y: auto;
+        /* Riabilita lo scroll su mobile */
     }
-    
+
     body {
         overflow: auto;
     }
+}
+
+/* Stile per la barra laterale */
+#sidebar {
+    background-color: #2C3E50;
+    /* O cambia con il colore che preferisci, es: #1e293b */
+}
+
+.sidebar-btn.active {
+    background: #5b84ad !important;
+    color: #ffffff !important;
+    font-weight: 700;
 }

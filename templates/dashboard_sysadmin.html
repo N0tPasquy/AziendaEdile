@@ -30,14 +30,14 @@
     <div class="dashboard-card text-center z-10 mx-auto">
         <div class="header-strip flex items-center justify-start">
             <div class="flex items-center header-content">
-                <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}" class="logo-contained"
+                <img src="{{ url_for('static', filename = 'img/logo.png') }}" class="logo-contained"
                     alt="Logo Azienda Edile">
 
                 <span class="ml-4 font-bold text-2xl">Azienda Edile</span>
             </div>
         </div>
 
-        <div class = "inte">
+        <div class="inte">
             <h1 class="text-3xl font-bold text-left mb-5">Gestione amministratori</h1>
             <!-- PULSANTE AGGIUNGI AMMINISTRATORE AZIENDALE -->
             <div class="text-left">
@@ -50,17 +50,14 @@
         <div class="">
             <!-- TABELLA AMMINISTRATORI AZIENDALI -->
             <div class="table-card">
-                <div class = "flex justify-between items-center mb-4">
-                    <h2 class="header-table admin-table td">Amministratori aziendali</h2>
-                </div>
                 <table class="admin-table">
                     <thead>
-                        <tr>
-                            <th>Codice Fiscale</th>
-                            <th>Nome</th>
-                            <th>Cognome</th>
-                            <th>Data Nascita</th>
-                            <th>Azione</th>
+                        <tr class="text-left border-b border-gray-300/50">
+                            <th class="pb-3 w-[25%]">Codice Fiscale</th>
+                            <th class="pb-3 w-[20%]">Nome</th>
+                            <th class="pb-3 w-[20%]">Cognome</th>
+                            <th class="pb-3 w-[20%]">Data Nascita</th>
+                            <th class="pb-3 w-[15%] text-center">Azione</th>
                         </tr>
                     </thead>
                     <tbody id="admin-table-body"></tbody>
@@ -93,9 +90,9 @@
             <h3 class="text-xl font-bold mb-4">Modifica Amministratore</h3>
 
             <input id="edit_cf" class="input-field" type="text" disabled>
-            <input id="edit_nome" class="input-field" type="text">
-            <input id="edit_cognome" class="input-field" type="text">
-            <input id="edit_password" class="input-field" type="password">
+            <input id="edit_nome" class="input-field" type="text" placeholder="Nome">
+            <input id="edit_cognome" class="input-field" type="text" placeholder="Cognome">
+            <input id="edit_password" class="input-field" type="password" placeholder="Nuova password">
             <input id="edit_dataNascita" class="input-field" type="date">
 
             <div class="flex justify-end mt-4 gap-3">
@@ -105,7 +102,52 @@
         </div>
     </div>
 
-<script src = "{{url_for( 'static', filename= 'dashboard_sysadmin.js')}}"></script>
+    <!-- MODALE DI SUCCESSO -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content flex flex-col items-center text-center">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+
+            <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
+            <p id="success-message" class="text-gray-700 mb-5">Operazioni completata</p>
+
+            <button onclick="closeSuccessModal()" class="confirm-btn px-6">
+                OK
+            </button>
+        </div>
+    </div>
+
+        <!-- MODALE CONFERMA ELIMINAZIONE -->
+    <div id="delete-modal" class="modal hidden">
+        <div class="modal-content flex flex-col items-center text-center">
+
+            <div class="text-red-600 text-5xl mb-3">⚠️</div>
+
+            <h3 class="text-xl font-bold mb-2">Conferma Eliminazione</h3>
+
+            <p id="delete-message" class="text-gray-700 mb-5">
+                Sei sicuro di voler eliminare questo amministratore?
+            </p>
+
+            <div class="flex gap-4">
+                <button onclick="closeDeleteModal()" class="cancel-btn px-6">
+                    Annulla
+                </button>
+
+                <button id="confirm-delete-btn" class="delete-btn px-6">
+                    Elimina
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script src="{{url_for( 'static', filename= 'dashboard_sysadmin.js')}}"></script>
 </body>
 
 </html>
