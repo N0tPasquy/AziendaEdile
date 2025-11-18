@@ -68,6 +68,7 @@ function editAdmin(cf){
             document.getElementById("edit-admin-modal").classList.remove("hidden");
         });
 }
+
 function closeEditModal(){
     document.getElementById("edit-admin-modal").classList.add("hidden");
 }
@@ -98,7 +99,6 @@ function updateAdmin(){
         }
     });
 }
-
 
 function deleteAdmin(cf){
     if(!confirm("Sei sicuro di voler eliminare l'amministratore "+ cf +" ?")){
