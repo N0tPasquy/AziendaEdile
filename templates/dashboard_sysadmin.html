@@ -122,26 +122,17 @@
 
     <!-- MODALE CONFERMA ELIMINAZIONE -->
     <div id="delete-modal" class="modal hidden">
-        <div class="modal-content flex flex-col items-center text-center">
-
-            <div class="text-red-600 text-5xl mb-3">⚠️</div>
-
-            <h3 class="text-xl font-bold mb-2">Conferma Eliminazione</h3>
+        <div class="modal-content">
+            <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
 
             <p id="delete-message" class="text-gray-700 mb-5">
                 Sei sicuro di voler eliminare questo amministratore?
             </p>
 
-            <div class="flex gap-4">
-                <button onclick="closeDeleteModal()" class="cancel-btn px-6">
-                    Annulla
-                </button>
-
-                <button id="confirm-delete-btn" class="delete-btn px-6">
-                    Elimina
-                </button>
+            <div class="flex justify-end mt-4 gap-3">
+                <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
+                <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
             </div>
-
         </div>
     </div>
 

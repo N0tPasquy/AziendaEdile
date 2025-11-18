@@ -188,3 +188,18 @@ body {
     border-radius: 0.5rem;
     font-weight: 600;
 }
+
+/* Pulsante elimina (rosso) coerente con gli altri modali */
+.delete-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #ef4444; /* rosso */
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background .12s ease, transform .06s ease;
+}
+.delete-btn:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}

@@ -101,6 +101,63 @@ function updateAdmin(){
 }
 
 function deleteAdmin(cf){
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteMessage = document.getElementById("delete-message");
+    const confirmBtn = document.getElementById("confirm-delete-btn");
+    const cancelBtn = document.getElementById("cancel-delete-btn");
+
+    // Usa il modale (se presente) per coerenza grafica con gli altri modali
+    if(deleteModal && deleteMessage && confirmBtn){
+        // recupera i dati dell'admin per mostrare nome e cognome
+        fetch("/get_admins")
+            .then(res => res.json())
+            .then(data => {
+                const admin = data.admins.find(a => a.cf === cf);
+                const nomeCompleto = admin ? `${admin.nome} ${admin.cognome}` : cf;
+                
+                // imposta il testo del modale con nome e cognome
+                deleteMessage.innerText = `Sei sicuro di voler eliminare l'amministratore ${nomeCompleto}?`;
+
+                // mostra il modale
+                deleteModal.classList.remove("hidden");
+
+                // rimuove qualsiasi handler precedente e assegna un nuovo handler pulito
+                confirmBtn.onclick = async function(){
+                    confirmBtn.disabled = true;
+                    try {
+                        const res = await fetch("/delete_adminAziendale", {
+                            method: "DELETE",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ cf: cf })
+                        });
+                        const data = await res.json();
+
+                        deleteModal.classList.add("hidden");
+                        confirmBtn.disabled = false;
+
+                        if(data.success){
+                            caricaAdmins();
+                            openSuccessModal("Amministratore eliminato con successo!");
+                        } else {
+                            alert("Errore: " + (data.message || "impossibile eliminare"));
+                        }
+                    } catch(err) {
+                        confirmBtn.disabled = false;
+                        console.error("Errore delete:", err);
+                        alert("Errore di connessione: " + (err.message || err));
+                    }
+                };
+
+                // se esiste, collega il pulsante annulla alla chiusura del modale
+                if(cancelBtn){
+                    cancelBtn.onclick = function(){ deleteModal.classList.add("hidden"); };
+                }
+            });
+
+        return;
+    }
+
+    // fallback: conferma browser se il modale non è presente
     if(!confirm("Sei sicuro di voler eliminare l'amministratore "+ cf +" ?")){
         return;
     }
@@ -113,12 +170,21 @@ function deleteAdmin(cf){
     .then(res => res.json())
     .then(data => {
         if(data.success){
-            caricaAdmins(); //ricarica la tabella
-            openSuccessModal("Amministratore eliminato con successo!")
+            caricaAdmins();
+            openSuccessModal("Amministratore eliminato con successo!");
         }else{
-            alert("Errore" + data.message)
+            alert("Errore: " + (data.message || ""));
         }
+    })
+    .catch(err => {
+        console.error("Errore delete:", err);
+        alert("Errore di connessione: " + (err.message || err));
     });
+}
+
+function closeDeleteModal(){
+    const deleteModal = document.getElementById("delete-modal");
+    if(deleteModal) deleteModal.classList.add("hidden");
 }
 
 // Funzioni per il modal di aggiunta admin aziendale
@@ -146,13 +212,24 @@ function createAdmin(){
     .then(res => res.json())
     .then(data => {
         if(data.success){
+            // chiudi modale di creazione, ricarica tabella e mostra il modale di successo
             closeAddModal();
-            alert("AMMINISTRATORE AGGIUNTO CORRETTAMENTE")
-            caricaAdmins(); //ricarica la tabella
+            caricaAdmins();
+            // pulisci i campi del form
+            document.getElementById("new_cf").value = "";
+            document.getElementById("new_nome").value = "";
+            document.getElementById("new_cognome").value = "";
+            document.getElementById("new_password").value = "";
+            document.getElementById("new_dataNascita").value = "";
+            openSuccessModal("Amministratore aggiunto con successo!");
         }else{
-            alert("Errore" + data.message)
+            alert("Errore: " + (data.message || "impossibile creare amministratore"));
         }
-    }); // Fine funzioni per il modal di aggiunta admin aziendale
+    })
+    .catch(err => {
+        console.error("Errore createAdmin:", err);
+        alert("Errore di connessione: " + (err.message || err));
+    });
 }
 
 
