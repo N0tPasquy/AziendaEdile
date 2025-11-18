@@ -181,12 +181,27 @@ body {
     color: white;
 }
 
+/* ====== Stile pulsante aggiungi amministratore ====== */
 .add-btn {
-    background: #2563eb;
+    background: #3b82f6; /* Blu leggermente più chiaro per coerenza */
     color: white;
-    padding: 0.4rem 0.9rem;
-    border-radius: 0.5rem;
+    padding: 0.5rem 1.25rem; /* Aumento leggermente il padding per renderlo più 'importante' */
+    border-radius: 0.75rem; /* Aumento il raggio per essere più smussato (come la card) */
     font-weight: 600;
+    cursor: pointer; /* Aggiunto cursore per UX */
+
+    /* AGGIUNTA CHIAVE: Ombra morbida per dare profondità */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    /* AGGIUNTA CHIAVE: Transizione per l'effetto hover */
+    transition: all 0.2s ease-in-out; 
+}
+
+/* Stile per l'interazione (effetto hover) */
+.add-btn:hover {
+    background: #2563eb; /* Torna al blu scuro al passaggio del mouse */
+    transform: translateY(-1px); /* Piccolo sollevamento (pop out) per l'interazione */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Pulsante elimina (rosso) coerente con gli altri modali */
