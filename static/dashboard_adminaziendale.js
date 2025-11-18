@@ -115,9 +115,87 @@ function caricaSezione(nomeSezione) {
     document.querySelectorAll(".sidebar-btn")
         .forEach(btn => btn.classList.remove("active"));
 
-    document.getElementById("btn-" + nome).classList.add("active");
+    document.getElementById("btn-" + nomeSezione).classList.add("active");
+}
+
+function caricaOperai(){
+    fetch("/get_operai")
+        .then(response => response.json())
+        .then(data =>{
+            if(!data.success){
+                console.error("Errore durante il caricamento degli operai")
+                return;
+            }
+
+            const tbody = document.getElementById("operai-table-body");
+            tbody.innerHTML = "";
+
+            data.operai.forEach(operai => {
+                // Formattazione della data di nascita in formato italiano
+                const rawDate = new Date(operai.data_nascita);
+                const formattedDate = rawDate.toLocaleDateString('it-IT', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit' 
+                }); 
+                const row = `
+                    <tr>
+                        <td>${operai.cf}</td>
+                        <td>${operai.nome}</td>
+                        <td>${operai.cognome}</td>
+                        <td>${formattedDate}</td>
+                        <td>${operai.numero_telefono}</td>
+                        <td>${operai.tipo}</td>
+                        <td class = "actions">
+                            <button class = "icon-btn" onclick = "editOperaio('${operai.cf}')">
+                                <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
+                            <button class = "icon-btn delete" onclick = "deleteOperaio('${operai.cf}')">
+                                <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        });
+}
+
+function createOperaio(){
+    const capocantiere = document.getElementById("new_capocantiere").checked;
+
+    const payload = {
+        cf : document.getElementById("new_cf").value,
+        nome : document.getElementById("new_nome").value,
+        cognome : document.getElementById("new_cognome").value,
+        password : document.getElementById("new_password").value,
+        data_nascita : document.getElementById("new_dataNascita").value,
+        numero_telefono : document.getElementById("new_NumeroTelefono").value,
+        capocantiere : capocantiere
+    };
+
+     fetch("/create_operaio", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            closeAddModal();
+            openSuccessModal("Operaio creato correttamente!");
+            caricaOperai();
+        } else {
+            alert("Errore: " + data.message);
+        }
+    });
 }
 
 
+// Funzioni per il modal di aggiunta admin aziendale
+function openAddModal(){
+    document.getElementById("add-operaio-modal").classList.remove("hidden");
+}
+function closeAddModal(){
+    document.getElementById("add-operaio-modal").classList.add("hidden");
+}
 
 window.onload = () => caricaSezione("dashboard");

@@ -10,56 +10,239 @@
     - Matricola: 0124003006
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
-
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
 body {
+    /* rimuovi overflow: hidden se presente */
+    margin: 0;
+    padding: 0;
     font-family: 'Inter', sans-serif;
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
-    /* Rimuoviamo margin e padding dal body per evitare bordi bianchi */
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    /* Importante per evitare scrollbar durante l'animazione */
+    /* allow scrolling */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.dashboard-card {
-    /* ORA: Occupa tutto lo spazio */
+/* ====== LAYOUT PRINCIPALE DASHBOARD ====== */
+#main-dashboard-card {
+    /* evita height:100vh che impedisce lo scroll; usare min-height */
+    min-height: 100vh;
     width: 100%;
-    height: 100vh;
-    /* Forza l'altezza a tutto lo schermo */
     display: flex;
+    flex-direction: column;
 }
 
-/* Stile per il logo contenuto nella barra laterale */
-.logo-contained {
+/* ====== SEZIONI CONTENUTE (operai, cantieri, ecc.) ====== */
+.section-content {
     width: 100%;
     height: auto;
+    min-height: 95vh;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 0.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+    max-width: calc(100% - 1rem);
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* Media query per mobile */
-@media (max-width: 768px) {
-    .dashboard-card {
-        flex-direction: column;
-        height: auto;
-        overflow-y: auto;
-        /* Riabilita lo scroll su mobile */
-    }
-
-    body {
-        overflow: auto;
-    }
+/* ====== HEADER STRIP (presente in operai, cantieri, ecc.) ====== */
+.header-strip {
+    width: calc(100% + 4rem);
+    margin: -2rem -2rem 2rem -2rem;
+    padding: 0.5rem 2rem;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(3px);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: visible;
+    color: rgb(20, 100, 150);
 }
 
-/* Stile per la barra laterale */
+.header-content {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+}
+
+/* ====== LOGO ====== */
+.logo-contained {
+    width: 8.5rem;
+    height: auto;
+    object-fit: contain;
+    position: relative;
+    top: 0.5rem;
+}
+
+/* ====== TABELLE GENERICHE ====== */
+.table-card {
+    background: rgba(255, 255, 255, 0.40);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    width: 99%;
+    max-width: 100%;
+    color: rgb(80, 80, 80);
+    box-sizing: border-box;
+    overflow-x: auto; /* lascia scroll orizzontale se necessario */
+}
+
+.admin-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.admin-table th {
+    font-weight: bold;
+    padding: 10px 12px;
+}
+
+.admin-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+/* Larghezze colonne */
+.admin-table th:first-child,
+.admin-table td:first-child { width: 24%; }   /* Codice Fiscale (ridotto) */
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) { width: 16%; }  /* Nome */
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) { width: 14%; }  /* Cognome */
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) { width: 16%; }  /* Data Nascita */
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) { width: 14%; }  /* Numero di telefono */
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) { width: 8%; }   /* Ruolo */
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) { width: 8%; min-width: 100px; } /* Azione */
+
+.admin-table td:last-child {
+    text-align: center;
+}
+
+/* ====== PULSANTI ====== */
+.add-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease-in-out;
+}
+
+.add-btn:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ====== MODALI ====== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    width: 380px;
+    max-width: 90vw;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.input-field {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.cancel-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #e5e7eb;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.cancel-btn:hover {
+    background: #d1d5db;
+}
+
+.confirm-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.confirm-btn:hover {
+    background: #1d4ed8;
+}
+
+.delete-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: #ef4444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.12s ease, transform 0.06s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* ====== SIDEBAR ====== */
 #sidebar {
     background-color: #2C3E50;
-    /* O cambia con il colore che preferisci, es: #1e293b */
+    /* Sidebar: permetti che si estenda e faccia scroll se necessario */
+    min-height: 100vh;
+    height: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .sidebar-btn.active {
@@ -67,3 +250,26 @@ body {
     color: #ffffff !important;
     font-weight: 700;
 }
+
+/* ====== MEDIA QUERY ====== */
+@media (max-width: 768px) {
+    #main-dashboard-card {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    .section-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Assicurati che il contenuto principale non sia centrato verticalmente (usa justify-start) */
+.content-area {
+    justify-content: flex-start;
+}
+

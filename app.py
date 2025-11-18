@@ -90,7 +90,7 @@ def get_admins():
         return jsonify({"success" : False , "message" : "Errore DB"})
     
     cursor = conn.cursor()
-    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente "
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
                    "FROM utente "
                    "WHERE TipoUtente = 'AA'")
     
@@ -106,9 +106,39 @@ def get_admins():
             "cognome" : row[2],
             # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
             "data_nascita" : row[4],
-            "ruolo" : "Admin Aziendale"
+            "ruolo" : "Admin Aziendale",
+            "numero_telefono" : row[6]
         })
     return jsonify({"success" : True , "admins" : admins})
+
+#Route per caricare gli operai
+@app.route("/get_operai", methods= ["GET"])
+def get_operai():
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore DB"})
+    cursor = conn.cursor()
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
+                   "FROM utente "
+                   "WHERE TipoUtente = 'OP' OR TipoUtente = 'CC'")
+    rows = cursor.fetchall()
+    conn.close()
+
+    operai = []
+
+    for row in rows: 
+        operai.append({
+            "cf" : row[0],
+            "nome" : row[1],
+            "cognome" : row[2],
+           # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
+            "data_nascita" : row[4],
+            "tipo" : row[5],
+            "numero_telefono" : row[6]
+        })
+    return jsonify({"success" : True, "operai" : operai})
+
+
 
 # Route per creare un nuovo amministratore aziendale
 @app.route("/create_adminAziendale", methods = ["POST"])
@@ -119,6 +149,7 @@ def create_AdminAziendale():
     cognome = data.get("cognome")
     password = data.get("password")
     data_nascita = data.get("data_nascita")
+    numero_telefono = data.get("numero_telefono")
 
     conn = connessione()
     if conn is None:
@@ -127,8 +158,8 @@ def create_AdminAziendale():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente) VALUES (?, ?, ?, ?, ?, 'AA')",
-                        (cf, nome, cognome, password, data_nascita))
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, 'AA', ?)",
+                        (cf, nome, cognome, password, data_nascita, numero_telefono))
         conn.commit()
         conn.close()
 
@@ -137,7 +168,32 @@ def create_AdminAziendale():
         conn.close()
         return jsonify({"success" : False, "message" : str(e)})
     
+# Route per creare un nuovo operaio
+@app.route("/create_operaio", methods = ["POST"])
+def create_operaio():
+    data = request.get_json()
+    cf = data.get("cf")
+    nome = data.get("nome")
+    cognome = data.get("cognome")
+    password = data.get("password")
+    data_nascita = data.get("data_nascita")
+    numero_telefono = data.get("numero_telefono")
+    capocantiere = data.get("capocantiere") #restituisce True o False
 
+    tipo = "CC" if capocantiere else "OP"
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore durante la connessione al DB"})
+     
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, ?, ?)", (cf, nome, cognome, password, data_nascita, tipo, numero_telefono))
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    except Exception as e:
+        return jsonify({"success" : False , "message" : str(e)})
 
 @app.route("/delete_adminAziendale", methods = ["DELETE"])
 def delete_adminAziendale():
@@ -171,7 +227,7 @@ def update_adminAziendale():
     cognome = data.get("cognome")
     password = data.get("password")
     data_nascita = data.get("data_nascita")
-
+    numero_telefono = data.get("numero_telefono")
     conn = connessione()
 
     if conn is None:
@@ -181,8 +237,8 @@ def update_adminAziendale():
 
     try:
         cursor.execute("UPDATE utente "
-                       "SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ? "
-                       "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, cf))
+                       "SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?  "
+                       "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, numero_telefono, cf))
         conn.commit()
         conn.close()
         return jsonify({"success" : True})

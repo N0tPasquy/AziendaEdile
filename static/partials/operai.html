@@ -12,13 +12,114 @@
     - Anno Accademico: 2025/2026
 -->
 
-<h1 class = "text-3xl font-bold"> Gestione operai</h1>
-<table class = "admin-table">
-    <thead>
-        <tr>
-            <th>Codice fiscale</th>
-            <th>Nome</th>
-        </tr>
-    </thead>
-    <tbody id = "operai-table-body"></tbody>
-</table>
+<div class="section-content text-center z-10 mx-auto">
+
+    <!-- Striscia bianca che simula una navbar -->
+    <div class="header-strip flex items-center justify-start">
+        <div class="flex items-center header-content">
+            <img src="/static/img/logo.png" class="logo-contained">
+            <span class="ml-4 font-bold text-2xl">Azienda Edile</span>
+        </div>
+    </div>
+
+    <!-- PULSANTE AGGIUNGI OPERAIO -->
+    <div class="flex items-center justify-between mb-5">
+        <h1 class="text-3xl font-bold text-left m-0">Gestione operai</h1>
+        <button onclick="openAddModal()" class="add-btn">
+            Aggiungi Operaio
+        </button>
+    </div>  
+
+    <!-- TABELLA OPERAI -->
+    <div class="table-card">
+        <table class="admin-table">
+            <thead>
+                <tr class="text-left border-b border-gray-300/50">
+                    <th class="pb-3">Codice Fiscale</th>
+                    <th class="pb-3">Nome</th>
+                    <th class="pb-3">Cognome</th>
+                    <th class="pb-3">Data Nascita</th>
+                    <th class="pb-3">Numero di telefono</th>
+                    <th class = "pb-3">Ruolo</th>
+                    <th class="pb-3 text-center">Azione</th>
+                </tr>
+            </thead>
+            <tbody id="operai-table-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODALE AGGIUNGI OPERAIO -->
+<div id="add-operaio-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Nuovo Operaio</h3>
+
+        <input id="new_cf" class="input-field" type="text" placeholder="Codice Fiscale">
+        <input id="new_nome" class="input-field" type="text" placeholder="Nome">
+        <input id="new_cognome" class="input-field" type="text" placeholder="Cognome">
+        <input id="new_password" class="input-field" type="password" placeholder="Password">
+        <input id="new_dataNascita" class="input-field" type="date">
+        <input id="new_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
+
+        <!-- CHECKBOX -->
+        <label class="flex items-center gap-2 mt-2">
+            <input type="checkbox" id="new_capocantiere" class="h-4 w-4">
+            <span class="text-sm text-gray-700">Capocantiere</span>
+        </label>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeAddModal()" class="cancel-btn">Annulla</button>
+            <button onclick="createOperaio()" class="confirm-btn">Crea</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE MODIFICA OPERAIO -->
+<div id="edit-operaio-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Modifica Operaio</h3>
+
+        <input id="edit_cf" class="input-field" type="text" disabled>
+        <input id="edit_nome" class="input-field" type="text" placeholder="Nome">
+        <input id="edit_cognome" class="input-field" type="text" placeholder="Cognome">
+        <input id="edit_password" class="input-field" type="password" placeholder="Nuova password">
+        <input id="edit_dataNascita" class="input-field" type="date">
+        <input id="edit_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeEditModal()" class="cancel-btn">Annulla</button>
+            <button onclick="updateOperaio()" class="confirm-btn">Salva</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE DI SUCCESSO -->
+<div id="success-modal" class="modal hidden">
+    <div class="modal-content flex flex-col items-center text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+
+        <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
+        <p id="success-message" class="text-gray-700 mb-5">Operazione completata</p>
+
+        <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA ELIMINAZIONE -->
+<div id="delete-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
+
+        <p id="delete-message" class="text-gray-700 mb-5">
+            Sei sicuro di voler eliminare questo operaio?
+        </p>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
+            <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
+        </div>
+    </div>
+</div>

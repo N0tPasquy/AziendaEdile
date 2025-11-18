@@ -100,17 +100,31 @@ body {
 
 .admin-table th {
     font-style: bold;
-    padding: 12px;
+    padding: 10px 12px; /* leggermente ridotto per risparmiare spazio */
 }
 
 .admin-table td {
-    padding: 16px 12px; /* Aumentato leggermente il padding verticale per respiro */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Bordo più sottile e delicato */
+    padding: 12px 10px; /* diminuito per compattezza */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    vertical-align: middle; /* Allinea il testo verticalmente al centro */
+    vertical-align: middle;
 }
+
+/* Forza le larghezze corrispondenti alle nuove classi header (coerenza con table-layout: fixed) */
+.admin-table th:first-child,
+.admin-table td:first-child { width: 28%; }
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) { width: 14%; }
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) { width: 14%; }
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) { width: 14%; }
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) { width: 15%; }
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) { width: 15%; }
 
 /* Specifica che l'ultima colonna (Azione) deve essere centrata anche nelle righe, non solo nell'header */
 .admin-table td:last-child {
@@ -217,4 +231,11 @@ body {
 .delete-btn:hover {
     background: #dc2626;
     transform: translateY(-1px);
+}
+
+/* Assicurati che il browser possa scrollare */
+html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
 }

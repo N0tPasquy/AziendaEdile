@@ -38,6 +38,7 @@ function caricaAdmins(){
                         <td>${admin.nome}</td>
                         <td>${admin.cognome}</td>
                         <td>${formattedDate}</td>
+                        <td>${admin.numero_telefono}</td>
                         <td class = "actions">
                             <button class = "icon-btn" onclick = "editAdmin('${admin.cf}')">
                                 <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
@@ -63,6 +64,7 @@ function editAdmin(cf){
             document.getElementById("edit_cognome").value = admin.cognome;
             document.getElementById("edit_password").value ="";
             document.getElementById("edit_dataNascita").value = formatoData(admin.data_nascita);
+            document.getElementById("edit_NumeroTelefono").value = admin.numero_telefono;
 
             //mostro il modale
             document.getElementById("edit-admin-modal").classList.remove("hidden");
@@ -79,7 +81,8 @@ function updateAdmin(){
         nome: document.getElementById("edit_nome").value,
         cognome: document.getElementById("edit_cognome").value,
         password: document.getElementById("edit_password").value,
-        data_nascita: document.getElementById("edit_dataNascita").value
+        data_nascita: document.getElementById("edit_dataNascita").value,
+        numero_telefono: document.getElementById("edit_NumeroTelefono").value
     };
 
     fetch("/update_adminAziendale", {
@@ -201,7 +204,8 @@ function createAdmin(){
         nome: document.getElementById("new_nome").value,
         cognome: document.getElementById("new_cognome").value,
         password: document.getElementById("new_password").value,
-        data_nascita: document.getElementById("new_dataNascita").value
+        data_nascita: document.getElementById("new_dataNascita").value,
+        numero_telefono: document.getElementById("new_NumeroTelefono").value
     };
 
     fetch("/create_adminAziendale",{
@@ -221,6 +225,7 @@ function createAdmin(){
             document.getElementById("new_cognome").value = "";
             document.getElementById("new_password").value = "";
             document.getElementById("new_dataNascita").value = "";
+            document.getElementById("new_NumeroTelefono").value = "";
             openSuccessModal("Amministratore aggiunto con successo!");
         }else{
             alert("Errore: " + (data.message || "impossibile creare amministratore"));
