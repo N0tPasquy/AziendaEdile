@@ -13,6 +13,19 @@
 
 */
 
+//Funzione per il formato della data
+function formatoData(dateString){
+    if(!dateString) return "";
+
+    const d = new Date(dateString);
+
+    const year = d.getFullYear();
+    const month = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+
+    return `${year}-${month}-${day}`;
+}
+
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const texts = document.querySelectorAll('.link-text');
@@ -138,6 +151,15 @@ function caricaOperai(){
                     month: '2-digit', 
                     day: '2-digit' 
                 }); 
+
+                // Traduzione del ruolo (Tipo)
+                let ruoloEsteso = operai.tipo; // Valore di default
+                if (operai.tipo === 'CC') {
+                    ruoloEsteso = 'Capocantiere';
+                } else if (operai.tipo === 'OP') {
+                    ruoloEsteso = 'Operaio';
+                }
+
                 const row = `
                     <tr>
                         <td>${operai.cf}</td>
@@ -145,7 +167,7 @@ function caricaOperai(){
                         <td>${operai.cognome}</td>
                         <td>${formattedDate}</td>
                         <td>${operai.numero_telefono}</td>
-                        <td>${operai.tipo}</td>
+                        <td>${ruoloEsteso}</td>
                         <td class = "actions">
                             <button class = "icon-btn" onclick = "editOperaio('${operai.cf}')">
                                 <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
@@ -189,8 +211,8 @@ function createOperaio(){
     });
 }
 
-
 // Funzioni per il modal di aggiunta admin aziendale
+// da sistemare
 function openAddModal(){
     document.getElementById("add-operaio-modal").classList.remove("hidden");
 }
@@ -205,6 +227,146 @@ function openSuccessModal(message) {
 
 function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
+}
+
+// Funzioni per la modifica dei dipendenti
+function editOperaio(cf){
+    fetch("/get_operai")
+        .then(res => res.json())
+        .then(data => {
+            const operaio = data.operai.find(a => a.cf === cf); 
+
+            //popolo il modale
+            document.getElementById("edit_cf").value = operaio.cf;
+            document.getElementById("edit_nome").value = operaio.nome;
+            document.getElementById("edit_cognome").value = operaio.cognome;
+            document.getElementById("edit_password").value ="";
+            document.getElementById("edit_dataNascita").value = formatoData(operaio.data_nascita);
+            document.getElementById("edit_NumeroTelefono").value = operaio.numero_telefono;
+
+            //mostro il modale
+            document.getElementById("edit-operaio-modal").classList.remove("hidden");
+        });
+}
+
+function closeEditModal(){
+    document.getElementById("edit-operaio-modal").classList.add("hidden");
+}
+
+function updateOperaio(){
+    const payload = {
+        cf: document.getElementById("edit_cf").value,
+        nome: document.getElementById("edit_nome").value,
+        cognome: document.getElementById("edit_cognome").value,
+        password: document.getElementById("edit_password").value,
+        data_nascita: document.getElementById("edit_dataNascita").value,
+        numero_telefono: document.getElementById("edit_NumeroTelefono").value
+    };
+
+    fetch("/update_adminAziendale", {
+        method : "PUT",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            closeEditModal();
+            caricaOperai();
+            
+            openSuccessModal("Operaio aggiornato con successo!");
+        }else{
+            alert("Errore" + data.message);
+        }
+    });
+}
+
+// - Funzione per eliminare un operaio
+function deleteOperaio(cf){
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteMessage = document.getElementById("delete-message");
+    const confirmBtn = document.getElementById("confirm-delete-btn");
+    const cancelBtn = document.getElementById("cancel-delete-btn");
+
+    // Usa il modale (se presente) per coerenza grafica con gli altri modali
+    if(deleteModal && deleteMessage && confirmBtn){
+        // recupera i dati dell'operaio per mostrare nome e cognome
+        fetch("/get_operai")
+            .then(res => res.json())
+            .then(data => {
+                const operaio = data.operaio.find(a => a.cf === cf);
+                const nomeCompleto = admin ? `${admin.nome} ${admin.cognome}` : cf;
+                
+                // imposta il testo del modale con nome e cognome
+                deleteMessage.innerText = `Sei sicuro di voler eliminare l'operaio ${nomeCompleto}?`;
+
+                // mostra il modale
+                deleteModal.classList.remove("hidden");
+
+                // rimuove qualsiasi handler precedente e assegna un nuovo handler pulito
+                confirmBtn.onclick = async function(){
+                    confirmBtn.disabled = true;
+                    try {
+                        const res = await fetch("/delete_operaio", {
+                            method: "DELETE",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ cf: cf })
+                        });
+                        const data = await res.json();
+
+                        deleteModal.classList.add("hidden");
+                        confirmBtn.disabled = false;
+
+                        if(data.success){
+                            caricaoperai();
+                            openSuccessModal("Operaio eliminato con successo!");
+                        } else {
+                            alert("Errore: " + (data.message || "impossibile eliminare"));
+                        }
+                    } catch(err) {
+                        confirmBtn.disabled = false;
+                        console.error("Errore delete:", err);
+                        alert("Errore di connessione: " + (err.message || err));
+                    }
+                };
+
+                // se esiste, collega il pulsante annulla alla chiusura del modale
+                if(cancelBtn){
+                    cancelBtn.onclick = function(){ deleteModal.classList.add("hidden"); };
+                }
+            });
+
+        return;
+    }
+
+    // fallback: conferma browser se il modale non è presente
+    if(!confirm("Sei sicuro di voler eliminare l'operaio "+ cf +" ?")){
+        return;
+    }
+
+    fetch("/delete_operaio",{
+        method : "DELETE",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify({cf : cf})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            caricaAdmins();
+            openSuccessModal("operaio eliminato con successo!");
+        }else{
+            alert("Errore: " + (data.message || ""));
+        }
+    })
+    .catch(err => {
+        console.error("Errore delete:", err);
+        alert("Errore di connessione: " + (err.message || err));
+    });
+}
+
+function closeDeleteModal(){
+    const deleteModal = document.getElementById("delete-modal");
+    if(deleteModal) deleteModal.classList.add("hidden");
 }
 
 window.onload = () => caricaSezione("dashboard");
