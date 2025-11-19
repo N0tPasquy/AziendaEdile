@@ -138,8 +138,6 @@ def get_operai():
         })
     return jsonify({"success" : True, "operai" : operai})
 
-
-
 # Route per creare un nuovo amministratore aziendale
 @app.route("/create_adminAziendale", methods = ["POST"])
 def create_AdminAziendale():
@@ -194,6 +192,42 @@ def create_operaio():
         return jsonify({"success" : True})
     except Exception as e:
         return jsonify({"success" : False , "message" : str(e)})
+    
+
+@app.route("/update_operaio", methods=["PUT"])
+def update_operaio():
+    data = request.get_json()
+
+    cf = data.get("cf")
+    nome = data.get("nome")
+    cognome = data.get("cognome")
+    password = data.get("password")
+    data_nascita = data.get("data_nascita")
+    numero_telefono = data.get("numero_telefono")
+    
+    # *** NUOVO: Recupera il dato e convertilo in stringa 'CC' o 'OP' ***
+    capocantiere = data.get("capocantiere") # Restituisce True o False
+    tipo_utente = "CC" if capocantiere else "OP"
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+    
+    cursor = conn.cursor()
+    try:
+        # *** NUOVO: Aggiungi TipoUtente alla query SQL ***
+        cursor.execute("""
+            UPDATE utente 
+            SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?, TipoUtente = ?
+            WHERE CF = ? AND (TipoUtente = 'OP' OR TipoUtente = 'CC')
+        """, (nome, cognome, password, data_nascita, numero_telefono, tipo_utente, cf)) # Aggiunto tipo_utente ai parametri
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message": str(e)})
 
 @app.route("/delete_adminAziendale", methods = ["DELETE"])
 def delete_adminAziendale():
@@ -216,8 +250,31 @@ def delete_adminAziendale():
     except Exception as e:
         conn.close()
         return jsonify({"success" : False, "message" : str(e)})
+    
+    # Route per eliminare un operaio
+@app.route("/delete_operaio", methods = ["DELETE"])
+def delete_operaio():
+    data = request.get_json()
+    cf = data.get("cf")
 
+    conn = connessione()
 
+    if conn is None:
+        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
+    
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("DELETE FROM utente WHERE CF = ?", (cf,))
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+
+# Route per aggiornare un admin aziendale
 @app.route("/update_adminAziendale", methods=["PUT"])
 def update_adminAziendale():
     data = request.get_json()

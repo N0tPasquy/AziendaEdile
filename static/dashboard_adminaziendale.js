@@ -211,8 +211,7 @@ function createOperaio(){
     });
 }
 
-// Funzioni per il modal di aggiunta admin aziendale
-// da sistemare
+// Funzioni per il modal di aggiunta operaio
 function openAddModal(){
     document.getElementById("add-operaio-modal").classList.remove("hidden");
 }
@@ -236,15 +235,16 @@ function editOperaio(cf){
         .then(data => {
             const operaio = data.operai.find(a => a.cf === cf); 
 
-            //popolo il modale
             document.getElementById("edit_cf").value = operaio.cf;
             document.getElementById("edit_nome").value = operaio.nome;
             document.getElementById("edit_cognome").value = operaio.cognome;
-            document.getElementById("edit_password").value ="";
+            document.getElementById("edit_password").value = ""; 
             document.getElementById("edit_dataNascita").value = formatoData(operaio.data_nascita);
             document.getElementById("edit_NumeroTelefono").value = operaio.numero_telefono;
 
-            //mostro il modale
+            // *** NUOVO: Imposta la checkbox in base al ruolo attuale ***
+            // Se il tipo è 'CC' mette la spunta, altrimenti la toglie
+            document.getElementById("edit_capocantiere").checked = (operaio.tipo === 'CC');
             document.getElementById("edit-operaio-modal").classList.remove("hidden");
         });
 }
@@ -254,16 +254,20 @@ function closeEditModal(){
 }
 
 function updateOperaio(){
+    // *** NUOVO: Leggi il valore della checkbox ***
+    const isCapocantiere = document.getElementById("edit_capocantiere").checked;
     const payload = {
         cf: document.getElementById("edit_cf").value,
         nome: document.getElementById("edit_nome").value,
         cognome: document.getElementById("edit_cognome").value,
         password: document.getElementById("edit_password").value,
         data_nascita: document.getElementById("edit_dataNascita").value,
-        numero_telefono: document.getElementById("edit_NumeroTelefono").value
+        numero_telefono: document.getElementById("edit_NumeroTelefono").value,
+        capocantiere: isCapocantiere // Invia il dato al backend
     };
 
-    fetch("/update_adminAziendale", {
+    // Ricordati di usare la rotta corretta che abbiamo creato prima
+    fetch("/update_operaio", {
         method : "PUT",
         headers : {"Content-Type" : "application/json"},
         body : JSON.stringify(payload)
@@ -273,37 +277,32 @@ function updateOperaio(){
         if(data.success){
             closeEditModal();
             caricaOperai();
-            
             openSuccessModal("Operaio aggiornato con successo!");
         }else{
-            alert("Errore" + data.message);
+            alert("Errore: " + data.message);
         }
     });
 }
 
-// - Funzione per eliminare un operaio
 function deleteOperaio(cf){
     const deleteModal = document.getElementById("delete-modal");
     const deleteMessage = document.getElementById("delete-message");
     const confirmBtn = document.getElementById("confirm-delete-btn");
     const cancelBtn = document.getElementById("cancel-delete-btn");
 
-    // Usa il modale (se presente) per coerenza grafica con gli altri modali
     if(deleteModal && deleteMessage && confirmBtn){
-        // recupera i dati dell'operaio per mostrare nome e cognome
         fetch("/get_operai")
             .then(res => res.json())
             .then(data => {
-                const operaio = data.operaio.find(a => a.cf === cf);
-                const nomeCompleto = admin ? `${admin.nome} ${admin.cognome}` : cf;
+                // FIX: data.operai (plurale) invece di data.operaio
+                const operaio = data.operai.find(a => a.cf === cf);
                 
-                // imposta il testo del modale con nome e cognome
+                // FIX: rimosso riferimento ad 'admin' se non esiste, fallback sul CF
+                const nomeCompleto = operaio ? `${operaio.nome} ${operaio.cognome}` : cf;
+                
                 deleteMessage.innerText = `Sei sicuro di voler eliminare l'operaio ${nomeCompleto}?`;
-
-                // mostra il modale
                 deleteModal.classList.remove("hidden");
 
-                // rimuove qualsiasi handler precedente e assegna un nuovo handler pulito
                 confirmBtn.onclick = async function(){
                     confirmBtn.disabled = true;
                     try {
@@ -312,30 +311,28 @@ function deleteOperaio(cf){
                             headers: {"Content-Type": "application/json"},
                             body: JSON.stringify({ cf: cf })
                         });
-                        const data = await res.json();
+                        const respData = await res.json();
 
                         deleteModal.classList.add("hidden");
                         confirmBtn.disabled = false;
 
-                        if(data.success){
-                            caricaoperai();
+                        if(respData.success){
+                            caricaOperai();
                             openSuccessModal("Operaio eliminato con successo!");
                         } else {
-                            alert("Errore: " + (data.message || "impossibile eliminare"));
+                            alert("Errore: " + (respData.message || "impossibile eliminare"));
                         }
                     } catch(err) {
                         confirmBtn.disabled = false;
-                        console.error("Errore delete:", err);
-                        alert("Errore di connessione: " + (err.message || err));
+                        console.error(err);
+                        alert("Errore di connessione");
                     }
                 };
 
-                // se esiste, collega il pulsante annulla alla chiusura del modale
                 if(cancelBtn){
                     cancelBtn.onclick = function(){ deleteModal.classList.add("hidden"); };
                 }
             });
-
         return;
     }
 
@@ -352,7 +349,7 @@ function deleteOperaio(cf){
     .then(res => res.json())
     .then(data => {
         if(data.success){
-            caricaAdmins();
+            caricaOperai();
             openSuccessModal("operaio eliminato con successo!");
         }else{
             alert("Errore: " + (data.message || ""));
