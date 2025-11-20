@@ -12,11 +12,55 @@
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
 """
-
-from flask import Flask, render_template, request, jsonify
+from functools import wraps # per i decoratori
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from db import connessione
 
 app = Flask(__name__)
+app.secret_key = "InterMerdaByPasqualeDaniele2025"
+
+# Decoratore per proteggere le rotte che richiedono login
+def login_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if "logged_in" not in session:
+            return redirect(url_for("home"))
+        return f(*args, **kwargs)
+    return wrapper  
+
+
+# rotta per il logout
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("home"))
+
+# rotta per ottenere le informazioni dell'utente loggato
+@app.route("/session_user", methods=["GET"])
+def session_user():
+    if "logged_in" not in session:
+        return jsonify({"logged_in": False})
+
+    return jsonify({
+        "logged_in": True,
+        "cf": session["cf"],
+        "nome": session["nome"],
+        "cognome": session["cognome"],
+        "ruolo": session["ruolo"],
+        "nome_azienda" : session.get("nome_azienda")
+    })
+
+# Decoratore per proteggere le rotte in base al ruolo
+def role_required(role):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            if "ruolo" not in session or session["ruolo"] != role:
+                return redirect(url_for("home"))
+            return f(*args, **kwargs)
+        return wrapper
+    return decorator
+
 
 
 @app.route("/", methods=["GET"])
@@ -24,34 +68,37 @@ def home():
     return render_template("index.html")
 
 # rotta per la dashboard del sysadmin
-
-
 @app.route("/dashboard_sysadmin", methods=["GET"])
+@login_required
+@role_required("AS")
 def dashboard_sysadmin():
     return render_template("dashboard_sysadmin.html")
 
+
 # rotta per la dashboard dell'admin aziendale
-
-
 @app.route("/dashboard_adminaziendale", methods=["GET"])
+@login_required
+@role_required("AA")
 def dashboard_adminaziendale():
     return render_template("dashboard_adminaziendale.html")
 
+
 # rotta per la dashboard del capocantiere
-
-
 @app.route("/dashboard_capocantiere", methods=["GET"])
+@login_required
+@role_required("CC")
 def dashboard_capocantiere():
     return render_template("dashboard_capocantiere.html")
 
+
 # rotta per la dashboard dell'operaio
-
-
 @app.route("/dashboard_operaio", methods=["GET"])
+@login_required
+@role_required("OP")
 def dashboard_operaio():
     return render_template("dashboard_operaio.html")
 
-
+# rotta per il login
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -65,9 +112,10 @@ def login():
 
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT Password, TipoUtente FROM utente WHERE CF = ?",
+        "SELECT CF, Nome, Cognome, Password, TipoUtente, NomeAzienda FROM utente WHERE CF = ?",
         (cf,)
     )
+    
     row = cursor.fetchone()
     conn.close()
 
@@ -75,7 +123,7 @@ def login():
     if row is None:
         return jsonify({"success": False, "message": "Utente non trovato"})
 
-    db_password, tipo = row
+    cf_db, nome, cognome, db_password, tipo, nome_azienda = row
 
     # Controllo password (da migliorare con hash in produzione)
     if password != db_password:
@@ -90,6 +138,14 @@ def login():
     }
 
     ruolo = ruoli.get(tipo, "OP") or "OP"
+    
+    # Salvataggio le informazioni nella sessione
+    session["logged_in"] = True
+    session["cf"] = cf
+    session["nome"] = nome 
+    session["cognome"] = cognome
+    session["ruolo"] = ruolo
+    session["nome_azienda"] = nome_azienda
 
     return jsonify({"success": True, "role": ruolo})
 
@@ -101,7 +157,7 @@ def get_admins():
         return jsonify({"success": False, "message": "Errore DB"})
 
     cursor = conn.cursor()
-    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda "
                    "FROM utente "
                    "WHERE TipoUtente = 'AA'")
 
@@ -118,7 +174,8 @@ def get_admins():
             # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
             "data_nascita": row[4],
             "ruolo": "Admin Aziendale",
-            "numero_telefono": row[6]
+            "numero_telefono": row[6],
+            "nome_azienda" : row[7]
         })
     return jsonify({"success": True, "admins": admins})
 
@@ -131,7 +188,7 @@ def get_operai():
     if conn is None:
         return jsonify({"success": False, "message": "Errore DB"})
     cursor = conn.cursor()
-    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
+    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda "
                    "FROM utente "
                    "WHERE TipoUtente = 'OP' OR TipoUtente = 'CC'")
     rows = cursor.fetchall()
@@ -147,7 +204,8 @@ def get_operai():
             "password": row[3],
             "data_nascita": row[4],
             "tipo": row[5],
-            "numero_telefono": row[6]
+            "numero_telefono": row[6],
+            "nome_azienda" : row[7]
         })
     return jsonify({"success": True, "operai": operai})
 
@@ -163,6 +221,7 @@ def create_AdminAziendale():
     password = data.get("password")
     data_nascita = data.get("data_nascita")
     numero_telefono = data.get("numero_telefono")
+    nome_azienda = data.get("nome_azienda")
 
     conn = connessione()
     if conn is None:
@@ -171,8 +230,8 @@ def create_AdminAziendale():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, 'AA', ?)",
-                       (cf, nome, cognome, password, data_nascita, numero_telefono))
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda) VALUES (?, ?, ?, ?, ?, 'AA', ?, ?)",
+                       (cf, nome, cognome, password, data_nascita, numero_telefono, nome_azienda))
         conn.commit()
         conn.close()
 
@@ -186,7 +245,13 @@ def create_AdminAziendale():
 
 @app.route("/create_operaio", methods=["POST"])
 def create_operaio():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    nome_azienda = session.get("nome_azienda")
+    
     data = request.get_json()
+
     cf = data.get("cf")
     nome = data.get("nome")
     cognome = data.get("cognome")
@@ -203,8 +268,8 @@ def create_operaio():
 
     cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                       (cf, nome, cognome, password, data_nascita, tipo, numero_telefono))
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       (cf, nome, cognome, password, data_nascita, tipo, numero_telefono, nome_azienda))
         conn.commit()
         conn.close()
         return jsonify({"success": True})
@@ -323,6 +388,8 @@ def update_adminAziendale():
     password = data.get("password")
     data_nascita = data.get("data_nascita")
     numero_telefono = data.get("numero_telefono")
+    nome_azienda = data.get("nome_azienda")
+
     conn = connessione()
 
     if conn is None:
@@ -332,8 +399,8 @@ def update_adminAziendale():
 
     try:
         cursor.execute("UPDATE utente "
-                       "SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?  "
-                       "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, numero_telefono, cf))
+                       "SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?, NomeAzienda = ?  "
+                       "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, numero_telefono, nome_azienda,cf))
         conn.commit()
         conn.close()
         return jsonify({"success": True})

@@ -67,6 +67,7 @@ function caricaAdmins() {
                 const row = `
                     <tr>
                         <td>${admin.cf}</td>
+                        <td>${admin.nome_azienda}</td>
                         <td>${admin.nome}</td>
                         <td>${admin.cognome}</td>
                         <td>${formattedDate}</td>
@@ -98,6 +99,7 @@ function closeAddModal() {
 
 function resetAddErrors() {
     document.getElementById("err_new_cf")?.classList.add("hidden");
+    document.getElementById("err_new_azienda")?.classList.add("hidden")
     document.getElementById("err_new_nome")?.classList.add("hidden");
     document.getElementById("err_new_cognome")?.classList.add("hidden");
     document.getElementById("err_new_password")?.classList.add("hidden");
@@ -114,13 +116,18 @@ function createAdmin() {
     const cf = document.getElementById("new_cf").value.trim();
     const nome = document.getElementById("new_nome").value.trim();
     const cognome = document.getElementById("new_cognome").value.trim();
-    const passwordInput = document.getElementById("new_password").value.trim();
+    const password = document.getElementById("new_password").value.trim();
     const data_nascita = document.getElementById("new_dataNascita").value;
     const numero_telefono = document.getElementById("new_NumeroTelefono").value.trim();
+    const nome_azienda = document.getElementById("new_azienda").value;
 
     // VALIDAZIONI
     if (!validateCF(cf)) {
         document.getElementById("err_new_cf").classList.remove("hidden");
+        valid = false;
+    }
+    if (nome_azienda === "") {
+        document.getElementById("err_new_azienda").classList.remove("hidden");
         valid = false;
     }
 
@@ -134,7 +141,7 @@ function createAdmin() {
         valid = false;
     }
 
-    if (passwordInput === "") {
+    if (password === "") {
         document.getElementById("err_new_password").classList.remove("hidden");
         valid = false;
     }
@@ -155,9 +162,10 @@ function createAdmin() {
         cf,
         nome,
         cognome,
-        password: passwordInput,
+        password,
         data_nascita,
-        numero_telefono
+        numero_telefono,
+        nome_azienda
     };
 
     fetch("/create_adminAziendale", {
@@ -176,6 +184,7 @@ function createAdmin() {
 
                 // reset campi
                 document.getElementById("new_cf").value = "";
+                document.getElementById("new_azienda").value = ""; // Aggiunto reset del campo nome_azienda
                 document.getElementById("new_nome").value = "";
                 document.getElementById("new_cognome").value = "";
                 document.getElementById("new_password").value = "";
@@ -210,6 +219,7 @@ function editAdmin(cf) {
             const admin = data.admins.find(a => a.cf === cf);
 
             document.getElementById("edit_cf").value = admin.cf;
+            document.getElementById("edit_azienda").value = admin.nome_azienda; // Aggiunto campo nome_azienda
             document.getElementById("edit_nome").value = admin.nome;
             document.getElementById("edit_cognome").value = admin.cognome;
             document.getElementById("edit_dataNascita").value = formatoData(admin.data_nascita);
@@ -270,7 +280,8 @@ function updateAdmin() {
         cognome,
         password: passwordInput,
         data_nascita,
-        numero_telefono
+        numero_telefono,
+        nome_azienda : document.getElementById("edit_azienda").value
     };
 
     fetch("/update_adminAziendale", {
@@ -335,5 +346,20 @@ function openSuccessModal(message) {
 function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
+
+fetch("/session_user")
+    .then(res => res.json())
+    .then(data => {
+        if (!data.logged_in) {
+            window.location.href = "/";
+            return;
+        }
+
+        console.log("Utente loggato:", data.nome, data.cognome);
+
+        // esempio: mostrare nome nella dashboard
+        document.getElementById("user-name").innerText = data.nome + " " + data.cognome;
+    });
+
 
 window.onload = caricaAdmins;
