@@ -18,29 +18,39 @@ from db import connessione
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=["GET"])
 def home():
     return render_template("index.html")
 
 # rotta per la dashboard del sysadmin
+
+
 @app.route("/dashboard_sysadmin", methods=["GET"])
 def dashboard_sysadmin():
     return render_template("dashboard_sysadmin.html")
 
 # rotta per la dashboard dell'admin aziendale
+
+
 @app.route("/dashboard_adminaziendale", methods=["GET"])
 def dashboard_adminaziendale():
     return render_template("dashboard_adminaziendale.html")
 
 # rotta per la dashboard del capocantiere
+
+
 @app.route("/dashboard_capocantiere", methods=["GET"])
 def dashboard_capocantiere():
     return render_template("dashboard_capocantiere.html")
 
 # rotta per la dashboard dell'operaio
+
+
 @app.route("/dashboard_operaio", methods=["GET"])
 def dashboard_operaio():
     return render_template("dashboard_operaio.html")
+
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -52,19 +62,19 @@ def login():
     conn = connessione()
     if conn is None:
         return jsonify({"success": False, "message": "Errore DB"})
-    
+
     cursor = conn.cursor()
     cursor.execute(
-        "SELECT Password, TipoUtente FROM utente WHERE CF = ?", 
+        "SELECT Password, TipoUtente FROM utente WHERE CF = ?",
         (cf,)
     )
     row = cursor.fetchone()
     conn.close()
 
     # Controllo se l'utente esiste
-    if row is None: 
+    if row is None:
         return jsonify({"success": False, "message": "Utente non trovato"})
-    
+
     db_password, tipo = row
 
     # Controllo password (da migliorare con hash in produzione)
@@ -83,17 +93,18 @@ def login():
 
     return jsonify({"success": True, "role": ruolo})
 
-@app.route("/get_admins",methods = ["GET"])
+
+@app.route("/get_admins", methods=["GET"])
 def get_admins():
     conn = connessione()
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore DB"})
-    
+        return jsonify({"success": False, "message": "Errore DB"})
+
     cursor = conn.cursor()
     cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
                    "FROM utente "
                    "WHERE TipoUtente = 'AA'")
-    
+
     rows = cursor.fetchall()
     conn.close()
 
@@ -101,22 +112,24 @@ def get_admins():
 
     for row in rows:
         admins.append({
-            "cf" : row[0],
-            "nome" : row[1],
-            "cognome" : row[2],
+            "cf": row[0],
+            "nome": row[1],
+            "cognome": row[2],
             # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
-            "data_nascita" : row[4],
-            "ruolo" : "Admin Aziendale",
-            "numero_telefono" : row[6]
+            "data_nascita": row[4],
+            "ruolo": "Admin Aziendale",
+            "numero_telefono": row[6]
         })
-    return jsonify({"success" : True , "admins" : admins})
+    return jsonify({"success": True, "admins": admins})
 
-#Route per caricare gli operai
-@app.route("/get_operai", methods= ["GET"])
+# Route per caricare gli operai
+
+
+@app.route("/get_operai", methods=["GET"])
 def get_operai():
     conn = connessione()
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore DB"})
+        return jsonify({"success": False, "message": "Errore DB"})
     cursor = conn.cursor()
     cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono "
                    "FROM utente "
@@ -126,20 +139,22 @@ def get_operai():
 
     operai = []
 
-    for row in rows: 
+    for row in rows:
         operai.append({
-            "cf" : row[0],
-            "nome" : row[1],
-            "cognome" : row[2],
-           # "password" : row[3] --> per motivi di sicurezza non la mandiamo al frontend
-            "data_nascita" : row[4],
-            "tipo" : row[5],
-            "numero_telefono" : row[6]
+            "cf": row[0],
+            "nome": row[1],
+            "cognome": row[2],
+            "password": row[3],
+            "data_nascita": row[4],
+            "tipo": row[5],
+            "numero_telefono": row[6]
         })
-    return jsonify({"success" : True, "operai" : operai})
+    return jsonify({"success": True, "operai": operai})
 
 # Route per creare un nuovo amministratore aziendale
-@app.route("/create_adminAziendale", methods = ["POST"])
+
+
+@app.route("/create_adminAziendale", methods=["POST"])
 def create_AdminAziendale():
     data = request.get_json()
     cf = data.get("cf")
@@ -151,23 +166,25 @@ def create_AdminAziendale():
 
     conn = connessione()
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
-    
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
 
     try:
         cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, 'AA', ?)",
-                        (cf, nome, cognome, password, data_nascita, numero_telefono))
+                       (cf, nome, cognome, password, data_nascita, numero_telefono))
         conn.commit()
         conn.close()
 
-        return jsonify({"success" : True})
+        return jsonify({"success": True})
     except Exception as e:
         conn.close()
-        return jsonify({"success" : False, "message" : str(e)})
-    
+        return jsonify({"success": False, "message": str(e)})
+
 # Route per creare un nuovo operaio
-@app.route("/create_operaio", methods = ["POST"])
+
+
+@app.route("/create_operaio", methods=["POST"])
 def create_operaio():
     data = request.get_json()
     cf = data.get("cf")
@@ -176,23 +193,24 @@ def create_operaio():
     password = data.get("password")
     data_nascita = data.get("data_nascita")
     numero_telefono = data.get("numero_telefono")
-    capocantiere = data.get("capocantiere") #restituisce True o False
+    capocantiere = data.get("capocantiere")  # restituisce True o False
 
     tipo = "CC" if capocantiere else "OP"
 
     conn = connessione()
     if conn is None:
-        return jsonify({"success" : False, "message" : "Errore durante la connessione al DB"})
-     
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
     try:
-        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, ?, ?)", (cf, nome, cognome, password, data_nascita, tipo, numero_telefono))
+        cursor.execute("INSERT INTO utente (CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (cf, nome, cognome, password, data_nascita, tipo, numero_telefono))
         conn.commit()
         conn.close()
-        return jsonify({"success" : True})
+        return jsonify({"success": True})
     except Exception as e:
-        return jsonify({"success" : False , "message" : str(e)})
-    
+        return jsonify({"success": False, "message": str(e)})
+
 
 @app.route("/update_operaio", methods=["PUT"])
 def update_operaio():
@@ -204,24 +222,38 @@ def update_operaio():
     password = data.get("password")
     data_nascita = data.get("data_nascita")
     numero_telefono = data.get("numero_telefono")
-    
+
     # *** NUOVO: Recupera il dato e convertilo in stringa 'CC' o 'OP' ***
-    capocantiere = data.get("capocantiere") # Restituisce True o False
+    capocantiere = data.get("capocantiere")  # Restituisce True o False
     tipo_utente = "CC" if capocantiere else "OP"
 
     conn = connessione()
     if conn is None:
         return jsonify({"success": False, "message": "Errore DB"})
-    
+
     cursor = conn.cursor()
+    
+    sql = ""
+    
+    if password is None:
+        sql = """
+            UPDATE utente 
+            SET Nome = ?, Cognome = ?, DataNascita = ?, NumeroTelefono = ?, TipoUtente = ?
+            WHERE CF = ? AND (TipoUtente = 'OP' OR TipoUtente = 'CC')
+        """
+        params = (nome, cognome, data_nascita, numero_telefono, tipo_utente, cf)
+    else:
+        sql = """
+                UPDATE utente 
+                SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?, TipoUtente = ?
+                WHERE CF = ? AND (TipoUtente = 'OP' OR TipoUtente = 'CC')
+                """
+        params = (nome, cognome, password, data_nascita, numero_telefono, tipo_utente, cf)
+    
     try:
         # *** NUOVO: Aggiungi TipoUtente alla query SQL ***
-        cursor.execute("""
-            UPDATE utente 
-            SET Nome = ?, Cognome = ?, Password = ?, DataNascita = ?, NumeroTelefono = ?, TipoUtente = ?
-            WHERE CF = ? AND (TipoUtente = 'OP' OR TipoUtente = 'CC')
-        """, (nome, cognome, password, data_nascita, numero_telefono, tipo_utente, cf)) # Aggiunto tipo_utente ai parametri
-        
+        cursor.execute(sql, params)  # Aggiunto tipo_utente ai parametri
+
         conn.commit()
         conn.close()
         return jsonify({"success": True})
@@ -229,7 +261,8 @@ def update_operaio():
         conn.close()
         return jsonify({"success": False, "message": str(e)})
 
-@app.route("/delete_adminAziendale", methods = ["DELETE"])
+
+@app.route("/delete_adminAziendale", methods=["DELETE"])
 def delete_adminAziendale():
     data = request.get_json()
     cf = data.get("cf")
@@ -237,22 +270,25 @@ def delete_adminAziendale():
     conn = connessione()
 
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
-    
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
 
     try:
-        cursor.execute("DELETE FROM utente WHERE CF = ? AND TipoUtente = 'AA'", (cf,))
+        cursor.execute(
+            "DELETE FROM utente WHERE CF = ? AND TipoUtente = 'AA'", (cf,))
         conn.commit()
         conn.close()
-        return jsonify({"success" : True})
-    
+        return jsonify({"success": True})
+
     except Exception as e:
         conn.close()
-        return jsonify({"success" : False, "message" : str(e)})
-    
+        return jsonify({"success": False, "message": str(e)})
+
     # Route per eliminare un operaio
-@app.route("/delete_operaio", methods = ["DELETE"])
+
+
+@app.route("/delete_operaio", methods=["DELETE"])
 def delete_operaio():
     data = request.get_json()
     cf = data.get("cf")
@@ -260,21 +296,23 @@ def delete_operaio():
     conn = connessione()
 
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
-    
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
 
     try:
         cursor.execute("DELETE FROM utente WHERE CF = ?", (cf,))
         conn.commit()
         conn.close()
-        return jsonify({"success" : True})
-    
+        return jsonify({"success": True})
+
     except Exception as e:
         conn.close()
-        return jsonify({"success" : False, "message" : str(e)})
+        return jsonify({"success": False, "message": str(e)})
 
 # Route per aggiornare un admin aziendale
+
+
 @app.route("/update_adminAziendale", methods=["PUT"])
 def update_adminAziendale():
     data = request.get_json()
@@ -288,8 +326,8 @@ def update_adminAziendale():
     conn = connessione()
 
     if conn is None:
-        return jsonify({"success" : False , "message" : "Errore durante la connessione al DB"})
-    
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
 
     try:
@@ -298,12 +336,11 @@ def update_adminAziendale():
                        "WHERE CF = ? AND TipoUtente = 'AA' ", (nome, cognome, password, data_nascita, numero_telefono, cf))
         conn.commit()
         conn.close()
-        return jsonify({"success" : True})
-    
+        return jsonify({"success": True})
+
     except Exception as e:
         conn.close()
-        return jsonify({"success" : False, "message" : str(e)})
-
+        return jsonify({"success": False, "message": str(e)})
 
 
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale

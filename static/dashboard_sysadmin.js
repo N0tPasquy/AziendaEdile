@@ -10,7 +10,6 @@
     - Matricola: 0124003006
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
-
 */
 
 //Funzione per il formato della data
@@ -25,7 +24,6 @@ function formatoData(dateString){
 
     return `${year}-${month}-${day}`;
 }
-
 
 function caricaAdmins(){
     fetch("/get_admins")

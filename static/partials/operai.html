@@ -54,11 +54,22 @@
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Nuovo Operaio</h3>
 
+        <small id = "err_new_cf" class = "text-red-500 text-sm hidden">Il codice fiscale deve essere di 16 cifre</small>
         <input id="new_cf" class="input-field" type="text" placeholder="Codice Fiscale">
+
+        <small id = "err_new_nome" class = "text-red-500 text-sm hidden">Il nome è obbligatorio</small>
         <input id="new_nome" class="input-field" type="text" placeholder="Nome">
+
+        <small id = "err_new_cognome" class = "text-red-500 text-sm hidden">Il cognome è obbligatorio</small>
         <input id="new_cognome" class="input-field" type="text" placeholder="Cognome">
+
+        <small id = "err_new_password" class = "text-red-500 text-sm hidden">La password deve essere obbligatoria</small>
         <input id="new_password" class="input-field" type="password" placeholder="Password">
+
+        <small id = "err_new_dataNascita" class = "text-red-500 text-sm hidden">Data nascita non è valida</small>
         <input id="new_dataNascita" class="input-field" type="date">
+
+        <small id = "err_new_numeroTelefono" class = "text-red-500 text-sm hidden">Il numero di telefono è obbligatorio</small>
         <input id="new_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
 
         <!-- CHECKBOX -->
@@ -80,10 +91,20 @@
         <h3 class="text-xl font-bold mb-4">Modifica Operaio</h3>
 
         <input id="edit_cf" class="input-field" type="text" disabled>
+
+        <small id = "err_edit_nome" class = "text-red-500 text-sm hidden">Il nome è obbligatorio</small>
         <input id="edit_nome" class="input-field" type="text" placeholder="Nome">
+        
+        <small id = "err_edit_cognome" class = "text-red-500 text-sm hidden">Il cognome è obbligatorio</small>
         <input id="edit_cognome" class="input-field" type="text" placeholder="Cognome">
+
+        <small id = "err_edit_password" class = "text-red-500 text-sm hidden">La password è obbligatoria</small>
         <input id="edit_password" class="input-field" type="password" placeholder="Nuova password">
+        
+        <small id = "err_edit_dataNascita" class = "text-red-500 text-sm hidden">Data di nascita non valida</small>
         <input id="edit_dataNascita" class="input-field" type="date">
+
+        <small id = "err_edit_numeroTelefono" class = "text-red-500 text-sm hidden">Il numero di telefono è obbligatorio</small>
         <input id="edit_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
 
         <!-- CHECKBOX -->
