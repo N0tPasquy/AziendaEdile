@@ -251,20 +251,23 @@ body {
     font-weight: 700;
 }
 
-/* ====== MEDIA QUERY ====== */
+/* ====== MEDIA PER MOBILE ====== */
 @media (max-width: 768px) {
+    /* Rimuovi flex-direction: column dal contenitore principale se c'era */
     #main-dashboard-card {
-        flex-direction: column;
-        height: auto;
-        overflow-y: auto;
+        display: block; /* O flex, ma senza column che schiaccia la sidebar */
     }
 
-    body {
-        overflow: auto;
+    /* Aggiungi spazio in alto al contenuto perché ora c'è l'header fisso mobile */
+    main.content-area {
+        padding-top: 5rem !important; /* 4rem header + 1rem spazio */
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
 
-    .section-content {
-        padding: 1.5rem;
+    /* Nascondi il toggle interno alla sidebar su mobile, usiamo quello in alto */
+    #toggle-wrap {
+        display: none !important;
     }
 }
 

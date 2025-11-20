@@ -29,16 +29,31 @@
 
 <body class="min-h-screen relative font-sans">
 
+    <!-- Barra di navigazione mobile -->
+    <div
+        class="md:hidden fixed top-0 left-0 w-full bg-[#1E293B] z-50 flex items-center justify-between px-4 h-16 shadow-md">
+        <div class="flex items-center gap-3">
+            <button onclick="toggleSidebarMobile()" class="text-white p-2 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <span class="text-white font-bold text-lg">Azienda Edile</span>
+        </div>
+        <img src="{{ url_for('static', filename = 'img/logo.png') }}" class="h-10 w-auto object-contain">
+    </div>
+
     <div
         class="dashboard-card w-full min-h-screen flex flex-col md:flex-row overflow-auto bg-white/20 backdrop-blur-[30px]">
 
         <!-- Barra laterale -->
         <aside id="sidebar"
-            class="w-24 bg-[#1E293B] text-white flex flex-col transition-all duration-300 ease-in-out relative z-20 min-h-screen overflow-auto border-r border-white/10 shadow-xl">
+            class="w-24 bg-[#1E293B] text-white flex flex-col transition-all duration-300 ease-in-out relative z-20 min-h-screen overflow-auto border-r border-white/10 shadow-xl hidden md:flex">
 
             <div class="flex flex-col items-center justify-center py-6 gap-4 w-full">
                 <img id="sidebar-logo" src="{{ url_for('static', filename = 'img/logo.png') }}"
-                    class="h-160px w-auto object-contain transition-colors duration-300" alt="Logo Azienda">
+                    class="h-10 w-auto object-contain transition-all duration-300" alt="Logo Azienda">
             </div>
 
             <span id="brand-text"
@@ -114,28 +129,33 @@
                     <span class="link-text hidden transition-all duration-300">Operai</span>
                 </button>
             </nav>
-            
+
             <div class="mt-auto w-full px-5 mb-6">
                 <button onclick="logout()"
                     class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all overflow-hidden whitespace-nowrap w-full border border-transparent hover:border-red-500/30">
-                    
+
                     <div class="min-w-[24px] flex justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                             <polyline points="16 17 21 12 16 7"></polyline>
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
                     </div>
-                    
                     <span class="link-text hidden transition-all duration-300 font-medium">Esci</span>
                 </button>
             </div>
         </aside>
 
+        <div id="mobile-overlay" onclick="toggleSidebarMobile()"
+            class="fixed inset-0 bg-black/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity">
+        </div>
+
         <!-- Contenuto principale -->
-        <main class="flex-1 p-12 flex flex-col justify-start items-start text-left relative z-20 min-h-screen content-area">
-             <div id="content-container"></div>
-         </main>
+        <main
+            class="flex-1 p-12 flex flex-col justify-start items-start text-left relative z-20 min-h-screen content-area">
+            <div id="content-container"></div>
+        </main>
 
     </div>
     <script src="{{url_for( 'static', filename= 'dashboard_adminaziendale.js')}}"></script>

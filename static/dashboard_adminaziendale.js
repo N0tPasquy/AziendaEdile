@@ -17,50 +17,52 @@ function toggleSidebar() {
     const texts = document.querySelectorAll('.link-text');
     const brandText = document.getElementById('brand-text');
     const logo = document.getElementById('sidebar-logo');
-
-    // Nuovi elementi da gestire per l'allineamento
     const toggleWrap = document.getElementById('toggle-wrap');
     const buttons = document.querySelectorAll('.sidebar-btn');
 
-    // SE LA SIDEBAR È APERTA (w-64) -> LA CHIUDIAMO
-    if (sidebar.classList.contains('w-64')) {
+    // Controlliamo la larghezza per capire lo stato
+    const isExpanded = sidebar.classList.contains('w-64');
 
-        sidebar.classList.replace('w-64', 'w-24');
+    if (isExpanded) {
+        // === CHIUSURA ===
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-24');
+        
+        // Nascondi testi e riduci logo
         brandText.classList.add('hidden');
-        logo.classList.replace('h-32', 'h-10');
+        logo.classList.remove('h-32');
+        logo.classList.add('h-10'); // O h-160px ridotto
+        
+        texts.forEach(t => t.classList.add('hidden'));
 
-        // Nascondi testi
-        texts.forEach(text => text.classList.add('hidden'));
-
-        // *** NUOVO: CENTRA GLI ELEMENTI ***
-        // 1. Centra il pulsante hamburger
-        toggleWrap.classList.replace('justify-start', 'justify-center');
-        toggleWrap.classList.remove('px-4'); // Rimuovi padding laterale per centrare perfetto
-
-        // 2. Centra le icone del menu
+        // Centra icone
+        toggleWrap.classList.remove('justify-start', 'px-4');
+        toggleWrap.classList.add('justify-center');
+        
         buttons.forEach(btn => {
-            btn.classList.add('justify-center'); // Centra l'icona
-            btn.classList.remove('px-3');        // Rimuovi padding per evitare sbilanciamenti
+            btn.classList.remove('px-3', 'justify-start');
+            btn.classList.add('justify-center');
         });
 
     } else {
-        // SE LA SIDEBAR È CHIUSA -> LA APRIAMO
-        sidebar.classList.replace('w-24', 'w-64');
-        logo.classList.replace('h-10', 'h-32');
+        // === APERTURA ===
+        sidebar.classList.remove('w-24');
+        sidebar.classList.add('w-64');
+
+        // Mostra testi e ingrandisci logo
         brandText.classList.remove('hidden');
+        logo.classList.remove('h-10');
+        logo.classList.add('h-32');
 
-        // Mostra testi
-        texts.forEach(text => text.classList.remove('hidden'));
+        texts.forEach(t => t.classList.remove('hidden'));
 
-        // *** NUOVO: RIPRISTINA ALLINEAMENTO A SINISTRA ***
-        // 1. Ripristina hamburger a sinistra
-        toggleWrap.classList.replace('justify-center', 'justify-start');
-        toggleWrap.classList.add('px-4');
+        // Allinea a sinistra
+        toggleWrap.classList.remove('justify-center');
+        toggleWrap.classList.add('justify-start', 'px-4');
 
-        // 2. Ripristina pulsanti menu a sinistra
         buttons.forEach(btn => {
             btn.classList.remove('justify-center');
-            btn.classList.add('px-3');
+            btn.classList.add('px-3', 'justify-start'); // Aggiungi justify-start per sicurezza
         });
     }
 }
@@ -99,7 +101,7 @@ function caricaSezione(nomeSezione) {
 
     document.getElementById("btn-" + nomeSezione).classList.add("active");
 }
-    */
+*/
 
 function caricaSezione(nomeSezione) {
     fetch(`/static/partials/${nomeSezione}.html`)
@@ -158,3 +160,20 @@ fetch("/session_user")
 document.addEventListener("DOMContentLoaded", () => {
     caricaSezione("dashboard");
 });
+
+// Funzione per aprire/chiudere la sidebar su mobile
+function toggleSidebarMobile() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+
+    // Controlla se la sidebar è attualmente nascosta (ha la classe -translate-x-full)
+    if (sidebar.classList.contains('-translate-x-full')) {
+        // APRI SIDEBAR
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden'); // Mostra lo sfondo scuro
+    } else {
+        // CHIUDI SIDEBAR
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden'); // Nascondi lo sfondo scuro
+    }
+}
