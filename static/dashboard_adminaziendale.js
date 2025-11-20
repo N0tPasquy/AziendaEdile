@@ -131,7 +131,11 @@ function caricaSezione(nomeSezione) {
     document.getElementById("btn-" + nomeSezione).classList.add("active");
 }
 
-
+/* LOGOUT */
+function logout() {
+    // Reindirizza alla rotta Python di logout
+    window.location.href = "/logout";
+}
 
 /* === CONTROLLO SESSIONE === */
 fetch("/session_user")
