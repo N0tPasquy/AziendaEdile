@@ -1,7 +1,3 @@
-=========================================================
-== NOTICE file for Pasquale & Daniele's Project ========
-=========================================================
-
 Copyright 2025 Pasquale & Daniele.
 
 This product includes software developed by Pasquale & Daniele.
