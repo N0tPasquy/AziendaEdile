@@ -30,18 +30,28 @@
     <div class="dashboard-card text-center z-10 mx-auto">
 
         <!-- Header -->
-        <div class="header-strip flex items-center justify-start">
+        <div class="header-strip flex items-center justify-between px-6">
             <div class="flex items-center header-content">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" class="logo-contained"
                     alt="Logo Azienda Edile">
-
                 <span class="ml-4 font-bold text-2xl">Azienda Edile</span>
             </div>
+
+            <button onclick="logout()"
+                class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition duration-200">
+                <span>Esci</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </button>
         </div>
 
         <!-- Titolo + pulsante aggiungi -->
         <div class="flex items-center justify-between mb-5">
-            <h1 class="text-3xl font-bold text-left m-0">Gestione amministratori, <span id="user-name"></span></h1> <!-- span per mostrare il nome utente loggato, DA SPOSTARE -->
+            <h1 class="text-3xl font-bold text-left m-0">Gestione amministratori, <span id="user-name"></span></h1>
+            <!-- span per mostrare il nome utente loggato, DA SPOSTARE -->
 
             <button onclick="openAddModal()" class="add-btn">Aggiungi Amministratore</button>
         </div>
@@ -71,10 +81,12 @@
         <div class="modal-content">
             <h3 class="text-xl font-bold mb-4">Nuovo Amministratore</h3>
 
-            <small id="err_new_cf" class="text-red-500 text-sm hidden">Il codice fiscale deve essere di 16 caratteri.</small>
+            <small id="err_new_cf" class="text-red-500 text-sm hidden">Il codice fiscale deve essere di 16
+                caratteri.</small>
             <input id="new_cf" class="input-field" type="text" placeholder="Codice Fiscale">
 
-            <small id="err_new_azienda" class="text-red-500 text-sm hidden">È necessario specificare quale azienda gestisce</small>
+            <small id="err_new_azienda" class="text-red-500 text-sm hidden">È necessario specificare quale azienda
+                gestisce</small>
             <input id="new_azienda" class="input-field" type="text" placeholder="Nome Azienda che gestisce">
 
             <small id="err_new_nome" class="text-red-500 text-sm hidden">Il nome è obbligatorio.</small>
@@ -89,7 +101,8 @@
             <small id="err_new_dataNascita" class="text-red-500 text-sm hidden">Data di nascita non valida.</small>
             <input id="new_dataNascita" class="input-field" type="date">
 
-            <small id="err_new_numeroTelefono" class="text-red-500 text-sm hidden">Il numero di telefono è obbligatorio.</small>
+            <small id="err_new_numeroTelefono" class="text-red-500 text-sm hidden">Il numero di telefono è
+                obbligatorio.</small>
             <input id="new_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
 
             <div class="flex justify-end mt-4 gap-3">
@@ -121,7 +134,8 @@
             <small id="err_edit_dataNascita" class="text-red-500 text-sm hidden">Data di nascita non valida.</small>
             <input id="edit_dataNascita" class="input-field" type="date">
 
-            <small id="err_edit_numeroTelefono" class="text-red-500 text-sm hidden">Numero telefono obbligatorio.</small>
+            <small id="err_edit_numeroTelefono" class="text-red-500 text-sm hidden">Numero telefono
+                obbligatorio.</small>
             <input id="edit_NumeroTelefono" class="input-field" type="text">
 
             <div class="flex justify-end mt-4 gap-3">

@@ -347,6 +347,11 @@ function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
 
+/* LOGOUT */
+function logout() {
+    window.location.href = "/logout";
+}
+
 fetch("/session_user")
     .then(res => res.json())
     .then(data => {
