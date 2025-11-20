@@ -215,8 +215,19 @@ function createOperaio(){
 function openAddModal(){
     document.getElementById("add-operaio-modal").classList.remove("hidden");
 }
+
+// Funzione aggiornata per resettare i campi del modale
 function closeAddModal(){
     document.getElementById("add-operaio-modal").classList.add("hidden");
+
+    // PuliscE tutti i campi di input
+    document.getElementById("new_cf").value = "";
+    document.getElementById("new_nome").value = "";
+    document.getElementById("new_cognome").value = "";
+    document.getElementById("new_password").value = "";
+    document.getElementById("new_dataNascita").value = "";
+    document.getElementById("new_NumeroTelefono").value = ""; 
+    document.getElementById("new_capocantiere").checked = false; // Resetta la checkbox
 }
 
 function openSuccessModal(message) {
