@@ -1,15 +1,15 @@
 <!--
 - Nome: Pasquale
-    - Cognome: Pagano
-    - Matricola: 0124003182
-    - Corso di Laurea: Informatica
-    - Anno Accademico: 2025/2026
-            &
-    - Nome: Daniele
-    - Cognome: Mele
-    - Matricola: 0124003006
-    - Corso di Laurea: Informatica
-    - Anno Accademico: 2025/2026
+- Cognome: Pagano
+- Matricola: 0124003182
+- Corso di Laurea: Informatica
+- Anno Accademico: 2025/2026
+        &
+- Nome: Daniele
+- Cognome: Mele
+- Matricola: 0124003006
+- Corso di Laurea: Informatica
+- Anno Accademico: 2025/2026
 -->
 
 <!DOCTYPE html>
@@ -18,7 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Dashboard SysAdmin</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -29,56 +29,68 @@
 
     <div class="dashboard-card text-center z-10 mx-auto">
 
-        <!-- Striscia bianca che simula una navbar -->
+        <!-- Header -->
         <div class="header-strip flex items-center justify-start">
             <div class="flex items-center header-content">
-                <img src="{{ url_for('static', filename = 'img/logo.png') }}" class="logo-contained"
+                <img src="{{ url_for('static', filename='img/logo.png') }}" class="logo-contained"
                     alt="Logo Azienda Edile">
 
                 <span class="ml-4 font-bold text-2xl">Azienda Edile</span>
             </div>
-            <!-- Pulsante di logout sulla destra-->
         </div>
 
-        <!-- PULSANTE AGGIUNGI AMMINISTRATORE AZIENDALE -->
+        <!-- Titolo + pulsante aggiungi -->
         <div class="flex items-center justify-between mb-5">
             <h1 class="text-3xl font-bold text-left m-0">Gestione amministratori</h1>
 
-            <button onclick="openAddModal()" class="add-btn">
-                Aggiungi Amministratore
-            </button>
-        </div>  
-
-        <div class="">
-            <!-- TABELLA AMMINISTRATORI AZIENDALI -->
-            <div class="table-card">
-                <table class="admin-table">
-                    <thead>
-                        <tr class="text-left border-b border-gray-300/50">
-                            <th class="pb-3 w-[28%]">Codice Fiscale</th>
-                            <th class="pb-3 w-[14%]">Nome</th>
-                            <th class="pb-3 w-[14%]">Cognome</th>
-                            <th class="pb-3 w-[14%]">Data Nascita</th>
-                            <th class="pb-3 w-[15%]">Numero di telefono</th>
-                            <th class="pb-3 w-[15%] text-center">Azione</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-table-body"></tbody>
-                </table>
-            </div>
+            <button onclick="openAddModal()" class="add-btn">Aggiungi Amministratore</button>
         </div>
+
+        <!-- Tabella amministratori -->
+        <div class="table-card">
+            <table class="admin-table">
+                <thead>
+                    <tr class="text-left border-b border-gray-300/50">
+                        <th class="pb-3 w-[28%]">Codice Fiscale</th>
+                        <th class="pb-3 w-[14%]">Nome</th>
+                        <th class="pb-3 w-[14%]">Cognome</th>
+                        <th class="pb-3 w-[14%]">Data Nascita</th>
+                        <th class="pb-3 w-[15%]">Telefono</th>
+                        <th class="pb-3 w-[15%] text-center">Azione</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-table-body"></tbody>
+            </table>
+        </div>
+
     </div>
 
-    <!-- MODALE AGGIUNGI AMMINISTRATORE AZIENDALE -->
+    <!-- MODALE AGGIUNGI AMMINISTRATORE -->
     <div id="add-admin-modal" class="modal hidden">
         <div class="modal-content">
             <h3 class="text-xl font-bold mb-4">Nuovo Amministratore</h3>
 
+            <!-- ERRORI -->
+            <small id="err_new_cf" class="text-red-500 text-sm hidden">Il codice fiscale deve essere di 16
+                caratteri.</small>
             <input id="new_cf" class="input-field" type="text" placeholder="Codice Fiscale">
+
+            <small id="err_new_nome" class="text-red-500 text-sm hidden">Il nome è obbligatorio.</small>
             <input id="new_nome" class="input-field" type="text" placeholder="Nome">
+
+            <small id="err_new_cognome" class="text-red-500 text-sm hidden">Il cognome è obbligatorio.</small>
             <input id="new_cognome" class="input-field" type="text" placeholder="Cognome">
+
+            <small id="err_new_password" class="text-red-500 text-sm hidden">La password è obbligatoria.</small>
             <input id="new_password" class="input-field" type="password" placeholder="Password">
+
+            <small id="err_new_dataNascita" class="text-red-500 text-sm hidden">
+                Data di nascita non valida (min 18 anni, max 100 anni).
+            </small>
             <input id="new_dataNascita" class="input-field" type="date">
+
+            <small id="err_new_numeroTelefono" class="text-red-500 text-sm hidden">Il numero di telefono è
+                obbligatorio.</small>
             <input id="new_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
 
             <div class="flex justify-end mt-4 gap-3">
@@ -94,11 +106,24 @@
             <h3 class="text-xl font-bold mb-4">Modifica Amministratore</h3>
 
             <input id="edit_cf" class="input-field" type="text" disabled>
-            <input id="edit_nome" class="input-field" type="text" placeholder="Nome">
-            <input id="edit_cognome" class="input-field" type="text" placeholder="Cognome">
+
+            <small id="err_edit_nome" class="text-red-500 text-sm hidden">Il nome è obbligatorio.</small>
+            <input id="edit_nome" class="input-field" type="text">
+
+            <small id="err_edit_cognome" class="text-red-500 text-sm hidden">Il cognome è obbligatorio.</small>
+            <input id="edit_cognome" class="input-field" type="text">
+
+            <small id="err_edit_password" class="text-red-500 text-sm hidden">La password è obbligatoria.</small>
             <input id="edit_password" class="input-field" type="password" placeholder="Nuova password">
+
+            <small id="err_edit_dataNascita" class="text-red-500 text-sm hidden">
+                Data di nascita non valida.
+            </small>
             <input id="edit_dataNascita" class="input-field" type="date">
-            <input id="edit_NumeroTelefono" class="input-field" type="text" placeholder="Numero di telefono">
+
+            <small id="err_edit_numeroTelefono" class="text-red-500 text-sm hidden">Numero telefono
+                obbligatorio.</small>
+            <input id="edit_NumeroTelefono" class="input-field" type="text">
 
             <div class="flex justify-end mt-4 gap-3">
                 <button onclick="closeEditModal()" class="cancel-btn">Annulla</button>
@@ -107,7 +132,7 @@
         </div>
     </div>
 
-    <!-- MODALE DI SUCCESSO -->
+    <!-- MODALE SUCCESSO -->
     <div id="success-modal" class="modal hidden">
         <div class="modal-content flex flex-col items-center text-center">
 
@@ -117,22 +142,18 @@
             </svg>
 
             <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
-            <p id="success-message" class="text-gray-700 mb-5">Operazioni completata</p>
+            <p id="success-message" class="text-gray-700 mb-5"></p>
 
-            <button onclick="closeSuccessModal()" class="confirm-btn px-6">
-                OK
-            </button>
+            <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
         </div>
     </div>
 
-    <!-- MODALE CONFERMA ELIMINAZIONE -->
+    <!-- MODALE ELIMINAZIONE -->
     <div id="delete-modal" class="modal hidden">
         <div class="modal-content">
             <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
 
-            <p id="delete-message" class="text-gray-700 mb-5">
-                Sei sicuro di voler eliminare questo amministratore?
-            </p>
+            <p id="delete-message" class="text-gray-700 mb-5"></p>
 
             <div class="flex justify-end mt-4 gap-3">
                 <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
@@ -141,9 +162,7 @@
         </div>
     </div>
 
-
-
-    <script src="{{url_for( 'static', filename= 'dashboard_sysadmin.js')}}"></script>
+    <script src="{{ url_for('static', filename='dashboard_sysadmin.js') }}"></script>
 </body>
 
 </html>
