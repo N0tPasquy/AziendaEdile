@@ -149,7 +149,7 @@ def login():
 
     return jsonify({"success": True, "role": ruolo})
 
-
+# Route per caricare gli amministratori aziendali
 @app.route("/get_admins", methods=["GET"])
 def get_admins():
     conn = connessione()
@@ -179,39 +179,81 @@ def get_admins():
         })
     return jsonify({"success": True, "admins": admins})
 
-# Route per caricare gli operai
-
-
+# Forse possiamo unire le rotte get_operai e get_admins in una sola rotta dinamica
+# Route per caricare gli operai in modo dinamico in base al ruolo dell'utente loggato
 @app.route("/get_operai", methods=["GET"])
-def get_operai():
+def get_operai_dinamico():
+    # 1. Verifica Login
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Accesso negato"})
+
     conn = connessione()
     if conn is None:
         return jsonify({"success": False, "message": "Errore DB"})
+    
     cursor = conn.cursor()
-    cursor.execute("SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda "
-                   "FROM utente "
-                   "WHERE TipoUtente = 'OP' OR TipoUtente = 'CC'")
-    rows = cursor.fetchall()
-    conn.close()
 
-    operai = []
+    # 2. Recupera chi è l'utente loggato
+    ruolo_sessione = session.get("ruolo")          # Es: "AS" o "AA"
+    nome_azienda_sessione = session.get("nome_azienda") # Es: "EdiliziA srl"
 
-    for row in rows:
-        operai.append({
-            "cf": row[0],
-            "nome": row[1],
-            "cognome": row[2],
-            "password": row[3],
-            "data_nascita": row[4],
-            "tipo": row[5],
-            "numero_telefono": row[6],
-            "nome_azienda" : row[7]
-        })
-    return jsonify({"success": True, "operai": operai})
+    sql = ""
+    params = ()
+
+    if ruolo_sessione == "AS":
+        # SE SONO SYSADMIN (AS): Voglio vedere solo gli Admin Aziendali (AA)
+        # Non filtro per azienda perché l'AS deve vederle tutte
+        sql = """
+            SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda 
+            FROM utente 
+            WHERE TipoUtente = 'AA'
+        """
+        params = ()
+        
+    elif ruolo_sessione == "AA":
+        # SE SONO ADMIN AZIENDALE (AA): Voglio vedere OP e CC
+        # MA SOLO della mia azienda
+        sql = """
+            SELECT CF, Nome, Cognome, Password, DataNascita, TipoUtente, NumeroTelefono, NomeAzienda 
+            FROM utente 
+            WHERE (TipoUtente = 'OP' OR TipoUtente = 'CC') 
+            AND NomeAzienda = ?
+        """
+        params = (nome_azienda_sessione,)
+    
+    else:
+        # Caso di sicurezza: se un OP o CC prova a chiamare questa rotta
+        conn.close()
+        return jsonify({"success": False, "message": "Ruolo non autorizzato alla visualizzazione"})
+
+    # 4. Esecuzione Query
+    try:
+        cursor.execute(sql, params)
+        rows = cursor.fetchall()
+        conn.close()
+
+        utenti = []
+        for row in rows:
+            utenti.append({
+                "cf": row[0],
+                "nome": row[1],
+                "cognome": row[2],
+                #"password": row[3], 
+                "data_nascita": row[4],
+                "tipo": row[5],          # Sarà 'AA' se vede AS, o 'OP'/'CC' se vede AA
+                "numero_telefono": row[6],
+                "nome_azienda" : row[7]
+            })
+        
+        # Nota: nel JSON restituisco la chiave "operai" per compatibilità con il JS esistente
+        return jsonify({"success": True, "operai": utenti})
+
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message": str(e)})
+
 
 # Route per creare un nuovo amministratore aziendale
-
-
 @app.route("/create_adminAziendale", methods=["POST"])
 def create_AdminAziendale():
     data = request.get_json()
