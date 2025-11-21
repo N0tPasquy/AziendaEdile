@@ -19,6 +19,15 @@ from db import connessione
 app = Flask(__name__)
 app.secret_key = "InterMerdaByPasqualeDaniele2025"
 
+#impedire caching pagine protette   
+@app.after_request
+def add_header(response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
 # Decoratore per proteggere le rotte che richiedono login
 def login_required(f):
     @wraps(f)
@@ -60,7 +69,6 @@ def role_required(role):
             return f(*args, **kwargs)
         return wrapper
     return decorator
-
 
 
 @app.route("/", methods=["GET"])
@@ -150,7 +158,7 @@ def login():
     return jsonify({"success": True, "role": ruolo})
 
 # Route per caricare gli amministratori aziendali
-@app.route("/get_admins", methods=["GET"])
+"""@app.route("/get_admins", methods=["GET"])
 def get_admins():
     conn = connessione()
     if conn is None:
@@ -177,7 +185,7 @@ def get_admins():
             "numero_telefono": row[6],
             "nome_azienda" : row[7]
         })
-    return jsonify({"success": True, "admins": admins})
+    return jsonify({"success": True, "admins": admins})"""
 
 # Forse possiamo unire le rotte get_operai e get_admins in una sola rotta dinamica
 # Route per caricare gli operai in modo dinamico in base al ruolo dell'utente loggato
@@ -238,7 +246,7 @@ def get_operai_dinamico():
                 "cf": row[0],
                 "nome": row[1],
                 "cognome": row[2],
-                #"password": row[3], 
+                #"password": row[3], Provare ad implementare funzioni di hashing in futuro
                 "data_nascita": row[4],
                 "tipo": row[5],          # Sarà 'AA' se vede AS, o 'OP'/'CC' se vede AA
                 "numero_telefono": row[6],
@@ -246,7 +254,7 @@ def get_operai_dinamico():
             })
         
         # Nota: nel JSON restituisco la chiave "operai" per compatibilità con il JS esistente
-        return jsonify({"success": True, "operai": utenti})
+        return jsonify({"success": True, "utenti": utenti})
 
     except Exception as e:
         conn.close()
@@ -392,9 +400,8 @@ def delete_adminAziendale():
         conn.close()
         return jsonify({"success": False, "message": str(e)})
 
-    # Route per eliminare un operaio
 
-
+# Route per eliminare un operaio
 @app.route("/delete_operaio", methods=["DELETE"])
 def delete_operaio():
     data = request.get_json()

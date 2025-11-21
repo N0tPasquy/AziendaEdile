@@ -12,6 +12,31 @@
     - Anno Accademico: 2025/2026
 */
 
+/* === CONTROLLO SESSIONE === */
+fetch("/session_user")
+    .then(res => res.json())
+    .then(data => {
+        if (!data.logged_in) {
+            window.location.href = "/";
+            return;
+        }
+
+        // Blocca i tentativi di tornare indietro dopo logout
+        window.history.pushState(null, "", window.location.href);
+        window.onpopstate = function () {
+            window.history.pushState(null, "", window.location.href);
+        };
+
+        // Imposto il nome dell’utente loggato (se presente)
+        const userLabel = document.getElementById("user-name");
+        if (userLabel) {
+            userLabel.innerText = data.nome + " " + data.cognome;
+        }
+
+        // Dopo la sessione → carica la tabella
+        caricaAdmins();
+    });
+
 // Controllo Codice Fiscale = 16 caratteri
 function validateCF(cf) {
     if (!cf) return false;
@@ -50,7 +75,7 @@ function formatoData(dateString) {
 
 /* Carica gli amministratori */
 function caricaAdmins() {
-    fetch("/get_admins")
+    fetch("/get_operai")
         .then(res => res.json())
         .then(data => {
 
@@ -59,23 +84,23 @@ function caricaAdmins() {
             const tbody = document.getElementById("admin-table-body");
             tbody.innerHTML = "";
 
-            data.admins.forEach(admin => {
+            data.utenti.forEach(utenti => {
 
-                const rawDate = new Date(admin.data_nascita);
+                const rawDate = new Date(utenti.data_nascita);
                 const formattedDate = rawDate.toLocaleDateString("it-IT");
 
                 const row = `
                     <tr>
-                        <td>${admin.cf}</td>
-                        <td>${admin.nome_azienda}</td>
-                        <td>${admin.nome}</td>
-                        <td>${admin.cognome}</td>
+                        <td>${utenti.cf}</td>
+                        <td>${utenti.nome_azienda}</td>
+                        <td>${utenti.nome}</td>
+                        <td>${utenti.cognome}</td>
                         <td>${formattedDate}</td>
-                        <td>${admin.numero_telefono}</td>
+                        <td>${utenti.numero_telefono}</td>
                         <td class = "actions">
-                            <button class = "icon-btn" onclick = "editAdmin('${admin.cf}')">
+                            <button class = "icon-btn" onclick = "editAdmin('${utenti.cf}')">
                                 <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
-                            <button class = "icon-btn delete" onclick = "deleteAdmin('${admin.cf}')">
+                            <button class = "icon-btn delete" onclick = "deleteAdmin('${utenti.cf}')">
                                 <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
                         </td>
                     </tr>
@@ -212,11 +237,11 @@ function editAdmin(cf) {
     resetEditErrors();
     document.getElementById("edit_password").value = "";
 
-    fetch("/get_admins")
+    fetch("/get_operai")
         .then(res => res.json())
         .then(data => {
 
-            const admin = data.admins.find(a => a.cf === cf);
+            const admin = data.utenti.find(a => a.cf === cf);
 
             document.getElementById("edit_cf").value = admin.cf;
             document.getElementById("edit_azienda").value = admin.nome_azienda; // Aggiunto campo nome_azienda
@@ -352,19 +377,6 @@ function logout() {
     window.location.href = "/logout";
 }
 
-fetch("/session_user")
-    .then(res => res.json())
-    .then(data => {
-        if (!data.logged_in) {
-            window.location.href = "/";
-            return;
-        }
-
-        console.log("Utente loggato:", data.nome, data.cognome);
-
-        // esempio: mostrare nome nella dashboard
-        document.getElementById("user-name").innerText = data.nome + " " + data.cognome;
-    });
 
 
-window.onload = caricaAdmins;
+//window.onload = caricaAdmins;

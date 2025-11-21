@@ -28,28 +28,37 @@ body {
 
 /* ====== LAYOUT PRINCIPALE DASHBOARD ====== */
 #main-dashboard-card {
-    /* evita height:100vh che impedisce lo scroll; usare min-height */
-    min-height: 100vh;
+    /* Cambia min-height da 100vh a auto se vuoi che la pagina finisca dove finisce la tabella */
+    min-height: auto; /* oppure 100vh se vuoi che lo sfondo copra comunque tutto lo schermo */
     width: 100%;
     display: flex;
     flex-direction: column;
+    /* Aggiungi padding-bottom per evitare che la card tocchi il fondo dello schermo */
+    padding-bottom: 4rem; 
 }
 
 /* ====== SEZIONI CONTENUTE (operai, cantieri, ecc.) ====== */
 .section-content {
     width: 100%;
-    height: auto;
-    min-height: 95vh;
+    
+    /* CAMBIA QUESTO: height da 'auto' a 'fit-content' */
+    height: fit-content; 
+    
+    /* CAMBIA QUESTO: Rimuovi o riduci drasticamente il min-height */
+    /* min-height: 95vh;  <-- CANCELLA O COMMENTA QUESTA RIGA */
+    min-height: 200px; /* Metti un minimo ragionevole, es. 200px, per evitare che sparisca se vuota */
+    
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-radius: 20px;
     padding: 2rem;
-    margin: 0.5rem;
+    
+    /* Aggiungi un po' di margine sotto per staccare dal bordo pagina quando la card si allunga */
+    margin: 2rem auto; 
+    
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
     max-width: calc(100% - 1rem);
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* ====== HEADER STRIP (presente in operai, cantieri, ecc.) ====== */

@@ -61,9 +61,9 @@ function caricaOperai() {
             const tbody = document.getElementById("operai-table-body");
             tbody.innerHTML = "";
 
-            data.operai.forEach(operai => {
+            data.utenti.forEach(utenti => {
                 // Formattazione della data di nascita in formato italiano
-                const rawDate = new Date(operai.data_nascita);
+                const rawDate = new Date(utenti.data_nascita);
                 const formattedDate = rawDate.toLocaleDateString('it-IT', {
                     year: 'numeric',
                     month: '2-digit',
@@ -71,25 +71,25 @@ function caricaOperai() {
                 });
 
                 // Traduzione del ruolo (Tipo)
-                let ruoloEsteso = operai.tipo; // Valore di default
-                if (operai.tipo === 'CC') {
+                let ruoloEsteso = utenti.tipo; // Valore di default
+                if (utenti.tipo === 'CC') {
                     ruoloEsteso = 'Capocantiere';
-                } else if (operai.tipo === 'OP') {
-                    ruoloEsteso = 'Operaio';
+                } else if (utenti.tipo === 'OP') {
+                    ruoloEsteso = 'operaio';
                 }
 
                 const row = `
                     <tr>
-                        <td>${operai.cf}</td>
-                        <td>${operai.nome}</td>
-                        <td>${operai.cognome}</td>
+                        <td>${utenti.cf}</td>
+                        <td>${utenti.nome}</td>
+                        <td>${utenti.cognome}</td>
                         <td>${formattedDate}</td>
-                        <td>${operai.numero_telefono}</td>
+                        <td>${utenti.numero_telefono}</td>
                         <td>${ruoloEsteso}</td>
                         <td class = "actions">
-                            <button class = "icon-btn" onclick = "editOperaio('${operai.cf}')">
+                            <button class = "icon-btn" onclick = "editOperaio('${utenti.cf}')">
                                 <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
-                            <button class = "icon-btn delete" onclick = "deleteOperaio('${operai.cf}')">
+                            <button class = "icon-btn delete" onclick = "deleteOperaio('${utenti.cf}')">
                                 <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
                         </td>
                     </tr>
@@ -222,7 +222,7 @@ function editOperaio(cf) {
     fetch("/get_operai")
         .then(res => res.json())
         .then(data => {
-            const operaio = data.operai.find(a => a.cf === cf);
+            const operaio = data.utenti.find(a => a.cf === cf);
 
             document.getElementById("edit_cf").value = operaio.cf;
             document.getElementById("edit_nome").value = operaio.nome;
@@ -324,7 +324,7 @@ function deleteOperaio(cf) {
             .then(res => res.json())
             .then(data => {
                 // FIX: data.operai (plurale) invece di data.operaio
-                const operaio = data.operai.find(a => a.cf === cf);
+                const operaio = data.utenti.find(a => a.cf === cf);
 
                 // FIX: rimosso riferimento ad 'admin' se non esiste, fallback sul CF
                 const nomeCompleto = operaio ? `${operaio.nome} ${operaio.cognome}` : cf;
@@ -396,7 +396,7 @@ function closeDeleteModal() {
 }
 
 /* === CONTROLLO SESSIONE === */
-fetch("/session_user")
+/*fetch("/session_user")
     .then(res => res.json())
     .then(data => {
         if (!data.logged_in) {
@@ -406,7 +406,7 @@ fetch("/session_user")
 
         console.log("Utente loggato:", data.nome, data.cognome, data.ruolo);
 
-    });
+    });*/
 
 
 window.onload = () => caricaOperai;
