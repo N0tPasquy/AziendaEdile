@@ -75,7 +75,7 @@ function caricaOperai() {
                 if (utenti.tipo === 'CC') {
                     ruoloEsteso = 'Capocantiere';
                 } else if (utenti.tipo === 'OP') {
-                    ruoloEsteso = 'operaio';
+                    ruoloEsteso = 'Operaio';
                 }
 
                 const row = `

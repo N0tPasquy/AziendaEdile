@@ -458,6 +458,59 @@ def update_adminAziendale():
         conn.close()
         return jsonify({"success": False, "message": str(e)})
 
+"""
+@app.route("/get_beni")
+def get_beni():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    nome_azienda = session["nome_azienda"]
+    tipo = request.args.get("tipo")
+
+    conn = connessione()
+    cursor = conn.cursor()
+
+    if veicoli == "veicoli":
+        cursors.execute("SELECT "
+                        "FROM"
+                        "WHERE")""" #DA CONTINUARE IN SEGUITO
+
+#rotta per caricare i cantieri
+@app.route("/get_cantieri")
+def get_cantieri():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    cf = session.get("cf")
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore DB"})
+    
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT C.QRCode, C.QRImage, C.Via, C.Citta, C.Civico, C.CAP, C.Stato, C.CFCapo, C.Descrizione "
+                   "FROM Lavora L JOIN Cantiere C ON L.QRCode_C = C.QRCode "
+                   "WHERE L.CF_U = ?", (cf,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    cantieri = []
+    for r in rows:
+        cantieri.append({
+            "QRCode" : r[0],
+            #QRImage : r[1],
+            "via" : r[2],
+            "citta" : r[3],
+            "civico" : r[4],
+            "CAP" : r[5],
+            "stato" : r[6],
+            "cfcapo" : r[7],
+            "descrizione" : r[8]
+        })
+    
+    return jsonify({"success" : True, "cantieri" : cantieri})
 
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale
 if __name__ == "__main__":
