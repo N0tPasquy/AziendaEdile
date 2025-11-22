@@ -583,11 +583,17 @@ def update_cantiere():
 
     cursor = conn.cursor()
 
+    """" TO DO -- Implementare prima la parte di assegnazione degli operai al cantiere, dopo modificare in questo punto --"""
     try:
         cursor.execute("UPDATE Cantiere "
                        "SET Via = ?, Citta = ?, Civico = ?, CAP = ?, Stato = ?, CFCapo = ?, Descrizione = ? "
                        "WHERE QRCode = ?",(via, citta, civico, CAP, stato, cf_capo, descrizione, qr))
         
+        cursor.execute("UPDATE utente "
+                        "SET TipoUtente = 'CC' "
+                        "WHERE CF = ? ", (cf_capo,))
+        
+        cursor.execute
 
         conn.commit()
         conn.close()
@@ -598,35 +604,31 @@ def update_cantiere():
         return jsonify({"success" : False, "message" : str(e)})
 
 
-
-@app.route("/get_cantiere_info", methods=["POST"])
-def get_cantiere_info():
+# Route per eliminare un cantiere
+@app.route("/delete_cantiere", methods=["DELETE"])
+def delete_cantiere():
     data = request.get_json()
     qr = data.get("QRCode")
+    cf = session.get("cf")
 
     conn = connessione()
+
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+
     cursor = conn.cursor()
-    cursor.execute("""
-        SELECT Via, Citta, Civico, CAP, Descrizione, CF_Capo, Stato 
-        FROM Cantiere
-        WHERE QRCode = ?
-    """, (qr,))
-    row = cursor.fetchone()
-    conn.close()
 
-    if not row:
-        return jsonify({"success": False})
+    try:
+        cursor.execute("DELETE FROM cantiere WHERE QRCode = ?", (qr,))
+        cursor.execute("DELETE FROM lavora WHERE QRCode_C = ? AND CF_U = ?", (qr, cf,))
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
 
-    return jsonify({
-        "success": True,
-        "via": row[0],
-        "citta": row[1],
-        "civico": row[2],
-        "CAP": row[3],
-        "descrizione": row[4],
-        "cf_capo" : row[5],
-        "stato" : row[6]
-    })
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message": str(e)})
 
 
 

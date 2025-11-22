@@ -17,7 +17,7 @@ function caricaCantieri() {
                 const row = `
                     <tr>
                         <td>Via ${cantieri.via} ${cantieri.civico}, ${cantieri.citta} ${cantieri.CAP} </td>
-                        <td>${cantieri.descrizione}</td>
+                        <td>${cantieri.descrizione}</td>    
                         <td>${cantieri.QRCode}</td>
                         <td>${cantieri.stato}</td>
                         <td class = "actions">
@@ -124,30 +124,46 @@ function closeAddCantiereModal() {
 }
 
 
-function editCantiere(QRCode){ 
-    document.getElementById("err_edit_citta").classList.add("hidden"); 
-    document.getElementById("err_edit_via").classList.add("hidden"); 
-    document.getElementById("err_edit_civico").classList.add("hidden"); 
-    document.getElementById("err_edit_CAP").classList.add("hidden"); 
-    document.getElementById("err_edit_descrizione").classList.add("hidden"); 
-    document.getElementById("err_edit_capo").classList.add("hidden"); 
-    document.getElementById("err_edit_stato").classList.add("hidden"); 
+function editCantiere(QRCode) {
+    document.getElementById("err_edit_citta").classList.add("hidden");
+    document.getElementById("err_edit_via").classList.add("hidden");
+    document.getElementById("err_edit_civico").classList.add("hidden");
+    document.getElementById("err_edit_CAP").classList.add("hidden");
+    document.getElementById("err_edit_descrizione").classList.add("hidden");
+    document.getElementById("err_edit_capo").classList.add("hidden");
+    document.getElementById("err_edit_stato").classList.add("hidden");
 
-    fetch("/get_cantieri")
-    .then(res => res.json())
-    .then(data => { 
-        const cantiere = data.cantieri.find(a => a.QRCode === QRCode);
-        document.getElementById("edit_qr_code").value = cantiere.QRCode;
-        document.getElementById("edit_citta").value = cantiere.citta; 
-        document.getElementById("edit_via").value = cantiere.via; 
-        document.getElementById("edit_civico").value = cantiere.civico; 
-        document.getElementById("edit_CAP").value = cantiere.CAP; 
-        document.getElementById("edit_descrizione").value = cantiere.descrizione; 
-        document.getElementById("edit_capo").value = cantiere.capo; 
-        document.getElementById("edit_stato").value = cantiere.stato; 
+    // Carico operai prima del fetch del cantiere
+    caricaOperaiAzienda().then(() => {
 
-        document.getElementById("edit-cantiere-modal").classList.remove("hidden")
-    }); 
+        fetch("/get_cantieri")
+            .then(res => res.json())
+            .then(data => {
+                const c = data.cantieri.find(x => x.QRCode === QRCode);
+
+                if (!c) {
+                    alert("Errore: cantiere non trovato");
+                    return;
+                }
+
+                document.getElementById("edit_qr_code").value = c.QRCode;
+                document.getElementById("edit_citta").value = c.citta;
+                document.getElementById("edit_via").value = c.via;
+                document.getElementById("edit_civico").value = c.civico;
+                document.getElementById("edit_CAP").value = c.CAP;
+                document.getElementById("edit_descrizione").value = c.descrizione;
+                document.getElementById("edit_stato").value = c.stato;
+
+                // SE ESISTE GIÀ UN OPERAIO ASSEGNATO
+                if (c.cfcapo) {
+                    document.getElementById("edit_capo").value = c.cfcapo;
+                }
+
+                document.getElementById("edit-cantiere-modal").classList.remove("hidden");
+            });
+    });
+
+
 }
 
 function closeEditCantiereModal() {
@@ -183,7 +199,7 @@ function updateCantiere() {
     document.getElementById("err_edit_capo").classList.add("hidden");
     document.getElementById("err_edit_stato").classList.add("hidden");
 
-    
+
 
     if (stato === "") {
         document.getElementById("err_edit_stato").classList.remove("hidden");
@@ -214,6 +230,11 @@ function updateCantiere() {
         document.getElementById("err_edit_descrizione").classList.remove("hidden");
         valid = false;
     }
+    if (capo_cantiere === "") {
+        document.getElementById("err_edit_capo").classList.remove("hidden");
+        valid = false;
+    }
+
 
     if (!valid) return;
 
@@ -229,7 +250,6 @@ function updateCantiere() {
         descrizione: descrizione
     };
 
-    // Ricordati di usare la rotta corretta che hai creato prima
     fetch("/update_cantiere", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -248,7 +268,88 @@ function updateCantiere() {
 }
 
 
+// Funzione Eliminazione
+function deleteCantiere(QRCode) {
+    // 1. Correggi gli ID per farli combaciare con l'HTML
+    const deleteModal = document.getElementById("delete-cantiere-modal");
+    const deleteMessage = document.getElementById("delete-message");
+    const confirmBtn = document.getElementById("confirm-delete-cantiere-btn"); // ID CORRETTO
 
+    // Se il modale esiste, usiamo la logica avanzata
+    if (deleteModal && confirmBtn) {
+        // Mostra il modale subito
+        deleteModal.classList.remove("hidden");
+        
+        // Messaggio di caricamento o generico intanto che (opzionalmente) cerchiamo il nome
+        if(deleteMessage) deleteMessage.innerText = `Sei sicuro di voler eliminare il cantiere ${QRCode}?`;
+
+        // Recuperiamo info aggiuntive (opzionale, solo per estetica del messaggio)
+        fetch("/get_cantieri")
+            .then(res => res.json())
+            .then(data => {
+                if(data.success && deleteMessage) {
+                    const cantiere = data.cantieri.find(a => a.QRCode === QRCode);
+                    if (cantiere) {
+                        deleteMessage.innerText = `Sei sicuro di voler eliminare il cantiere in Via ${cantiere.via}, ${cantiere.citta}?`;
+                    }
+                }
+            })
+            .catch(err => console.log("Info cantiere non recuperate per il messaggio, procedo comunque."));
+
+        // 2. Gestiamo il click sul bottone CONFERMA
+        // Rimuoviamo eventuali vecchi listener clonando il bottone (metodo rapido per pulire eventi)
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+        newConfirmBtn.onclick = function () {
+            newConfirmBtn.disabled = true;
+            newConfirmBtn.innerText = "Eliminazione...";
+
+            fetch("/delete_cantiere", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ QRCode: QRCode })
+            })
+            .then(res => res.json())
+            .then(data => {
+                closeDeleteCantiereModal(); // Chiudi modale
+                newConfirmBtn.disabled = false;
+                newConfirmBtn.innerText = "Elimina";
+
+                if (data.success) {
+                    caricaCantieri();
+                    openSuccessModal("Cantiere eliminato con successo!");
+                } else {
+                    alert("Errore: " + (data.message || "impossibile eliminare"));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Errore di connessione");
+                newConfirmBtn.disabled = false;
+                newConfirmBtn.innerText = "Elimina";
+                closeDeleteCantiereModal();
+            });
+        };
+    } else {
+        // Fallback se qualcosa nell'HTML non va (il vecchio confirm del browser)
+        if (confirm("Sei sicuro di voler eliminare il cantiere " + QRCode + "?")) {
+            // Logica eliminazione diretta...
+            // (Puoi lasciare la tua vecchia logica di fallback qui se vuoi)
+        }
+    }
+}
+
+function closeDeleteCantiereModal() {
+    // CORRETTO: ID giusto e add("hidden") per nascondere
+    const modal = document.getElementById("delete-cantiere-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
+}
+
+// CORRETTO: Esegui la funzione, non restituirla e basta
+window.onload = caricaCantieri;
 
 function openSuccessModal(message) {
     document.getElementById("success-message").innerText = message;
@@ -258,4 +359,36 @@ function openSuccessModal(message) {
 function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
+
+async function caricaOperaiAzienda() {
+    const select = document.getElementById("edit_capo");
+
+    try {
+        const res = await fetch("/get_operai");
+        const data = await res.json();
+
+        if (!data.success) {
+            select.innerHTML = '<option value="">Errore caricamento</option>';
+            return;
+        }
+
+        const operai = data.utenti.filter(u => u.tipo === "OP" || u.tipo === "CC");
+
+        // Reset select
+        select.innerHTML = '<option value="">-- Seleziona un operaio --</option>';
+
+        operai.forEach(op => {
+            const option = document.createElement("option");
+            option.value = op.cf;
+            option.textContent = `${op.nome} ${op.cognome}`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="">Errore caricamento</option>';
+    }
+}
+
+
 window.onload = () => caricaCantieri;
