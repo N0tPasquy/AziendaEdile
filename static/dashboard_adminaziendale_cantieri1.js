@@ -1,4 +1,16 @@
-
+/* Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+*/
 
 function caricaCantieri() {
     fetch("/get_cantieri")
@@ -32,6 +44,7 @@ function caricaCantieri() {
             });
         });
 }
+
 
 function createCantiere() {
     let valid = true;
@@ -102,56 +115,48 @@ function createCantiere() {
         });
 }
 
-function openAddCantiereModal() {
-    document.getElementById("add-cantiere-modal").classList.remove("hidden");
+async function caricaOpzioniCapocantiere() {
+    const select = document.getElementById("edit_capo");
+    try {
+        // 1. Chiamata alla rotta
+        const response = await fetch('/get_operai');
 
-    document.getElementById("err_new_citta").classList.add("hidden");
-    document.getElementById("err_new_via").classList.add("hidden");
-    document.getElementById("err_new_civico").classList.add("hidden");
-    document.getElementById("err_new_CAP").classList.add("hidden");
-    document.getElementById("err_new_descrizione").classList.add("hidden");
+        if (!response.ok) {
+            throw new Error("Errore nel recupero degli operai");
+        }
+
+        // 2. Otteniamo la lista (si aspetta un array JSON)
+        const listaOperai = await response.json();
+
+        // 3. Puliamo la select e mettiamo l'opzione di default
+        select.innerHTML = '<option value="">-- Seleziona un capocantiere --</option>';
+
+        // 4. Creiamo le opzioni dinamicamente
+        listaOperai.forEach(operaio => {
+            const option = document.createElement("option");
+
+            // Assicurati che le chiavi (CF, nome, cognome) coincidano con il tuo Python
+            option.value = operaio.CF;
+            option.textContent = `${operaio.nome} ${operaio.cognome}`;
+
+            select.appendChild(option);
+        });
+
+        console.log("Lista capocantieri caricata:", listaOperai.length);
+
+    } catch (error) {
+        console.error("Errore:", error);
+        select.innerHTML = '<option value="">Errore caricamento</option>';
+    }
 }
 
-function closeAddCantiereModal() {
-    document.getElementById("add-cantiere-modal").classList.add("hidden");
-
-    // PuliscE tutti i campi di input
-    document.getElementById("new_via").value = "";
-    document.getElementById("new_citta").value = "";
-    document.getElementById("new_civico").value = "";
-    document.getElementById("new_CAP").value = "";
-    document.getElementById("new_descrizione").value = "";
-}
-
-
-function editCantiere(QRCode){ 
-    document.getElementById("err_edit_citta").classList.add("hidden"); 
-    document.getElementById("err_edit_via").classList.add("hidden"); 
-    document.getElementById("err_edit_civico").classList.add("hidden"); 
-    document.getElementById("err_edit_CAP").classList.add("hidden"); 
-    document.getElementById("err_edit_descrizione").classList.add("hidden"); 
-    document.getElementById("err_edit_capo").classList.add("hidden"); 
-    document.getElementById("err_edit_stato").classList.add("hidden"); 
-
-    fetch("/get_cantieri")
-    .then(res => res.json())
-    .then(data => { 
-        const cantiere = data.cantieri.find(a => a.QRCode === QRCode);
-        document.getElementById("edit_qr_code").value = cantiere.QRCode;
-        document.getElementById("edit_citta").value = cantiere.citta; 
-        document.getElementById("edit_via").value = cantiere.via; 
-        document.getElementById("edit_civico").value = cantiere.civico; 
-        document.getElementById("edit_CAP").value = cantiere.CAP; 
-        document.getElementById("edit_descrizione").value = cantiere.descrizione; 
-        document.getElementById("edit_capo").value = cantiere.capo; 
-        document.getElementById("edit_stato").value = cantiere.stato; 
-
-        document.getElementById("edit-cantiere-modal").classList.remove("hidden")
-    }); 
+function openEditModal() {
+    //caricaOpzioniCapocantiere(); // Carica le opzioni prima di aprire il modale
+    document.getElementById("edit-cantiere-modal").classList.remove("hidden"); // Mostra la modale
 }
 
 function closeEditCantiereModal() {
-    document.getElementById("edit-cantiere-modal").classList.add("hidden");
+    document.getElementById("add-cantiere-modal").classList.add("hidden");
 
     // PuliscE tutti i campi di input
     document.getElementById("edit_via").value = "";
@@ -161,6 +166,52 @@ function closeEditCantiereModal() {
     document.getElementById("edit_descrizione").value = "";
     document.getElementById("edit_capo").value = "";
     document.getElementById("edit_stato").value = "";
+}
+
+function editCantiere(QRCode) {
+
+    // Nascondo errori
+    document.getElementById("err_edit_citta").classList.add("hidden");
+    document.getElementById("err_edit_via").classList.add("hidden");
+    document.getElementById("err_edit_civico").classList.add("hidden");
+    document.getElementById("err_edit_CAP").classList.add("hidden");
+    document.getElementById("err_edit_descrizione").classList.add("hidden");
+    document.getElementById("err_edit_capo").classList.add("hidden");
+    document.getElementById("err_edit_stato").classList.add("hidden");
+
+    // Carica la lista dei capocantieri PRIMA di riempire il form
+    caricaOpzioniCapocantiere().then(() => {
+
+        fetch("/get_cantiere_info", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ QRCode: QRCode })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert("Errore: cantiere non trovato");
+                    return;
+                }
+
+                // Inseriamo i valori nel modale
+                document.getElementById("edit_qr_code").value = QRCode; // Impostiamo il QR che abbiamo passato
+                document.getElementById("edit_citta").value = data.citta;
+                document.getElementById("edit_via").value = data.via;
+                document.getElementById("edit_civico").value = data.civico;
+                document.getElementById("edit_CAP").value = data.CAP;
+                document.getElementById("edit_descrizione").value = data.descrizione;
+                // Se cantiere.capo esiste, selezionalo
+                if (data.capo) {
+                    document.getElementById("edit_capo").value = data.capo;
+                }
+                document.getElementById("edit_stato").value = data.stato;
+
+                // SOLO QUI apriamo il modale
+                document.getElementById("edit-cantiere-modal").classList.remove("hidden");
+            })
+            .catch(err => console.error("Errore editCantiere:", err));
+    });
 }
 
 
@@ -183,7 +234,10 @@ function updateCantiere() {
     document.getElementById("err_edit_capo").classList.add("hidden");
     document.getElementById("err_edit_stato").classList.add("hidden");
 
-    
+    if (capo_cantiere === "") {
+        document.getElementById("err_edit_capo_cantiere").classList.remove("hidden");
+        valid = false;
+    }
 
     if (stato === "") {
         document.getElementById("err_edit_stato").classList.remove("hidden");
@@ -247,8 +301,29 @@ function updateCantiere() {
         });
 }
 
+// Funzioni per il modal di aggiunta operaio
+function openAddCantiereModal() {
+    document.getElementById("add-cantiere-modal").classList.remove("hidden");
+
+    document.getElementById("err_new_citta").classList.add("hidden");
+    document.getElementById("err_new_via").classList.add("hidden");
+    document.getElementById("err_new_civico").classList.add("hidden");
+    document.getElementById("err_new_CAP").classList.add("hidden");
+    document.getElementById("err_new_descrizione").classList.add("hidden");
+}
 
 
+// Funzione aggiornata per resettare i campi del modale
+function closeAddCantiereModal() {
+    document.getElementById("add-cantiere-modal").classList.add("hidden");
+
+    // PuliscE tutti i campi di input
+    document.getElementById("new_via").value = "";
+    document.getElementById("new_citta").value = "";
+    document.getElementById("new_civico").value = "";
+    document.getElementById("new_CAP").value = "";
+    document.getElementById("new_descrizione").value = "";
+}
 
 function openSuccessModal(message) {
     document.getElementById("success-message").innerText = message;
@@ -258,4 +333,5 @@ function openSuccessModal(message) {
 function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
-window.onload = () => caricaCantieri;
+
+window.onload = () => caricaCantieri();

@@ -15,6 +15,8 @@
 from functools import wraps # per i decoratori
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from db import connessione
+import secrets
+import string
 
 app = Flask(__name__)
 app.secret_key = "InterMerdaByPasqualeDaniele2025"
@@ -476,7 +478,7 @@ def get_beni():
                         "WHERE")""" #DA CONTINUARE IN SEGUITO
 
 #rotta per caricare i cantieri
-@app.route("/get_cantieri")
+@app.route("/get_cantieri", methods=["GET"])
 def get_cantieri():
     if "logged_in" not in session:
         return jsonify({"success" : False, "message" : "Non autorizzato"})
@@ -511,6 +513,122 @@ def get_cantieri():
         })
     
     return jsonify({"success" : True, "cantieri" : cantieri})
+
+
+#funzione per generare la stringa del codice del codice qr
+def genera_stringa_codice():
+    caratteri = string.ascii_letters+string.digits
+    return ''.join(secrets.choice(caratteri) for _ in range(50))
+
+
+
+#rotta per creare cantieri 
+@app.route("/create_cantiere",methods=["POST"])
+def create_cantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    cf = session.get("cf")
+    
+    data = request.get_json()
+
+    via = data.get("via")
+    citta = data.get("citta")
+    civico = data.get("civico")
+    CAP = data.get("CAP")
+    #stato = data.get("stato")
+    #cf_capo = data.get("cf_capo")
+    descrizione = data.get("descrizione")
+
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore DB"})
+
+    cursor = conn.cursor()
+    QRCode = genera_stringa_codice()
+    try:
+        cursor.execute("INSERT INTO cantiere (QRCode, Via, Citta, Civico, CAP, Descrizione) VALUES (?, ?, ?, ?, ?, ?)",
+                       (QRCode, via, citta, civico, CAP, descrizione))
+        
+        cursor.execute("INSERT INTO lavora (CF_U, QRCode_C) VALUES (?, ?)", (cf, QRCode))
+
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+
+
+@app.route("/update_cantiere", methods=["PUT"])
+def update_cantiere():
+    
+    data = request.get_json()
+
+    cf = session.get("cf")
+    qr = data.get("QRCode")
+    via = data.get("via")
+    citta = data.get("citta")
+    civico = data.get("civico")
+    CAP = data.get("CAP")
+    stato = data.get("stato")
+    descrizione = data.get("descrizione")
+    cf_capo = data.get("cf_capo")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("UPDATE Cantiere "
+                       "SET Via = ?, Citta = ?, Civico = ?, CAP = ?, Stato = ?, CFCapo = ?, Descrizione = ? "
+                       "WHERE QRCode = ?",(via, citta, civico, CAP, stato, cf_capo, descrizione, qr))
+        
+
+        conn.commit()
+        conn.close()
+        return jsonify({"success" : True})
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+
+
+
+@app.route("/get_cantiere_info", methods=["POST"])
+def get_cantiere_info():
+    data = request.get_json()
+    qr = data.get("QRCode")
+
+    conn = connessione()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT Via, Citta, Civico, CAP, Descrizione, CF_Capo, Stato 
+        FROM Cantiere
+        WHERE QRCode = ?
+    """, (qr,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return jsonify({"success": False})
+
+    return jsonify({
+        "success": True,
+        "via": row[0],
+        "citta": row[1],
+        "civico": row[2],
+        "CAP": row[3],
+        "descrizione": row[4],
+        "cf_capo" : row[5],
+        "stato" : row[6]
+    })
+
+
 
 # Con host= 0.0.0.0 l'app è accessibile da altre macchine nella rete locale
 if __name__ == "__main__":

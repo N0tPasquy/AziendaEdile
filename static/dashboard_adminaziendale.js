@@ -27,18 +27,18 @@ function toggleSidebar() {
         // === CHIUSURA ===
         sidebar.classList.remove('w-64');
         sidebar.classList.add('w-24');
-        
+
         // Nascondi testi e riduci logo
         brandText.classList.add('hidden');
         logo.classList.remove('h-32');
         logo.classList.add('h-10'); // O h-160px ridotto
-        
+
         texts.forEach(t => t.classList.add('hidden'));
 
         // Centra icone
         toggleWrap.classList.remove('justify-start', 'px-4');
         toggleWrap.classList.add('justify-center');
-        
+
         buttons.forEach(btn => {
             btn.classList.remove('px-3', 'justify-start');
             btn.classList.add('justify-center');
@@ -109,17 +109,17 @@ function caricaSezione(nomeSezione) {
         .then(html => {
 
             document.getElementById("content-container").innerHTML = html;
-!
-            fetch("/session_user")
-                .then(res => res.json())
-                .then(data => {
-                    if (data.logged_in && data.ruolo === "AA") {
-                        const aziendaLabel = document.getElementById("nome_azienda");
-                        if (aziendaLabel) {
-                            aziendaLabel.innerText =  data.nome_azienda;
+            !
+                fetch("/session_user")
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.logged_in && data.ruolo === "AA") {
+                            const aziendaLabel = document.getElementById("nome_azienda");
+                            if (aziendaLabel) {
+                                aziendaLabel.innerText = data.nome_azienda;
+                            }
                         }
-                    }
-                });
+                    });
 
             // Caricamento funzioni della sezione
             if (nomeSezione === "cantieri") caricaCantieri();

@@ -172,6 +172,8 @@ body {
     padding: 2rem;
     border-radius: 16px;
     width: 380px;
+    background: rgba(255, 255, 255, 0.95); /* Leggera opacità */
+    backdrop-filter: blur(2px); /* Leggera sfocatura, molto sottile */
 }
 
 .input-field {
@@ -238,4 +240,48 @@ html, body {
     height: auto;
     min-height: 100%;
     overflow-y: auto;
+}
+
+/* ====== WRAPPER RESPONSIVE PER TABELLE LARGHE (RISOLVE IL PROBLEMA MOBILE) ====== */
+.table-responsive-wrapper {
+    /* La proprietà chiave: permette lo scroll solo se il contenuto (la tabella) è più largo del div */
+    overflow-x: auto; 
+    
+    /* Migliora l'esperienza di scorrimento sui dispositivi iOS (iPhone/iPad) */
+    -webkit-overflow-scrolling: touch; 
+    
+    /* Assicura che il wrapper occupi la larghezza del contenitore .table-card */
+    width: 100%;
+    
+    /* Opzionale: Nasconde la barra di scorrimento se non utilizzata, ma la funzionalità resta */
+    /* scrollbar-width: none; /* Per Firefox */
+    /* -ms-overflow-style: none; /* Per IE/Edge */
+}
+
+/* Se vuoi nascondere la scrollbar su Chrome/Safari: */
+.table-responsive-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* ====== MEDIA QUERY PER SCHERMI PICCOLI (Meno di 640px - Coerente con Tailwind 'sm') ====== */
+@media (max-width: 639px) {
+    /* Riorganizza il blocco Titolo + Pulsante verticalmente su schermi piccoli */
+    .dashboard-card > div:nth-child(2) {
+        flex-direction: column;
+        align-items: flex-start; /* Allinea a sinistra */
+        gap: 1rem; /* Spazio tra titolo e pulsante */
+    }
+
+    /* Rimuove i margini verticali extra dal titolo e lo allarga al 100% */
+    .dashboard-card > div:nth-child(2) h1 {
+        width: 100%;
+        text-align: left !important;
+        font-size: 1.75rem; /* Riduci leggermente la dimensione del font del titolo */
+    }
+
+    /* Assicura che il pulsante 'Aggiungi' non sia tagliato e occupi una larghezza ragionevole */
+    .add-btn {
+        width: 100%; 
+        max-width: 300px;
+    }
 }

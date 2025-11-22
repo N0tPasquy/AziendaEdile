@@ -28,12 +28,17 @@ body {
     background: rgba(245, 245, 245, 0.60); /* Sfondo bianco, opacità 15% */
     backdrop-filter: blur(10px); /* Sfoca l'area sottostante la card */
     -webkit-backdrop-filter: blur(10px); /* Per la compatibilità con Safari */
-    width: 480px;
+
+    /* INSERITE QUESTE TRE PROPRIETÀ PER LA RESPONSIVITÀ: */
+    width: 90%; /* Occupa il 90% della larghezza dello schermo, lasciando margini */
+    max-width: 480px; /* Non supererà i 480px su desktop */
+    min-width: 300px; /* Opzionale: Assicura una larghezza minima leggibile */
+    
     padding: 3rem 3rem;
     padding-top: 1rem;
     border-radius: 55px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-    border: 2px solid rgba(255, 255, 255, 0.3); /* Aumenta leggermente il bordo per farlo risaltare */
+    border: 2px solid rgba(255, 255, 255, 0.3);
     min-height: 500px;
 }
 

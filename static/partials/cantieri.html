@@ -45,27 +45,31 @@
     </div>
 </div>
 
+<!--  MODALE CREAZIONE NUOVO CANTIERE -->
 <div id="add-cantiere-modal" class="modal hidden">
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Nuovo Cantiere</h3>
 
-        <small id="err_new_nome_cantiere" class="text-red-500 text-sm hidden">Il nome del cantiere è
-            obbligatorio</small>
-        <input id="new_nome_cantiere" class="input-field" type="text"
-            placeholder="Nome Cantiere (es. Ristrutturazione Villa)">
+        <small id="err_new_citta" class="text-red-500 text-sm hidden">La città è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Città</label>
+        <input id="new_citta" class="input-field mb-3" type="text" placeholder="Es. Napoli">
 
-        <small id="err_new_committente" class="text-red-500 text-sm hidden">Il committente è obbligatorio</small>
-        <input id="new_committente" class="input-field" type="text" placeholder="Nome Committente">
+        <small id="err_new_via" class="text-red-500 text-sm hidden">La via è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Via</label>
+        <input id="new_via" class="input-field mb-3" type="text" placeholder="Es. Via Roma">
 
-        <small id="err_new_luogo" class="text-red-500 text-sm hidden">Il luogo è obbligatorio</small>
-        <input id="new_luogo" class="input-field" type="text" placeholder="Luogo / Indirizzo">
+        <small id="err_new_civico" class="text-red-500 text-sm hidden">Il civico è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Civico</label>
+        <input id="new_civico" class="input-field mb-3" type="text" placeholder="Es. 42">
 
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Data Inizio</label>
-        <small id="err_new_dataInizio" class="text-red-500 text-sm hidden">Data inizio non valida</small>
-        <input id="new_dataInizio" class="input-field" type="date">
+        <small id="err_new_CAP" class="text-red-500 text-sm hidden">Il CAP è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">CAP</label>
+        <input id="new_CAP" class="input-field mb-3" type="text" placeholder="Es. 81030">
 
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Data Fine Prevista</label>
-        <input id="new_dataFine" class="input-field" type="date">
+        <small id="err_new_descrizione" class="text-red-500 text-sm hidden">La descrizione è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Descrizione Lavori</label>
+        <textarea id="new_descrizione" class="input-field mb-3" rows="3"
+            placeholder="Es. Ristrutturazione facciata e rifacimento balconi"></textarea>
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddCantiereModal()" class="cancel-btn">Annulla</button>
@@ -74,28 +78,53 @@
     </div>
 </div>
 
+<!-- MODALE MODIFICA CANTIERE -->
 <div id="edit-cantiere-modal" class="modal hidden">
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Modifica Cantiere</h3>
 
-        <input type="hidden" id="edit_cantiere_id">
+        <input type="hidden" id="edit_qr_code"> <!-- Campo nascosto per memorizzare il QR code del cantiere -->
 
-        <small id="err_edit_nome_cantiere" class="text-red-500 text-sm hidden">Il nome del cantiere è
-            obbligatorio</small>
-        <input id="edit_nome_cantiere" class="input-field" type="text" placeholder="Nome Cantiere">
+        <small id="err_edit_citta" class="text-red-500 text-sm hidden">La città è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Città</label>
+        <input id="edit_citta" class="input-field mb-3" type="text" placeholder="città">
 
-        <small id="err_edit_committente" class="text-red-500 text-sm hidden">Il committente è obbligatorio</small>
-        <input id="edit_committente" class="input-field" type="text" placeholder="Nome Committente">
+        <small id="err_edit_via" class="text-red-500 text-sm hidden">La via è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Via</label>
+        <input id="edit_via" class="input-field mb-3" type="text" placeholder="Via">
 
-        <small id="err_edit_luogo" class="text-red-500 text-sm hidden">Il luogo è obbligatorio</small>
-        <input id="edit_luogo" class="input-field" type="text" placeholder="Luogo / Indirizzo">
+        <small id="err_edit_civico" class="text-red-500 text-sm hidden">Il civico è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Civico</label>
+        <input id="edit_civico" class="input-field mb-3" type="text" placeholder="Civico">
 
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Data Inizio</label>
-        <small id="err_edit_dataInizio" class="text-red-500 text-sm hidden">Data inizio non valida</small>
-        <input id="edit_dataInizio" class="input-field" type="date">
+        <small id="err_edit_CAP" class="text-red-500 text-sm hidden">Il CAP è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">CAP</label>
+        <input id="edit_CAP" class="input-field mb-3" type="text" placeholder="CAP">
 
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Data Fine Prevista</label>
-        <input id="edit_dataFine" class="input-field" type="date">
+        <small id="err_edit_descrizione" class="text-red-500 text-sm hidden">La descrizione è obbligatoria</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Descrizione Lavori</label>
+        <textarea id="edit_descrizione" class="input-field mb-3" rows="3" placeholder="Descrizione"></textarea>
+
+        <small id="err_edit_capo" class="text-red-500 text-sm hidden">Il capo è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">capo</label>
+        <input id="edit_capo" class="input-field mb-3" type="text" placeholder="capo">
+
+        <!-- <label class="block text-sm font-bold text-gray-700 mb-1">Scegli il capocantiere</label>
+        <select id="edit_capo" class="input-field mb-3">
+            <option value="">-- Seleziona un capocantiere --</option>
+        </select> -->
+
+        <small id="err_edit_stato" class="text-red-500 text-sm hidden">Lo stato è obbligatorio</small>
+        <label class="block text-sm font-bold text-gray-700 mb-1">Stato</label>
+        <input id="edit_stato" class="input-field mb-3" type="text" placeholder="stato">
+
+        <!-- <label class="block text-sm font-bold text-gray-700 mb-1">Stato Cantiere</label>
+        <select id="edit_stato" class="input-field mb-3">
+            <option value="DaIniziare">Da iniziare</option>
+            <option value="InCorso">In corso</option>
+            <option value="Sospeso">Sospeso</option>
+            <option value="Finito">Finito</option>
+        </select> -->
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeEditCantiereModal()" class="cancel-btn">Annulla</button>
@@ -104,6 +133,7 @@
     </div>
 </div>
 
+<!-- MODALE ELIMINAZIONE CANTIERE -->
 <div id="delete-cantiere-modal" class="modal hidden">
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
