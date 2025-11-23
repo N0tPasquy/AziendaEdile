@@ -12,13 +12,151 @@
     - Anno Accademico: 2025/2026
 -->
 
-<h1 class = "text-3xl font-bold"> Dashboard</h1>
-<table class = "admin-table">
-    <thead>
-        <tr>
-            <th>Nome Committente</th>
-            <th>Luogo</th>
-        </tr>
-    </thead>
-    <tbody id = "dashboard-table-body"></tbody>
-</table>
+<div class="section-content text-center z-10 mx-auto h-full flex flex-col">
+
+    <div class="header-strip flex items-center justify-start shrink-0">
+        <div class="flex items-center header-content">
+            <img src="/static/img/logo.png" class="logo-contained" alt="Logo Azienda">
+            <span id="nome_azienda" class="ml-4 font-bold text-2xl">Pempe Inc.</span>
+        </div>
+    </div>
+
+    <div class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
+        
+        <div class="text-left w-full md:w-auto">
+            <h1 class="text-2xl font-bold text-gray-800 m-0 leading-tight">Dashboard</h1>
+            <p class="text-gray-500 text-sm m-0 font-medium">Gestione risorse e personale per cantiere</p>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+            <div class="pl-2 text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            </div>
+            
+            <div class="relative w-full md:w-auto">
+                <select id="select-cantiere" class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+                    <option value="" disabled selected>-- Seleziona Cantiere Attivo --</option>
+                    <option value="1">Residenza "I Pini" - Roma</option>
+                    <option value="2">Villa Verdi (Ristrutturazione) - Milano</option>
+                    <option value="3">Nuovo Polo Logistico - Bologna</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-400">
+                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full overflow-hidden pb-4">
+
+        <div class="table-card flex flex-col h-full">
+            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
+                <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Squadra Operativa
+                </h2>
+                <button onclick="openAssegnaOperaioModal()" class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                    + Assegna
+                </button>
+            </div>
+
+            <div class="overflow-auto flex-grow">
+                <table class="admin-table w-full">
+                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
+                        <tr class="text-left border-b border-gray-300/50">
+                            <th class="pb-3 pl-2" style="width: 35%;">Nome</th>
+                            <th class="pb-3" style="width: 25%;">Mansione</th>
+                            <th class="pb-3" style="width: 20%;">Stato</th>
+                            <th class="pb-3 text-center" style="width: 20%;">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="squadra-table-body">
+                        <tr>
+                            <td class="pl-2 font-semibold text-gray-800">Mario Rossi</td>
+                            <td class="text-gray-600">Capocantiere</td>
+                            <td><span class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full border border-green-200">Presente</span></td>
+                            <td class="text-center">
+                                <button class="delete-btn text-xs p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pl-2 font-semibold text-gray-800">Luigi Verdi</td>
+                            <td class="text-gray-600">Gruista</td>
+                            <td><span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full border border-yellow-200">In Pausa</span></td>
+                            <td class="text-center">
+                                <button class="delete-btn text-xs p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-card flex flex-col h-full">
+            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
+                <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                    </svg>
+                    Dotazione Cantiere
+                </h2>
+                <button onclick="openAssegnaBeneModal()" class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                    + Assegna
+                </button>
+            </div>
+
+            <div class="overflow-auto flex-grow">
+                <table class="admin-table w-full">
+                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
+                        <tr class="text-left border-b border-gray-300/50">
+                            <th class="pb-3 pl-2" style="width: 35%;">Oggetto</th>
+                            <th class="pb-3" style="width: 20%;">Tipo</th>
+                            <th class="pb-3" style="width: 25%;">Identificativo</th>
+                            <th class="pb-3 text-center" style="width: 20%;">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dotazione-table-body">
+                        <tr>
+                            <td class="pl-2 font-bold text-gray-800">Fiat Ducato</td>
+                            <td class="text-gray-500 text-sm">Veicolo</td>
+                            <td class="font-mono text-xs bg-gray-100 p-1 rounded text-gray-600 w-fit">AB 123 CD</td>
+                            <td class="text-center">
+                                <button class="delete-btn text-xs p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded transition-colors" title="Restituisci al magazzino">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pl-2 font-bold text-gray-800">Trapano Hilti</td>
+                            <td class="text-gray-500 text-sm">Attrezzo</td>
+                            <td class="font-mono text-xs bg-gray-100 p-1 rounded text-gray-600 w-fit">S/N 998877</td>
+                            <td class="text-center">
+                                <button class="delete-btn text-xs p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded transition-colors" title="Restituisci al magazzino">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Placeholder JS per i pulsanti (per evitare errori console immediati)
+    function openAssegnaOperaioModal() { console.log("Apertura modale Operaio"); }
+    function openAssegnaBeneModal() { console.log("Apertura modale Bene"); }
+</script>

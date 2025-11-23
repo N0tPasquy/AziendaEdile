@@ -1,5 +1,19 @@
-from flask import Flask, render_template, request, jsonify, session
+"""
+ Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+"""
 
+from flask import Flask, render_template, request, jsonify, session
 # --- IMPORT DEL PACKAGE BACKEND ---
 from backend.login import login_bp
 from backend.sysadmin import sysadmin_bp
