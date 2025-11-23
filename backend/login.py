@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify, session, redirect, url_for
-from db import connessione
-from decorators import login_required
+
+# --- IMPORT AGGIORNATI ---
+from backend.db import connessione
+from backend.decorators import login_required
 
 # Definizione del Blueprint per l'autenticazione
-auth_bp = Blueprint('auth', __name__)
+login_bp = Blueprint('auth', __name__)
 
-@auth_bp.route("/login", methods=["POST"])
+@login_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     cf = data.get("CF")
@@ -55,12 +57,12 @@ def login():
 
     return jsonify({"success": True, "role": ruolo})
 
-@auth_bp.route("/logout")
+@login_bp.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("home"))
 
-@auth_bp.route("/session_user", methods=["GET"])
+@login_bp.route("/session_user", methods=["GET"])
 def session_user():
     if "logged_in" not in session:
         return jsonify({"logged_in": False})

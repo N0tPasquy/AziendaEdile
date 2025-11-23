@@ -1,17 +1,22 @@
 from flask import Flask, render_template, request, jsonify, session
-from login import auth_bp
-from sysadmin import sysadmin_bp
-from adminaziendale import admin_aziendale_bp
-from cantieri import cantieri_bp
-from db import connessione
 
-app = Flask(__name__)
+# --- IMPORT AGGIORNATI ---
+from backend.login import login_bp
+from backend.sysadmin import sysadmin_bp
+from backend.adminaziendale import admin_aziendale_bp
+from backend.cantieri import cantieri_bp
+from backend.db import connessione
+
+app = Flask(__name__, 
+            static_folder='../static',
+            template_folder='../templates')
+
 app.secret_key = "InterMerdaByPasqualeDaniele2025"
 
 # Registrazione dei Blueprints
-app.register_blueprint(auth_bp)
+app.register_blueprint(login_bp)
 app.register_blueprint(sysadmin_bp)
-app.register_blueprint(admin_aziendale_bp)
+app.register_blueprint(admin_aziendale_bp) # Attualmente la sezione dashboard e operai sono nello stesso file, creare un file apparte per la sezione operai.
 app.register_blueprint(cantieri_bp)
 
 # Configurazione Headers e Cache
@@ -26,6 +31,3 @@ def add_header(response):
 @app.route("/", methods=["GET"])
 def home():
     return render_template("index.html")
-
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, session
-# CORREZIONE: Import diretto da db, non da backend.db
-from db import connessione
-from decorators import login_required
+from backend.db import connessione
+from backend.decorators import login_required
 import string
 import secrets
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session, render_template
-from db import connessione
-from decorators import login_required, role_required
+from backend.db import connessione
+from backend.decorators import login_required, role_required
 
 admin_aziendale_bp = Blueprint('admin_aziendale', __name__)
 
@@ -25,7 +25,7 @@ def dashboard_capocantiere():
 def dashboard_operaio():
     return render_template("dashboard_operaio.html")
 
-# GESTIONE OPERAI
+# GESTIONE OPERAI ------------------------------------------------------------------------ DIVIDERE QUESTA PARTE DA DASHBOARD
 @admin_aziendale_bp.route("/get_operai", methods=["GET"])
 def get_operai_dinamico():
     # 1. Verifica Login

@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template
-# CORREZIONE: Import diretto da db, non da backend.db
-from db import connessione
-from decorators import login_required, role_required
+from backend.db import connessione
+from backend.decorators import login_required, role_required
 
 sysadmin_bp = Blueprint('sysadmin', __name__)
 
