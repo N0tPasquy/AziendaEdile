@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, jsonify, session
 
-# --- IMPORT AGGIORNATI ---
+# --- IMPORT DEL PACKAGE BACKEND ---
 from backend.login import login_bp
 from backend.sysadmin import sysadmin_bp
 from backend.adminaziendale import admin_aziendale_bp
 from backend.cantieri import cantieri_bp
+from backend.operai import operai_bp
 from backend.db import connessione
 
 app = Flask(__name__, 
@@ -17,6 +18,7 @@ app.secret_key = "InterMerdaByPasqualeDaniele2025"
 app.register_blueprint(login_bp)
 app.register_blueprint(sysadmin_bp)
 app.register_blueprint(admin_aziendale_bp) # Attualmente la sezione dashboard e operai sono nello stesso file, creare un file apparte per la sezione operai.
+app.register_blueprint(operai_bp)
 app.register_blueprint(cantieri_bp)
 
 # Configurazione Headers e Cache
