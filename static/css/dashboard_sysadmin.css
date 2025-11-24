@@ -13,98 +13,102 @@
 
 */
 
-/* ====== CARD PRINCIPALE (Effetto Glassmorphism) ====== */
+/* ====== SFONDO E BASE ====== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+}
+
+/* ====== CARD PRINCIPALE ====== */
 .dashboard-card {
     width: 100%;
-    /* lascia spazio ai lati */
     max-width: 1600px;
-    /* limite per monitor grandi */
     height: auto;
-    /* Si adatta all'altezza del contenuto */
     min-height: 60vh;
-    /* Altezza minima */
-
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-
     border-radius: 30px;
     padding: 3rem;
-
     margin-top: 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
 }
 
-/* ====== SFONDO GENERALE ====== */
-body {
-    font-family: 'Inter', sans-serif;
-    background: url("../img/background.png") no-repeat center center fixed;
-    background-size: cover;
-}
-
-/* ====== STRISCIA DI INTESTAZIONE (NUOVA IMPLEMENTAZIONE) ====== */
+/* ====== HEADER STRIP (MODIFICATO PER ESSERE PIÙ SOTTILE) ====== */
 .header-strip {
+    /* Logica margini negativi */
     width: calc(100% + 6rem);
-    margin: -3rem -3rem 3rem -3rem;
-    padding: 0.5rem 3rem;
+    margin: -3rem -3rem 2rem -3rem;
+    
+    /* MODIFICA 1: Ridotto padding verticale da 0.8rem a 0.4rem */
+    padding: 0.4rem 3rem;
+    
     background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(3px);
     border-radius: 30px 30px 0 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative;
-    /* necessario */
     overflow: visible;
-    /* permette al logo di uscire */
-
     color: rgb(20, 100, 150);
 }
 
+/* MODIFICA 2: Aggiunta classe per forzare altezza ridotta */
 .header-content {
-    height: 4rem;
+    height: 5.5rem; /* Forza l'altezza massima del contenuto */
     display: flex;
     align-items: center;
 }
 
-/* LOGO GRANDE SENZA RIDURSI */
+/* MODIFICA 3: Logo ridotto per stare nella striscia più piccola */
 .logo-contained {
-    width: 8.5rem;
+    width: 8.5rem; /* Era 8.5rem */
     height: auto;
     object-fit: contain;
     position: relative;
-    top: 0.5rem;          /* Aumenta questo valore per scendere, diminuisci per salire */
+    top: 0; 
 }
 
-/* ====== TABELLA AMMINISTRATORI ====== */
+/* ====== TABELLA ====== */
 .table-card {
     background: rgba(255, 255, 255, 0.40);
     backdrop-filter: blur(8px);
     border-radius: 20px;
-    padding: 2rem;
-    margin: 2rem auto;
-    width: 95%;
-    max-width: 1300px;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
     color: rgb(80, 80, 80);
 }
 
-.header-table {
-    color: rgb(0, 143, 190);
+/* Wrapper per scroll su schermi piccoli */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .admin-table {
     width: 100%;
     text-align: left;
-    border-collapse: collapse; /* Importante per evitare doppi bordi */
-    table-layout: fixed; /* Manteniamo fixed, ma ora le larghezze sono gestite dall'HTML */
+    border-collapse: collapse;
+    table-layout: fixed;
+    /* RESPONSIVE: Larghezza minima per evitare che le colonne esplodano su laptop */
+    min-width: 900px; 
 }
 
 .admin-table th {
-    font-style: bold;
-    padding: 10px 12px; /* leggermente ridotto per risparmiare spazio */
+    font-weight: 700;
+    padding: 12px 8px;
+    color: rgb(11, 65, 99);
 }
 
 .admin-table td {
-    padding: 12px 10px; /* diminuito per compattezza */
+    padding: 12px 8px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     white-space: nowrap;
     overflow: hidden;
@@ -112,176 +116,74 @@ body {
     vertical-align: middle;
 }
 
-/* Forza le larghezze corrispondenti alle nuove classi header (coerenza con table-layout: fixed) */
-.admin-table th:first-child,
-.admin-table td:first-child { width: 28%; }
-.admin-table th:nth-child(2),
-.admin-table td:nth-child(2) { width: 14%; }
-.admin-table th:nth-child(3),
-.admin-table td:nth-child(3) { width: 14%; }
-.admin-table th:nth-child(4),
-.admin-table td:nth-child(4) { width: 14%; }
-.admin-table th:nth-child(5),
-.admin-table td:nth-child(5) { width: 15%; }
-.admin-table th:nth-child(6),
-.admin-table td:nth-child(6) { width: 15%; }
+/* Larghezze Colonne Ottimizzate */
+.admin-table th:nth-child(1), .admin-table td:nth-child(1) { width: 22%; }
+.admin-table th:nth-child(2), .admin-table td:nth-child(2) { width: 18%; }
+.admin-table th:nth-child(3), .admin-table td:nth-child(3) { width: 12%; }
+.admin-table th:nth-child(4), .admin-table td:nth-child(4) { width: 12%; }
+.admin-table th:nth-child(5), .admin-table td:nth-child(5) { width: 11%; }
+.admin-table th:nth-child(6), .admin-table td:nth-child(6) { width: 13%; }
+.admin-table th:nth-child(7), .admin-table td:nth-child(7) { width: 12%; text-align: center; }
 
-/* Specifica che l'ultima colonna (Azione) deve essere centrata anche nelle righe, non solo nell'header */
-.admin-table td:last-child {
-    text-align: center;
-}
-
-/* Effetto hover sulle righe per migliorare la leggibilità */
-.admin-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-    transition: background-color 0.2s ease;
-}
-
-/* ====== Stile intestazione e pulsante ====== */
-.inte{
-    color: rgb(11, 65, 99);
-}
-
+/* ====== PULSANTI ====== */
 .add-btn {
-    background: #2563eb;
+    background: #3b82f6;
     color: white;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.5rem;
     font-weight: 600;
-    transition: .2s;
-    border: none; /* Aggiungi anche un reset del bordo predefinito */
-    cursor: pointer; /* Per assicurare che sembri un pulsante */
-}
-.add-btn:hover {
-    background: #1d4ed8;
-}
-
-/* ====== Stile modale ====== */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 50;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 16px;
-    width: 380px;
-    background: rgba(255, 255, 255, 0.95); /* Leggera opacità */
-    backdrop-filter: blur(2px); /* Leggera sfocatura, molto sottile */
-}
-
-.input-field {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.75rem;
-    border-radius: 0.5rem;
-}
-
-.cancel-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: #e5e7eb;
-}
-
-.confirm-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: #2563eb;
-    color: white;
-}
-
-/* ====== Stile pulsante aggiungi amministratore ====== */
-.add-btn {
-    background: #3b82f6; /* Blu leggermente più chiaro per coerenza */
-    color: white;
-    padding: 0.5rem 1.25rem; /* Aumento leggermente il padding per renderlo più 'importante' */
-    border-radius: 0.75rem; /* Aumento il raggio per essere più smussato (come la card) */
-    font-weight: 600;
-    cursor: pointer; /* Aggiunto cursore per UX */
-
-    /* AGGIUNTA CHIAVE: Ombra morbida per dare profondità */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-
-    /* AGGIUNTA CHIAVE: Transizione per l'effetto hover */
-    transition: all 0.2s ease-in-out; 
-}
-
-/* Stile per l'interazione (effetto hover) */
-.add-btn:hover {
-    background: #2563eb; /* Torna al blu scuro al passaggio del mouse */
-    transform: translateY(-1px); /* Piccolo sollevamento (pop out) per l'interazione */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Pulsante elimina (rosso) coerente con gli altri modali */
-.delete-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: #ef4444; /* rosso */
-    color: white;
-    border: none;
     cursor: pointer;
-    transition: background .12s ease, transform .06s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
 }
-.delete-btn:hover {
-    background: #dc2626;
+.add-btn:hover {
+    background: #2563eb;
     transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Assicurati che il browser possa scrollare */
-html, body {
-    height: auto;
-    min-height: 100%;
-    overflow-y: auto;
-}
+/* ====== MODALI (Invariati) ====== */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; justify-content: center; align-items: center; z-index: 50; }
+.modal.hidden { display: none; }
+.modal-content { background: rgba(255, 255, 255, 0.95); padding: 2rem; border-radius: 16px; width: 380px; backdrop-filter: blur(4px); max-width: 90vw; }
+.input-field { width: 100%; border: 1px solid #d1d5db; padding: 0.5rem; margin-bottom: 0.75rem; border-radius: 0.5rem; box-sizing: border-box;}
+.cancel-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #e5e7eb; cursor: pointer; border: none;}
+.confirm-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #2563eb; color: white; cursor: pointer; border: none;}
+.delete-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #ef4444; color: white; cursor: pointer; border: none;}
 
-/* ====== WRAPPER RESPONSIVE PER TABELLE LARGHE (RISOLVE IL PROBLEMA MOBILE) ====== */
-.table-responsive-wrapper {
-    /* La proprietà chiave: permette lo scroll solo se il contenuto (la tabella) è più largo del div */
-    overflow-x: auto; 
-    
-    /* Migliora l'esperienza di scorrimento sui dispositivi iOS (iPhone/iPad) */
-    -webkit-overflow-scrolling: touch; 
-    
-    /* Assicura che il wrapper occupi la larghezza del contenitore .table-card */
-    width: 100%;
-    
-    /* Opzionale: Nasconde la barra di scorrimento se non utilizzata, ma la funzionalità resta */
-    /* scrollbar-width: none; /* Per Firefox */
-    /* -ms-overflow-style: none; /* Per IE/Edge */
-}
-
-/* Se vuoi nascondere la scrollbar su Chrome/Safari: */
-.table-responsive-wrapper::-webkit-scrollbar {
-    display: none;
-}
-
-/* ====== MEDIA QUERY PER SCHERMI PICCOLI (Meno di 640px - Coerente con Tailwind 'sm') ====== */
-@media (max-width: 639px) {
-    /* Riorganizza il blocco Titolo + Pulsante verticalmente su schermi piccoli */
-    .dashboard-card > div:nth-child(2) {
-        flex-direction: column;
-        align-items: flex-start; /* Allinea a sinistra */
-        gap: 1rem; /* Spazio tra titolo e pulsante */
+/* ====== MEDIA QUERIES (LAPTOP) ====== */
+@media (max-width: 1280px) {
+    .dashboard-card {
+        padding: 1.5rem; 
+        max-width: 100%;
+        min-height: auto;
     }
-
-    /* Rimuove i margini verticali extra dal titolo e lo allarga al 100% */
-    .dashboard-card > div:nth-child(2) h1 {
-        width: 100%;
-        text-align: left !important;
-        font-size: 1.75rem; /* Riduci leggermente la dimensione del font del titolo */
+    .header-strip {
+        /* Ricalcolo margini negativi */
+        width: calc(100% + 3rem);
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        padding: 0.4rem 1.5rem;
     }
+    .table-card { padding: 1rem; }
+}
 
-    /* Assicura che il pulsante 'Aggiungi' non sia tagliato e occupi una larghezza ragionevole */
-    .add-btn {
-        width: 100%; 
-        max-width: 300px;
+/* ====== MEDIA QUERIES (MOBILE) ====== */
+@media (max-width: 640px) {
+    .dashboard-card {
+        padding: 1rem;
     }
+    .header-strip {
+        width: calc(100% + 2rem);
+        margin: -1rem -1rem 1.5rem -1rem;
+        padding: 1rem;
+        flex-direction: column; 
+        height: auto; /* Su mobile lasciamo altezza auto per impilare gli elementi */
+    }
+    .header-content {
+        height: auto; /* Su mobile reset height */
+        margin-bottom: 0.5rem;
+        justify-content: center;
+    }
+    .add-btn { width: 100%; }
 }

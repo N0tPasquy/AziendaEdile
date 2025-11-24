@@ -117,7 +117,7 @@
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddVeicoloModal()" class="cancel-btn">Annulla</button>
-            <button onclick="createVeicolo()" class="confirm-btn">Crea Veicolo</button>
+            <button onclick="insertVeicolo()" class="confirm-btn">Crea Veicolo</button>
         </div>
     </div>
 </div>
@@ -142,7 +142,39 @@
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddAttrezzoModal()" class="cancel-btn">Annulla</button>
-            <button onclick="createAttrezzo()" class="confirm-btn">Crea Attrezzo</button>
+            <button onclick="insertAttrezzo()" class="confirm-btn">Crea Attrezzo</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA ELIMINAZIONE ATTREZZO -->
+<div id="delete-attrezzo-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
+
+        <p id="delete-message" class="text-gray-700 mb-5">
+            Sei sicuro di voler eliminare questo attrezzo?
+        </p>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
+            <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA ELIMINAZIONE VEICOLO -->
+<div id="delete-veicolo-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
+
+        <p id="delete-message" class="text-gray-700 mb-5">
+            Sei sicuro di voler eliminare questo veicolo?
+        </p>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
+            <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
         </div>
     </div>
 </div>
@@ -154,9 +186,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
         </svg>
         <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
-        <p id="success-message" class="text-gray-700 mb-5">Salvataggio riuscito.</p>
+        <p id="success-message" class="text-gray-700 mb-5">bene salvato.</p>
         <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
     </div>
 </div>
-
-<!-- TO DO: Aggiungere modali per 'edit' e 'delete' sia per veicolo che per attrezzo -->

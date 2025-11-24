@@ -66,7 +66,7 @@ function toggleSidebar() {
         });
     }
 }
-
+/* Non serve più, abbiamo implementato le sezioni tramite altri file
 const sezioni = {
     dashboard: `
         <h1 class="titolo">Dashboard</h1>
@@ -87,7 +87,7 @@ const sezioni = {
         <h1 class="titolo">Operai</h1>
         <p>Benvenuto nella sezione opeari.</p>
     `,
-}
+}*/
 
 /*
 function caricaSezione(nomeSezione) {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     caricaSezione("dashboard");
 });
 
-// Funzione per aprire/chiudere la sidebar su mobile
+/* Funzione per aprire/chiudere la sidebar su mobile - Implementare solo quando sarà finita la versione desktop
 function toggleSidebarMobile() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('mobile-overlay');
@@ -176,4 +176,4 @@ function toggleSidebarMobile() {
         sidebar.classList.add('-translate-x-full');
         overlay.classList.add('hidden'); // Nascondi lo sfondo scuro
     }
-}
+}*/

@@ -20,6 +20,7 @@ from backend.sysadmin import sysadmin_bp
 from backend.adminaziendale import admin_aziendale_bp
 from backend.cantieri import cantieri_bp
 from backend.operai import operai_bp
+from backend.beni import beni_bp
 from backend.db import connessione
 
 app = Flask(__name__, 
@@ -34,6 +35,7 @@ app.register_blueprint(sysadmin_bp)
 app.register_blueprint(admin_aziendale_bp) # Attualmente la sezione dashboard e operai sono nello stesso file, creare un file apparte per la sezione operai.
 app.register_blueprint(operai_bp)
 app.register_blueprint(cantieri_bp)
+app.register_blueprint(beni_bp)
 
 # Configurazione Headers e Cache
 @app.after_request
