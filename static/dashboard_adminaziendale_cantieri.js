@@ -270,10 +270,10 @@ function updateCantiere() {
 
 // Funzione Eliminazione
 function deleteCantiere(QRCode) {
-    // 1. Correggi gli ID per farli combaciare con l'HTML
+
     const deleteModal = document.getElementById("delete-cantiere-modal");
     const deleteMessage = document.getElementById("delete-message");
-    const confirmBtn = document.getElementById("confirm-delete-cantiere-btn"); // ID CORRETTO
+    const confirmBtn = document.getElementById("confirm-delete-cantiere-btn");
 
     // Se il modale esiste, usiamo la logica avanzata
     if (deleteModal && confirmBtn) {

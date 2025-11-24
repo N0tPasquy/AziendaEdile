@@ -102,18 +102,16 @@
         <h3 class="text-xl font-bold mb-4">Nuovo Veicolo</h3>
 
         <small id="err_veicolo_targa" class="text-red-500 text-sm hidden">Targa obbligatoria</small>
-        <input id="new_veicolo_targa" class="input-field" type="text" placeholder="Targa (es. AB123CD)">
+        <input id="new_veicolo_targa" class="input-field" type="text" placeholder="Targa">
 
         <small id="err_veicolo_marca" class="text-red-500 text-sm hidden">Marca obbligatoria</small>
-        <input id="new_veicolo_marca" class="input-field" type="text" placeholder="Marca (es. Fiat)">
+        <input id="new_veicolo_marca" class="input-field" type="text" placeholder="Marca">
 
         <small id="err_veicolo_modello" class="text-red-500 text-sm hidden">Modello obbligatorio</small>
-        <input id="new_veicolo_modello" class="input-field" type="text" placeholder="Modello (es. Ducato)">
+        <input id="new_veicolo_modello" class="input-field" type="text" placeholder="Modello">
 
-        <input id="new_veicolo_km" class="input-field" type="number" placeholder="Chilometri attuali">
-        
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Scadenza Revisione</label>
-        <input id="new_veicolo_revisione" class="input-field" type="date">
+        <small id="err_veicolo_anno" class="text-red-500 text-sm hidden">Anno obbligatorio</small>
+        <input id="new_veicolo_anno" class="input-field" type="text" placeholder="Anno">
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddVeicoloModal()" class="cancel-btn">Annulla</button>
@@ -127,18 +125,16 @@
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Nuovo Attrezzo</h3>
 
-        <small id="err_attrezzo_nome" class="text-red-500 text-sm hidden">Nome attrezzo obbligatorio</small>
-        <input id="new_attrezzo_nome" class="input-field" type="text" placeholder="Nome (es. Trapano Hilti)">
+        
 
-        <input id="new_attrezzo_codice" class="input-field" type="text" placeholder="Codice Seriale / ID Interno">
+        <small id="err_attrezzo_marca" class="text-red-500 text-sm hidden">Marca dell'attrezzo obbligatoria</small>
+        <input id="new_attrezzo_marca" class="input-field" type="text" placeholder="Marca">
 
-        <label class="text-left block text-sm font-bold text-gray-700 mt-2">Stato Attuale</label>
-        <select id="new_attrezzo_stato" class="input-field bg-white">
-            <option value="disponibile">Disponibile</option>
-            <option value="in_uso">In Uso</option>
-            <option value="manutenzione">In Manutenzione</option>
-            <option value="rotto">Rotto / Da sostituire</option>
-        </select>
+        <small id="err_attrezzo_modello" class="text-red-500 text-sm hidden">Modello dell'attrezzo obbligatorio</small>
+        <input id="new_attrezzo_modello" class="input-field" type="text" placeholder="Modello">
+
+        <small id="err_attrezzo_tipo" class="text-red-500 text-sm hidden">Tipo di attrezzo obbligatorio</small>
+        <input id="new_attrezzo_tipo" class="input-field" type="text" placeholder="tipo">
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddAttrezzoModal()" class="cancel-btn">Annulla</button>

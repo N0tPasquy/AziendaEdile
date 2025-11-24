@@ -133,7 +133,7 @@
             <!-- Pulsante di LogOut-->
             <div class="mt-auto w-full px-5 mb-6">
                 <button onclick="logout()"
-                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all overflow-hidden whitespace-nowrap w-full border border-transparent hover:border-red-500/30">
+                    class="sidebar-btn group flex items-center justify-center gap-4 py-3 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-all overflow-hidden whitespace-nowrap w-full shadow-sm">
 
                     <div class="min-w-[24px] flex justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -143,6 +143,7 @@
                             <line x1="21" y1="12" x2="9" y2="12"></line>
                         </svg>
                     </div>
+
                     <span class="link-text hidden transition-all duration-300 font-medium">Esci</span>
                 </button>
             </div>
@@ -155,7 +156,7 @@
         <!-- Renderizza il contenuto delle sezioni -->
         <main
             class="flex-1 p-12 flex flex-col justify-start items-start text-left relative z-20 min-h-screen content-area">
-                <!-- Il codice della dashboard potrebbe andare qui, ma per restare coerenti con le altre sezioni
+            <!-- Il codice della dashboard potrebbe andare qui, ma per restare coerenti con le altre sezioni
                  lo implementiamo in un file separato all'interno della cartella partials/dashboard.html-->
             <div id="content-container"></div>
         </main>

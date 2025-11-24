@@ -323,10 +323,7 @@ function deleteOperaio(cf) {
         fetch("/get_operai")
             .then(res => res.json())
             .then(data => {
-                // FIX: data.operai (plurale) invece di data.operaio
                 const operaio = data.utenti.find(a => a.cf === cf);
-
-                // FIX: rimosso riferimento ad 'admin' se non esiste, fallback sul CF
                 const nomeCompleto = operaio ? `${operaio.nome} ${operaio.cognome}` : cf;
 
                 deleteMessage.innerText = `Sei sicuro di voler eliminare l'operaio ${nomeCompleto}?`;
