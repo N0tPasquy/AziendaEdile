@@ -22,6 +22,7 @@ from backend.cantieri import cantieri_bp
 from backend.operai import operai_bp
 from backend.beni import beni_bp
 from backend.db import connessione
+from backend.dashboardAdminaA import dashboardAa_bp
 
 app = Flask(__name__, 
             static_folder='../static',
@@ -36,6 +37,8 @@ app.register_blueprint(admin_aziendale_bp) # Attualmente la sezione dashboard e 
 app.register_blueprint(operai_bp)
 app.register_blueprint(cantieri_bp)
 app.register_blueprint(beni_bp)
+app.register_blueprint(dashboardAa_bp)
+
 
 # Configurazione Headers e Cache
 @app.after_request
