@@ -32,8 +32,6 @@ function caricaVeicoli(){
                         <td>${v.modello}</td>
                         <td>${v.anno}</td>
                         <td class = "actions">
-                            <button class = "icon-btn" onclick = "editVeicolo('${v.targa}')">
-                                <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
                             <button class = "icon-btn delete" onclick = "deleteVeicolo('${v.targa}')">
                                 <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
                         </td>
@@ -42,7 +40,6 @@ function caricaVeicoli(){
             });
         });
 }
-
 
 function caricaAttrezzi(){
     fetch("/get_beni?tipo=attrezzi")
@@ -55,13 +52,11 @@ function caricaAttrezzi(){
                 tbody.innerHTML +=`
                     <tr>
                         <td>${a.seriale}</td>
-                        <td>${a.tipo}</td>
                         <td>${a.marca}</td>
                         <td>${a.modello}</td>
+                        <td>${a.tipo}</td>
                         <td class = "actions">
-                            <button class = "icon-btn" onclick = "editVeicolo('${a.seriale}')">
-                                <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
-                            <button class = "icon-btn delete" onclick = "deleteVeicolo('${a.seriale}')">
+                            <button class = "icon-btn delete" onclick = "deleteAttrezzo('${a.seriale}')">
                                 <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
                         </td>
                     </tr>
@@ -126,7 +121,7 @@ function insertVeicolo(){
             openSuccessModal("Veicolo aggiunto correttamente!");
             caricaVeicoli();
         }else{
-            alert("Errore: " + data.message);
+            alert("Errore:" + data.message);
         }
     });
 }
@@ -168,8 +163,8 @@ function deleteVeicolo(targa) {
         newConfirmBtn.innerText = "Eliminazione...";
 
         // Chiamata al backend
-        fetch("/delete_bene", { // Questa rotta va creata nel codice python
-            method: "POST",
+        fetch("/delete_bene", { 
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ targa: targa, tipo: "veicolo" })     // Passo targa e tipo perché la delete_bene è generica
         })
@@ -193,21 +188,28 @@ function deleteVeicolo(targa) {
             newConfirmBtn.innerText = "Elimina";
             closeDeleteModal();
         });
-    };
+    };  
 }
 
 // Da questo punto in poi ci sono le function per la gestione degli attrezzi
 function insertAttrezzo(){
     let valid = true;
 
+    document.getElementById("err_attrezzo_seriale").classList.add("hidden");
     document.getElementById("err_attrezzo_marca").classList.add("hidden");
     document.getElementById("err_attrezzo_modello").classList.add("hidden");
     document.getElementById("err_attrezzo_tipo").classList.add("hidden");
 
+    const seriale = document.getElementById("new_attrezzo_seriale").value;
     const marca = document.getElementById("new_attrezzo_marca").value;
     const modello = document.getElementById("new_attrezzo_modello").value;
     const tipoA = document.getElementById("new_attrezzo_tipo").value;
 
+    if(seriale === ""){
+        document.getElementById("err_attrezzo_seriale").classList.remove("hidden");
+        valid = false;
+    }
+    
     if(marca === ""){
         document.getElementById("err_attrezzo_marca").classList.remove("hidden");
         valid = false;
@@ -226,6 +228,7 @@ function insertAttrezzo(){
     if(!valid) return;
 
     const payload = {
+        seriale: seriale,
         marca: marca,
         modello: modello,
         tipoA: tipoA,   // tipoA è l'attributo che salbiamo nel DB
@@ -241,7 +244,7 @@ function insertAttrezzo(){
     .then(data => {
         if(data.success){
             closeAddAttrezzoModal();
-            openSuccessModal("Veicolo aggiunto correttamente!");
+            openSuccessModal("Attrezzo aggiunto correttamente!");
             caricaAttrezzi();
         }else{
             alert("Errore: " + data.message);
@@ -252,6 +255,7 @@ function insertAttrezzo(){
 function openAddAttrezzoModal() {
     document.getElementById("add-attrezzo-modal").classList.remove("hidden");
 
+    document.getElementById("err_attrezzo_seriale").classList.add("hidden");
     document.getElementById("err_attrezzo_marca").classList.add("hidden");
     document.getElementById("err_attrezzo_modello").classList.add("hidden");
     document.getElementById("err_attrezzo_tipo").classList.add("hidden");
@@ -260,6 +264,7 @@ function openAddAttrezzoModal() {
 function closeAddAttrezzoModal() {
     document.getElementById("add-attrezzo-modal").classList.add("hidden");
 
+    document.getElementById("new_attrezzo_seriale").value = "";
     document.getElementById("new_attrezzo_marca").value = "";
     document.getElementById("new_attrezzo_modello").value = "";
     document.getElementById("new_attrezzo_tipo").value = "";
@@ -284,10 +289,10 @@ function deleteAttrezzo(Seriale) {
         newConfirmBtn.innerText = "Eliminazione...";
 
         // Chiamata al backend
-        fetch("/delete_bene", { // Questa rotta va creata nel codice python
-            method: "POST",
+        fetch("/delete_bene", {
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ seriale: Seriale, tipo: "veicolo" })     // Passo Seriale e tipo perché la delete_bene è generica
+            body: JSON.stringify({ seriale: Seriale, tipo: "attrezzo" })     // Passo Seriale e tipo perché la delete_bene è generica
         })
         .then(res => res.json())
         .then(data => {
@@ -316,6 +321,28 @@ function deleteAttrezzo(Seriale) {
 function closeDeleteModal() {
     document.getElementById("delete-veicolo-modal").classList.add("hidden");
     document.getElementById("delete-attrezzo-modal").classList.add("hidden");
+}
+
+
+
+function editVeicolo(targa) {
+
+    document.getElementById("err_edit_nome").classList.add("hidden");
+    document.getElementById("err_edit_cognome").classList.add("hidden");
+    document.getElementById("err_edit_password").classList.add("hidden");
+    document.getElementById("err_edit_numeroTelefono").classList.add("hidden");
+    document.getElementById("err_edit_dataNascita").classList.add("hidden");
+    
+    fetch("/get_beni")
+        .then(res => res.json())
+        .then(data => {
+            const bene = data.bene.find(a => a.targa === targa);
+
+            document.getElementById("edit_cf").value = operaio.cf;
+
+            
+            document.getElementById("edit-veicolo-modal").classList.remove("hidden");
+        });
 }
 
 

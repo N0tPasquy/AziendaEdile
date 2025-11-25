@@ -124,7 +124,7 @@ def create_bene():
 
         elif tipo == "attrezzo":
             seriale = data.get("seriale")
-            tipo_attrezzo = data.get("tipo_attrezzo")
+            tipo_attrezzo = data.get("tipoA")
 
             # Aggiunto NomeAzienda e corretto ID_V in ID_A
             cursor.execute("INSERT INTO attrezzo (ID_A, Seriale, Tipo, NomeAzienda) VALUES (?, ?, ?, ?)", 
@@ -141,6 +141,86 @@ def create_bene():
         conn.rollback()
         conn.close()
         return jsonify({"success": False, "message": str(e)})
+
+#funzione per trovare id del bene a partire da veicolo o attrezzo
+def trova_id_bene(identificatore, tipo):
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
     
+    conn = connessione()
+    cursor = conn.cursor()
+    nome_azienda = session.get("nome_azienda")
+
+    try:
+        if tipo == "veicolo":
+            cursor.execute("SELECT B.ID "
+                            "FROM bene B JOIN veicolo V ON B.ID = V.ID_V "
+                            "WHERE V.Targa = ? AND V.NomeAzienda = ? ",(identificatore, nome_azienda))
+            result = cursor.fetchone()
+            conn.close()
+            if result:
+                return result[0]
+            else:
+                return None
+            
+        elif tipo == "attrezzo":
+            cursor.execute("SELECT B.ID "
+                            "FROM bene B JOIN attrezzo A ON B.ID = A.ID_A "
+                            "WHERE A.Seriale = ? AND A.NomeAzienda = ? ", (identificatore, nome_azienda))
+            result = cursor.fetchone()
+            conn.close()
+            if result:
+                return result[0]
+            else:
+                return None
+        
+        else:
+            conn.close()
+            return None
+        
+    except Exception as e:
+        print(f"Errore in trova_id_bene: {e}")
+        if conn: conn.close()
+        return None
+
+
 # backend per eliminare i beni    
-#@beni_bp.route("/delete_beni", methods=["POST"]){}
+@beni_bp.route("/delete_bene", methods=["DELETE"])
+def delete_beni():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    data = request.get_json()
+    tipo = data.get("tipo")
+    nome_azienda = session.get("nome_azienda")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+    cursor = conn.cursor()
+
+    try:
+        if tipo == "veicolo":
+            targa = data.get("targa") 
+            id = trova_id_bene(targa, tipo)
+            cursor.execute("DELETE FROM bene WHERE ID = ? AND NomeAzienda = ?", (id, nome_azienda))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+            
+        elif tipo == "attrezzo":
+            seriale = data.get("seriale")
+            id = trova_id_bene(seriale, tipo)
+            cursor.execute("DELETE FROM bene WHERE ID = ? AND NomeAzienda = ?", (id, nome_azienda))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+        else:
+            conn.close()
+            return jsonify({"success": False, "message": "Tipo non valido"})
+            
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({"success": False, "message": str(e)}) 
+    

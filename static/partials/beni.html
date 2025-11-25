@@ -21,7 +21,7 @@
             <span id="nome_azienda" class="ml-4 font-bold text-2xl"></span>
         </div>
     </div>
-    
+
     <!-- Secondo header per coerenza con le altre schermate -->
     <div
         class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
@@ -39,8 +39,14 @@
         <div class="table-card flex flex-col h-full">
             <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
                 <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
-                    Veicoli
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <circle cx="7" cy="17" r="2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                        <circle cx="17" cy="17" r="2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 17H3v-4l2-5h12l2 5v4h-2m-4 0h-4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13l2-5H7l2 5z" />
+                    </svg> Veicoli
                 </h2>
                 <button onclick="openAddVeicoloModal()" class="add-btn text-sm px-3 py-1">
                     + Aggiungi Veicolo
@@ -59,7 +65,7 @@
                         </tr>
                     </thead>
                     <tbody id="veicoli-table-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -68,7 +74,13 @@
         <div class="table-card flex flex-col h-full">
             <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
                 <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 10h-2V7a3 3 0 00-3-3H8a3 3 0 00-3 3v3H3v10a2 2 0 002 2h14a2 2 0 002-2V10zM9 7a1 1 0 011-1h4a1 1 0 011 1v3H9V7z" />
+                        <rect x="9" y="14" width="6" height="3" rx="0.5" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" />
+                    </svg>
                     Attrezzi
                 </h2>
                 <button onclick="openAddAttrezzoModal()" class="add-btn text-sm px-3 py-1">
@@ -81,14 +93,14 @@
                     <thead class="sticky top-0 bg-white z-10 shadow-sm">
                         <tr class="text-left border-b border-gray-300/50">
                             <th class="pb-3 pl-2">Seriale</th>
-                            <th class="pb-3">Tipo</th>
                             <th class="pb-3">Marca</th>
                             <th class="pb-3">Modello</th>
+                            <th class="pb-3">Tipo</th>
                             <th class="pb-3 text-center">Azioni</th>
                         </tr>
                     </thead>
                     <tbody id="attrezzi-table-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -125,7 +137,8 @@
     <div class="modal-content">
         <h3 class="text-xl font-bold mb-4">Nuovo Attrezzo</h3>
 
-        
+        <small id="err_attrezzo_seriale" class="text-red-500 text-sm hidden">Il codice seriale è obbligatorio</small>
+        <input id="new_attrezzo_seriale" class="input-field" type="text" placeholder="Seriale">
 
         <small id="err_attrezzo_marca" class="text-red-500 text-sm hidden">Marca dell'attrezzo obbligatoria</small>
         <input id="new_attrezzo_marca" class="input-field" type="text" placeholder="Marca">
@@ -134,7 +147,7 @@
         <input id="new_attrezzo_modello" class="input-field" type="text" placeholder="Modello">
 
         <small id="err_attrezzo_tipo" class="text-red-500 text-sm hidden">Tipo di attrezzo obbligatorio</small>
-        <input id="new_attrezzo_tipo" class="input-field" type="text" placeholder="tipo">
+        <input id="new_attrezzo_tipo" class="input-field" type="text" placeholder="Tipo">
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddAttrezzoModal()" class="cancel-btn">Annulla</button>
@@ -178,7 +191,8 @@
 <!-- Modale di successo -->
 <div id="success-modal" class="modal hidden">
     <div class="modal-content flex flex-col items-center text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
         </svg>
         <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
