@@ -66,42 +66,6 @@ function toggleSidebar() {
         });
     }
 }
-/* Non serve più, abbiamo implementato le sezioni tramite altri file
-const sezioni = {
-    dashboard: `
-        <h1 class="titolo">Dashboard</h1>
-        <p>Benvenuto, admin.</p>
-    `,
-
-    cantieri: `
-        <h1 class="titolo">Gestione cantieri</h1>
-        <p>Benvenuto nella sezione cantieri.</p>
-    `,
-
-    beni: `
-        <h1 class="titolo">Beni</h1>
-        <p>Benvenuto nella sezione dei beni</p>
-    `,
-
-    operai: `
-        <h1 class="titolo">Operai</h1>
-        <p>Benvenuto nella sezione opeari.</p>
-    `,
-}*/
-
-/*
-function caricaSezione(nomeSezione) {
-    document.getElementById("content-container").innerHTML = sezioni[nomeSezione];
-
-    //aggiorno lo stile della sidebar
-
-    document.querySelectorAll(".sidebar-btn").forEach(btn => {
-        btn.classList.remove("active");
-    });
-
-    document.getElementById("btn-" + nomeSezione).classList.add("active");
-}
-*/
 
 function caricaSezione(nomeSezione) {
     fetch(`/static/partials/${nomeSezione}.html`)
@@ -125,6 +89,7 @@ function caricaSezione(nomeSezione) {
             if (nomeSezione === "cantieri") caricaCantieri();
             if (nomeSezione === "beni") caricaBeni();
             if (nomeSezione === "operai") caricaOperai();
+            if (nomeSezione === "dashboard") caricaCantieriAzienda();
         });
 
     document.querySelectorAll(".sidebar-btn")
