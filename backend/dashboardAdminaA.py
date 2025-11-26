@@ -1,3 +1,18 @@
+"""
+ Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+"""
+
 from flask import Blueprint, request, jsonify, session
 from backend.db import connessione
 from backend.decorators import login_required
@@ -83,4 +98,87 @@ def get_squadra():
     
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
+    
 
+@dashboardAa_bp.route("/get_AttrezziCantiere",methods=["GET"])
+def get_AttrezziCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    # 1. Recuperiamo il valore passato dalla fetch JS
+    qrcode_cantiere = request.args.get("qrcode")
+    if not qrcode_cantiere:
+        return jsonify({"success": False, "message": "Nessun cantiere selezionato"})
+
+    conn = connessione()
+    nome_azienda = session.get("nome_azienda")
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore connessione DB (conn is None)"})
+    
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+                        SELECT B.ID, B.Marca, B.Modello, A.Tipo, A.Seriale 
+                        FROM tracciamento T JOIN bene B ON T.ID_B = B.ID JOIN attrezzo A ON B.ID = A.ID_A AND B.NomeAzienda = A.NomeAzienda
+                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? AND T.InDeposito = 0 """, (qrcode_cantiere, nome_azienda))
+        
+        rows = cursor.fetchall()
+        conn.close()
+
+        attrezzi = []
+        for r in rows:
+            attrezzi.append({
+                "idBene" : r[0],
+                "marca" : r[1],
+                "modello": r[2],
+                "tipo" : r[3],
+                "seriale" : r[4]
+            })
+        return jsonify({"success": True, "attrezzi": attrezzi })
+    
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+
+@dashboardAa_bp.route("/get_VeicoliCantiere",methods=["GET"])
+def get_VeicoliCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    # 1. Recuperiamo il valore passato dalla fetch JS
+    qrcode_cantiere = request.args.get("qrcode")
+    if not qrcode_cantiere:
+        return jsonify({"success": False, "message": "Nessun cantiere selezionato"})
+
+    conn = connessione()
+    nome_azienda = session.get("nome_azienda")
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore connessione DB (conn is None)"})
+    
+    try:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+                        SELECT B.ID, B.Marca, B.Modello, V.Targa, V.Anno 
+                        FROM tracciamento T JOIN bene B ON T.ID_B = B.ID JOIN veicolo V ON B.ID = V.ID_V AND B.NomeAzienda = V.NomeAzienda
+                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? AND T.InDeposito = 0 """, (qrcode_cantiere, nome_azienda)) 
+        
+        
+        
+        rows = cursor.fetchall()
+        conn.close()
+
+        veicoli = []
+        for r in rows:
+            veicoli.append({
+                "idBene" : r[0],
+                "marca" : r[1],
+                "modello": r[2],
+                "targa": r[3],
+                "anno": r[4]
+            })
+        return jsonify({"success": True, "veicoli": veicoli })
+    
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})

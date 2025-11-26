@@ -21,8 +21,8 @@ from backend.adminaziendale import admin_aziendale_bp
 from backend.cantieri import cantieri_bp
 from backend.operai import operai_bp
 from backend.beni import beni_bp
-from backend.db import connessione
 from backend.dashboardAdminaA import dashboardAa_bp
+from backend.db import connessione
 
 app = Flask(__name__, 
             static_folder='../static',

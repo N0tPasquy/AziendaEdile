@@ -12,46 +12,102 @@
     - Anno Accademico: 2025/2026
 */
 
-function openAssegnaOperaioModal(){}
-function openAssegnaBeneModal(){}
+function openAssegnaOperaioModal() { }
+function openAssegnaBeneModal() { }
+function deleteOperaioCantiere(cf, qrcode) { }
+// Le due funzioni per eliminare un attrezzo e un veicolo ad un cantiere forse possono essere unite in un unica
+// funzione chiamata "deleteBeneCantiere(idBene, qrcode){}A"
+function deleteAttrezzoCantiere(idBene, qrcode) { }
+function deleteVeicoloCantiere(idBene, qrcode) { }
+
+// Funzione che carica i cantieri nel menù a tendina
+async function caricaCantieriAzienda() {
+    const select = document.getElementById("select_cantiere");
+    if (!select) {
+        console.warn("Select non trovata...");
+        return;
+    }
+
+    try {
+        const res = await fetch("/get_lista_cantieri");
+        const data = await res.json();
+
+        if (!data.success) {
+            console.error("Errore Backend:", data.message);
+            return;
+        }
+
+        select.innerHTML = '<option value="" disabled selected>-- Seleziona un cantiere --</option>';
+        data.cantieri.forEach(c => {
+            const option = document.createElement("option");
+            option.value = c.QRCode;
+            option.textContent = `${c.via} ${c.civico}, ${c.citta} ${c.CAP}`;
+            select.appendChild(option);
+        });
+
+        const newSelect = select.cloneNode(true);
+        select.parentNode.replaceChild(newSelect, select);
+
+        newSelect.addEventListener("change", function () {
+            const QRSelezionato = this.value;
+            if (QRSelezionato) {
+                // Chiamo le fetch
+                console.log("Fetch per QR cantiere:", QRSelezionato); // Log per capire quale cantiere viene selezionato - DA RIMUOVERE
+                caricaSquadra(QRSelezionato);
+
+                // Puliamo la tabella precedente prima di popolare la nuova
+                const tbody = document.getElementById("beni-table-body");
+                tbody.innerHTML = "";
+                // Ora possiamo ripopolare la tabella chiamando le rispettive function
+                caricaAttrezziCantiere(QRSelezionato);
+                caricaVeicoliCantiere(QRSelezionato);
+            }
+        });
+    } catch (err) {
+        console.error("Errore fetch:", err);
+        select.innerHTML = '<option value="">Errore di rete</option>';
+    }
+}
 
 async function caricaSquadra(qrcode) {
-    // Controllo di sicurezza: se non c'è qrcode, non facciamo nulla
+    // Controllo di sicurezza: se non c'è qrcode, non succede nulla
     if (!qrcode) return;
 
     try {
         console.log("Caricamento squadra per cantiere:", qrcode);
 
-        // 1. Facciamo la chiamata e aspettiamo la risposta
+        // Richiamo la rotta nel python
         const res = await fetch(`/get_squadra?qrcode=${qrcode}`);
-        
-        // 2. Convertiamo la risposta in JSON
+        // Converto la risposta in JSON
         const data = await res.json();
 
-        // 3. Controlliamo se il backend ha dato errore
+        // Controllo se il backend ha dato qualche errore
+        // Se da errore pulisci comunque la tabella e mostra il messaggio "Nessun dato"
         if (!data.success) {
             console.warn("Nessuna squadra trovata o errore:", data.message);
-            // Pulisci comunque la tabella o mostra un messaggio
             document.getElementById("squadra-table-body").innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun dato</td></tr>`;
             return;
         }
 
-        // 4. Se tutto è ok, popoliamo la tabella
+        // "Pulisco" la vecchia tabella
         const tbody = document.getElementById("squadra-table-body");
-        tbody.innerHTML = ""; // Pulisci la tabella vecchia
+        tbody.innerHTML = "";
 
+        // Controllo se esiste almeno un elemente di squadra
         if (data.squadra.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun operaio assegnato a questo cantiere.</td></tr>`;
             return;
         }
 
-        data.squadra.forEach(s => {
+        // Popola la tabella dinamicamente
+        data.squadra.forEach(s => {         // deleteOperaiCantiere apre il modale per togliere un operaio da una squadra - DA IMPLEMENTARE 
+            // la parte <span> deve essere modificato in modo che sia dinamico. Presente/Assente
             tbody.innerHTML += `
                 <tr class="border-b border-gray-100 hover:bg-gray-50">
                     <td class="py-3 px-2">${s.nome} ${s.cognome}</td>
-                    <td class="py-3 px-2">${s.TipoUtente}</td>
+                    <td class="py-3 px-2">${s.TipoUtente === 'CC' ? 'Capocantiere' : 'Operaio'}</td>
                     <td class="py-3 px-2">
-                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Attivo</span>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Presente</span>
                     </td>
                     <td class="py-3 px-2 text-center">
                         <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteOperaioCantiere('${s.cf}', '${qrcode}')">
@@ -67,51 +123,107 @@ async function caricaSquadra(qrcode) {
     }
 }
 
-// Funzione che carica i cantieri nel menù a tendina
-async function caricaCantieriAzienda() {
-    const select = document.getElementById("select_cantiere");
-    if (!select) {
-        console.warn("Select non trovata...");
-        return; 
-    }
+async function caricaAttrezziCantiere(qrcode) {
+    // Controllo di sicurezza: se non c'è qrcode, non succede nulla
+    if (!qrcode) return;
 
     try {
-        const res = await fetch("/get_lista_cantieri");
+        console.log("Caricamento attrezzi per cantiere:", qrcode);
+
+        // Richiamo la rotta nel python
+        const res = await fetch(`/get_AttrezziCantiere?qrcode=${qrcode}`);
+        // Converto la risposta in JSON
         const data = await res.json();
 
+        // Controllo se il backend ha dato qualche errore
+        // Se da errore pulisci comunque la tabella e mostra il messaggio "Nessun dato"
         if (!data.success) {
-            console.error("Errore Backend:", data.message);
+            console.warn("Nessuna attrezzo trovata o errore:", data.message);
+            document.getElementById("beni-table-body").innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun dato</td></tr>`;
             return;
         }
-        
-        select.innerHTML = '<option value="">-- Seleziona un cantiere --</option>';
-        data.cantieri.forEach(c => {
-            const option = document.createElement("option");
-            option.value = c.QRCode;
-            option.textContent = `${c.via} ${c.civico}, ${c.citta} ${c.CAP}`;
-            select.appendChild(option);
+
+        // Controllo se esiste almeno un elemente di attrezzi
+        if (data.attrezzi.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun attrezzo assegnato a questo cantiere.</td></tr>`;
+            return;
+        }
+
+        // Trovo l'id della tabella da popolare e la popolo nel ciclo forEach
+        const tbody = document.getElementById("beni-table-body");
+
+        data.attrezzi.forEach(a => {         // deleteVeicoloCantiere richiama il modale per togliere un veicolo da un cantiere - DA IMPLEMENTARE
+            tbody.innerHTML += `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-3 px-2">${a.seriale}</td>
+                    <td class="py-3 px-2">${a.marca} ${a.modello}</td>
+                    <td class="py-3 px-2">${a.tipo}</td>
+                    <td class="py-3 px-2 text-center">
+                        <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteAttrezzoCantiere('${a.idBene}', '${qrcode}')">
+                            <img src="/static/img/trash.png" class="w-6 h-6 object-contain">
+                        </button>
+                    </td>
+                </tr>
+            `;
         });
 
-        const newSelect = select.cloneNode(true);
-        select.parentNode.replaceChild(newSelect, select);
-    
-        newSelect.addEventListener("change", function() {
-            const QRSelezionato = this.value;
-            if(QRSelezionato) {
-                // Chiamo la fetch
-                console.log("Fetch per QR cantiere:", QRSelezionato); // Log per capire quale cantiere viene selezionato
-                caricaSquadra(QRSelezionato); 
-            }
-        });
     } catch (err) {
-        console.error("Errore fetch:", err);
-        select.innerHTML = '<option value="">Errore di rete</option>';
+        console.error("Errore fetch veicoli:", err);
+    }
+}
+
+async function caricaVeicoliCantiere(qrcode) {
+    // Controllo di sicurezza: se non c'è qrcode, non facciamo nulla
+    if (!qrcode) return;
+
+    try {
+        console.log("Caricamento veicoli per cantiere:", qrcode);
+
+        // Richiamo la rotta nel python
+        const res = await fetch(`/get_VeicoliCantiere?qrcode=${qrcode}`);
+
+        // Converto la risposta in JSON
+        const data = await res.json();
+
+        // Controllo se il backend ha dato qualche errore
+        // Se da errore pulisci comunque la tabella e mostra il messaggio "Nessun dato"
+        if (!data.success) {
+            console.warn("Nessuna veicolo trovata o errore:", data.message);
+            document.getElementById("beni-table-body").innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun dato</td></tr>`;
+            return;
+        }
+
+        // Controllo se esiste almeno un elemente di attrezzi
+        if (data.veicoli.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun bene assegnato a questo cantiere.</td></tr>`;
+            return;
+        }
+
+        // Trovo l'id della tabella da popolare e la popolo nel ciclo forEach
+        const tbody = document.getElementById("beni-table-body");
+
+        data.veicoli.forEach(v => {         // deleteVeicoloCantiere richiama il modale per togliere un veicolo da un cantiere - DA IMPLEMENTARE
+            tbody.innerHTML += `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="py-3 px-2">${v.targa}</td>
+                    <td class="py-3 px-2">${v.marca} ${v.modello}</td>
+                    <td class="py-3 px-2">${v.anno}</td>
+                    <td class="py-3 px-2 text-center">
+                        <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteVeicoloCantiere('${v.idBene}', '${qrcode}')">
+                            <img src="/static/img/trash.png" class="w-6 h-6 object-contain">
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (err) {
+        console.error("Errore fetch veicoli:", err);
     }
 }
 
 
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Pagina caricata: Avvio caricamento cantieri...");
-    caricaCantieriAzienda(); 
+    caricaCantieriAzienda();
 });

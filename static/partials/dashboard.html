@@ -21,27 +21,34 @@
         </div>
     </div>
 
-    <div class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
-        
+    <div
+        class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
+
         <div class="text-left w-full md:w-auto">
             <h1 class="text-2xl font-bold text-gray-800 m-0 leading-tight">Dashboard</h1>
             <p class="text-gray-500 text-sm m-0 font-medium">Gestione risorse e personale per cantiere</p>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+        <div
+            class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
             <div class="pl-2 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
             </div>
-            
+
             <div class="relative w-full md:w-auto">
-                <select id="select_cantiere" class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+                <select id="select_cantiere"
+                    class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
                     <option value="" disabled selected>-- Seleziona Cantiere --</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-400">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
                     </svg>
                 </div>
             </div>
@@ -53,12 +60,15 @@
         <div class="table-card flex flex-col h-full">
             <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
                 <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     Squadra
                 </h2>
-                <button onclick="openAssegnaOperaioModal()" class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                <button onclick="openAssegnaOperaioModal()"
+                    class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
                     + Assegna
                 </button>
             </div>
@@ -69,8 +79,8 @@
                         <tr class="text-left border-b border-gray-300/50">
                             <th class="pb-3 pl-2" style="width: 35%;">Nome</th>
                             <th class="pb-3" style="width: 25%;">Ruolo</th>
-                            <th class="pb-3" style="width: 20%;">Stato</th>
-                            <th class="pb-3 text-center" style="width: 20%;">Azioni</th>
+                            <th class="pb-3" style="width: 20%;">Stato</th> <!-- In futuro sarà presente/assente in base alla presenza -->
+                            <th class="pb-3 text-center" style="width: 20%;">Togli dalla squadra</th>
                         </tr>
                     </thead>
                     <tbody id="squadra-table-body"></tbody>
@@ -81,28 +91,39 @@
         <div class="table-card flex flex-col h-full">
             <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
                 <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                     </svg>
                     Dotazione Cantiere
                 </h2>
-                <button onclick="openAssegnaBeneModal()" class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
-                    + Assegna
-                </button>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="openAssegnaAttrezzoModal()"
+                        class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                        + Assegna attrezzo
+                    </button>
+                    <button onclick="openAssegnaVeicoloModal()"
+                        class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                        + Assegna veicolo
+                    </button>
+                </div>
             </div>
 
             <div class="overflow-auto flex-grow">
                 <table class="admin-table w-full">
                     <thead class="sticky top-0 bg-white z-10 shadow-sm">
                         <tr class="text-left border-b border-gray-300/50">
+                            <th class="pb-3" style="width: 25%;">Identificativo</th>
+                            <!-- Targa per veicoli e seriale per attrezzi -->
                             <th class="pb-3 pl-2" style="width: 35%;">Bene</th>
-                            <th class="pb-3" style="width: 20%;">Tipo</th> <!-- Veicolo o attrezzo -->
-                            <th class="pb-3" style="width: 25%;">Identificativo</th> <!-- Targa per veicoli e seriale per attrezzi -->
-                            <th class="pb-3 text-center" style="width: 20%;">Azioni</th> <!-- Assegna a cantiere -->
+                            <th class="pb-3" style="width: 20%;">Tipo/Anno</th> <!-- Veicolo o attrezzo -->
+                            <th class="pb-3 text-center" style="width: 20%;">Togli dal cantiere</th>
                         </tr>
                     </thead>
-                    <tbody id="dotazione-table-body"></tbody>
+                    <tbody id="beni-table-body"></tbody>
                 </table>
             </div>
         </div>

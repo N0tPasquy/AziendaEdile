@@ -1,3 +1,18 @@
+"""
+ Created by:
+    - Nome: Pasquale
+    - Cognome: Pagano
+    - Matricola: 0124003182
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+            &
+    - Nome: Daniele
+    - Cognome: Mele
+    - Matricola: 0124003006
+    - Corso di Laurea: Informatica
+    - Anno Accademico: 2025/2026
+"""
+
 from flask import Blueprint, request, jsonify, session, render_template
 from backend.db import connessione
 from backend.decorators import login_required, role_required
