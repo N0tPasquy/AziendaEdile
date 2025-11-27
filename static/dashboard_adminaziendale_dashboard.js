@@ -48,7 +48,7 @@ async function caricaCantieriAzienda() {
         const newSelect = select.cloneNode(true);
         select.parentNode.replaceChild(newSelect, select);
 
-        newSelect.addEventListener("change", function () {
+        newSelect.addEventListener("change", async function () {
             const QRSelezionato = this.value;
             if (QRSelezionato) {
                 // Chiamo le fetch
@@ -59,8 +59,12 @@ async function caricaCantieriAzienda() {
                 const tbody = document.getElementById("beni-table-body");
                 tbody.innerHTML = "";
                 // Ora possiamo ripopolare la tabella chiamando le rispettive function
-                caricaAttrezziCantiere(QRSelezionato);
-                caricaVeicoliCantiere(QRSelezionato);
+                await caricaAttrezziCantiere(QRSelezionato);
+                await caricaVeicoliCantiere(QRSelezionato);
+                // Se dopo aver caricato entrambe le funzioni la tabella è vuota scriviamo che il cantiere non ha beni 
+                if (tbody.innerHTML.trim() === "") {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-gray-400 py-4">Il cantiere non ha beni.</td></tr>`;
+                }
             }
         });
     } catch (err) {
@@ -103,15 +107,15 @@ async function caricaSquadra(qrcode) {
         data.squadra.forEach(s => {         // deleteOperaiCantiere apre il modale per togliere un operaio da una squadra - DA IMPLEMENTARE 
             // la parte <span> deve essere modificato in modo che sia dinamico. Presente/Assente
             tbody.innerHTML += `
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <tr>
                     <td class="py-3 px-2">${s.nome} ${s.cognome}</td>
                     <td class="py-3 px-2">${s.TipoUtente === 'CC' ? 'Capocantiere' : 'Operaio'}</td>
                     <td class="py-3 px-2">
                         <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Presente</span>
                     </td>
                     <td class="py-3 px-2 text-center">
-                        <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteOperaioCantiere('${s.cf}', '${qrcode}')">
-                            <img src="/static/img/trash.png" class="w-6 h-6 object-contain">
+                        <button class="icon-btn delete" onclick="deleteOperaioCantiere('${s.cf}', '${qrcode}')">
+                            <img src="/static/img/trash.png" alt="Elimina">
                         </button>
                     </td>
                 </tr>
@@ -145,7 +149,7 @@ async function caricaAttrezziCantiere(qrcode) {
 
         // Controllo se esiste almeno un elemente di attrezzi
         if (data.attrezzi.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun attrezzo assegnato a questo cantiere.</td></tr>`;
+            //tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun attrezzo assegnato a questo cantiere.</td></tr>`;
             return;
         }
 
@@ -154,13 +158,13 @@ async function caricaAttrezziCantiere(qrcode) {
 
         data.attrezzi.forEach(a => {         // deleteVeicoloCantiere richiama il modale per togliere un veicolo da un cantiere - DA IMPLEMENTARE
             tbody.innerHTML += `
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <tr>
                     <td class="py-3 px-2">${a.seriale}</td>
                     <td class="py-3 px-2">${a.marca} ${a.modello}</td>
                     <td class="py-3 px-2">${a.tipo}</td>
                     <td class="py-3 px-2 text-center">
-                        <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteAttrezzoCantiere('${a.idBene}', '${qrcode}')">
-                            <img src="/static/img/trash.png" class="w-6 h-6 object-contain">
+                        <button class="icon-btn delete" onclick="deleteAttrezzoCantiere('${a.idBene}', '${qrcode}')">
+                            <img src="/static/img/trash.png" alt="Elimina">
                         </button>
                     </td>
                 </tr>
@@ -195,7 +199,7 @@ async function caricaVeicoliCantiere(qrcode) {
 
         // Controllo se esiste almeno un elemente di attrezzi
         if (data.veicoli.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun bene assegnato a questo cantiere.</td></tr>`;
+            //tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun bene assegnato a questo cantiere.</td></tr>`;
             return;
         }
 
@@ -204,13 +208,13 @@ async function caricaVeicoliCantiere(qrcode) {
 
         data.veicoli.forEach(v => {         // deleteVeicoloCantiere richiama il modale per togliere un veicolo da un cantiere - DA IMPLEMENTARE
             tbody.innerHTML += `
-                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                <tr>
                     <td class="py-3 px-2">${v.targa}</td>
                     <td class="py-3 px-2">${v.marca} ${v.modello}</td>
                     <td class="py-3 px-2">${v.anno}</td>
                     <td class="py-3 px-2 text-center">
-                        <button class="icon-btn delete hover:bg-red-100 p-1 rounded transition" onclick="deleteVeicoloCantiere('${v.idBene}', '${qrcode}')">
-                            <img src="/static/img/trash.png" class="w-6 h-6 object-contain">
+                        <button class="icon-btn delete" onclick="deleteVeicoloCantiere('${v.idBene}', '${qrcode}')">
+                            <img src="/static/img/trash.png" alt="Elimina">
                         </button>
                     </td>
                 </tr>

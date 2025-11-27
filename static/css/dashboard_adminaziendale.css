@@ -108,26 +108,36 @@ body {
     width: 100%;
     box-sizing: border-box;
     color: rgb(80, 80, 80);
-
-    /* Assicurati che non ci sia height fissa qui */
     height: auto;
 }
 
 .admin-table {
     width: 100%;
     text-align: left;
-    border-collapse: collapse;
+    border-collapse: collapse; /* Fondamentale per i bordi delle righe */
     table-layout: fixed;
 }
 
 .admin-table th {
     font-weight: bold;
     padding: 10px 12px;
+    border-bottom: 2px solid #e5e7eb; 
+}
+
+/* Stile base della riga del corpo tabella */
+.admin-table tbody tr {
+    border-bottom: 1px solid #e5e7eb; 
+    transition: background-color 0.2s ease; 
+}
+
+/* Effetto Hover sulla riga */
+.admin-table tbody tr:hover {
+    background-color: #f9fafb; 
+    /* Più scuro: #f3f4f6 */
 }
 
 .admin-table td {
     padding: 10px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -278,6 +288,41 @@ body {
     background: #dc2626;
     transform: translateY(-1px);
 }
+
+/* Stile base del bottone (il contenitore dell'immagine) */
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;          /* Spazio attorno all'icona per il click */
+    border-radius: 8px;    /* Angoli stondati quando passi col mouse */
+    transition: all 0.2s ease;
+    display: inline-flex;  /* Centra l'immagine perfettamente */
+    align-items: center;
+    justify-content: center;
+    margin: 0 2px;         /* Un po' di spazio tra i due bottoni */
+}
+
+/* Stile dell'immagine dentro il bottone */
+.icon-btn img {
+    width: 40px;           /* Dimensione fissa (Sostituisce w-10) */
+    height: 40px;          /* Dimensione fissa (Sostituisce h-auto) */
+    object-fit: contain;   /* Mantiene le proporzioni */
+    display: block;
+}
+
+/* --- EFFETTI HOVER --- */
+
+/* Hover generico (per il tasto Edit) - Sfondo azzurrino */
+.icon-btn:hover {
+    background-color: #d7ffca; /* gray-50 o blue-50 */
+    transform: scale(1.1);     /* Leggero zoom */
+}
+
+/* Hover specifico per tasto DELETE (.delete) - Sfondo rosso chiaro */
+.icon-btn.delete:hover {
+    background-color: #fee2e2; /* red-100 */
+}   
 
 /* ====== SIDEBAR ====== */
 #sidebar {

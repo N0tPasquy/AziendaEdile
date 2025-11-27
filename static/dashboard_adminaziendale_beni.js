@@ -32,8 +32,8 @@ function caricaVeicoli(){
                         <td>${v.modello}</td>
                         <td>${v.anno}</td>
                         <td class = "actions">
-                            <button class = "icon-btn delete" onclick = "deleteVeicolo('${v.targa}')">
-                                <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
+                            <button class="icon-btn delete onclick = "deleteVeicolo('${v.targa}')">
+                                <img src="/static/img/trash.png" alt="Elimina"></button>
                         </td>
                     </tr>
                   `;
@@ -56,8 +56,8 @@ function caricaAttrezzi(){
                         <td>${a.modello}</td>
                         <td>${a.tipo}</td>
                         <td class = "actions">
-                            <button class = "icon-btn delete" onclick = "deleteAttrezzo('${a.seriale}')">
-                                <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
+                            <button class="icon-btn delete onclick = "deleteAttrezzo('${a.seriale}')">
+                                <img src="/static/img/trash.png" alt="Elimina"></button>
                         </td>
                     </tr>
                   `;

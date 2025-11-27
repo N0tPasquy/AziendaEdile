@@ -13,7 +13,7 @@
     - Anno Accademico: 2025/2026
 """
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template
 # --- IMPORT DEL PACKAGE BACKEND ---
 from backend.login import login_bp
 from backend.sysadmin import sysadmin_bp

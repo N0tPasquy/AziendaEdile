@@ -22,9 +22,9 @@ function caricaCantieri() {
                         <td>${cantieri.stato}</td>
                         <td class = "actions">
                             <button class = "icon-btn" onclick = "editCantiere('${cantieri.QRCode}')">
-                                <img src="/static/img/edit.png" class="w-10 h-auto object-contain"></button>
+                                <img src="/static/img/edit.png" alt="Modifica"></button>
                             <button class = "icon-btn delete" onclick = "deleteCantiere('${cantieri.QRCode}')">
-                                <img src="/static/img/trash.png" class="w-10 h-auto object-contain"></button>
+                                <img src="/static/img/trash.png" alt=Elimina></button>
                         </td>
                     </tr>
                 `;
