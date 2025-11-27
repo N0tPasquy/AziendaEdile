@@ -87,9 +87,9 @@ function caricaOperai() {
                         <td>${utenti.numero_telefono}</td>
                         <td>${ruoloEsteso}</td>
                         <td class = "actions">
-                            <button class="icon-btn onclick = "editOperaio('${utenti.cf}')">
+                            <button class="icon-btn" onclick = "editOperaio('${utenti.cf}')">
                                 <img src="/static/img/edit.png" alt="Modifica"></button>
-                            <button class="icon-btn delete onclick = "deleteOperaio('${utenti.cf}')">
+                            <button class="icon-btn delete" onclick = "deleteOperaio('${utenti.cf}')">
                                 <img src="/static/img/trash.png" alt="Elimina"></button>
                         </td>
                     </tr>

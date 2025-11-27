@@ -99,7 +99,7 @@ async function caricaSquadra(qrcode) {
 
         // Controllo se esiste almeno un elemente di squadra
         if (data.squadra.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun operaio assegnato a questo cantiere.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Il cantiere non ha una squadra</td></tr>`;
             return;
         }
 
