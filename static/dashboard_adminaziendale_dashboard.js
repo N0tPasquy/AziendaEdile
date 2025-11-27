@@ -12,14 +12,6 @@
     - Anno Accademico: 2025/2026
 */
 
-function openAssegnaOperaioModal() { }
-function openAssegnaBeneModal() { }
-function deleteOperaioCantiere(cf, qrcode) { }
-// Le due funzioni per eliminare un attrezzo e un veicolo ad un cantiere forse possono essere unite in un unica
-// funzione chiamata "deleteBeneCantiere(idBene, qrcode){}A"
-function deleteAttrezzoCantiere(idBene, qrcode) { }
-function deleteVeicoloCantiere(idBene, qrcode) { }
-
 // Funzione che carica i cantieri nel menù a tendina
 async function caricaCantieriAzienda() {
     const select = document.getElementById("select_cantiere");
@@ -226,6 +218,47 @@ async function caricaVeicoliCantiere(qrcode) {
     }
 }
 
+// Funzioni per aprire e chiudere i modali di assegnazione su ogni cantiere
+function openAssegnaOperaioModal() {
+    document.getElementById("add-operaio-modal").classList.remove("hidden");
+}
+
+function openAssegnaVeicoloModal() {
+    document.getElementById("add-veicolo-modal").classList.remove("hidden");
+}
+
+function closeAddVeicolodModal(){
+    document.getElementById("add-veicolo-modal").classList.add("hidden");
+
+}
+
+function openAssegnaAttrezzoModal() {
+    document.getElementById("add-attrezzo-modal").classList.remove("hidden");
+}
+
+function closeAddAttrezzodModal(){
+    document.getElementById("add-attrezzo-modal").classList.add("hidden");
+
+}
+
+function assegnaOperaio(){
+    // Codice per far uscire gli operai dell'azienda che non sono associati a cantieri -
+    // - (SOLO GLI OPERAI CHE NON SONO ASSOCIATI A CANTIERI - QUELLI NON PRESENTI SULLA TABELLA LAVORA)
+    //
+    // usare try: const res = await fetch("/get_lista_cantieri");
+    //            const data = await res.json();
+    // come abbiamo fatto per il caricamento dei cantieri alla riga 24
+    //
+    // Ripetere questo passaggio anche per gli attrezzi e i veicoli
+    console.log("Palle")
+}
+
+function assegnaVeicolo(){}
+function assegnaAttrezzo(){}
+
+function deleteOperaioCantiere(cf, qrcode) {}
+function deleteAttrezzoCantiere(idBene, qrcode) {}
+function deleteVeicoloCantiere(idBene, qrcode) {}
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Pagina caricata: Avvio caricamento cantieri...");

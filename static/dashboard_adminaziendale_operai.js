@@ -191,7 +191,7 @@ function openAddModal() {
 function closeAddModal() {
     document.getElementById("add-operaio-modal").classList.add("hidden");
 
-    // PuliscE tutti i campi di input
+    // Pulisce tutti i campi di input
     document.getElementById("new_cf").value = "";
     document.getElementById("new_nome").value = "";
     document.getElementById("new_cognome").value = "";
