@@ -182,3 +182,65 @@ def get_VeicoliCantiere():
     
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
+    
+
+@dashboardAa_bp.route("/get_operaiLiberi", methods=["GET"])
+def get_operai_liberi():
+    # 1. Verifica Login
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Accesso negato"})
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+    
+    cursor = conn.cursor()        
+    nome_azienda = session.get("nome_azienda") 
+
+    # 4. Esecuzione Query
+    try:
+        cursor.execute("""SELECT U.CF, U.Nome, U.Cognome 
+                       FROM utente U LEFT JOIN lavora L ON U.CF = L.CF_U 
+                       WHERE U.NomeAzienda = ? AND L.CF_U IS NULL """,(nome_azienda,))
+        
+        rows = cursor.fetchall()
+        operai = []
+
+        for r in rows:
+            operai.append({
+                "cf" : r[0],
+                "nome" : r[1],
+                "cognome" : r[2]
+            })
+
+        conn.close()
+        return jsonify({"success": True, "operai" : operai})
+
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message": str(e)})
+    
+
+@dashboardAa_bp.route("/inserisci_OperaioCantiere", methods=["POST"])
+def inserisci_OperaioCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    # 1. Recuperiamo il valore passato dalla fetch JS
+    CF = request.args.get("cf")
+    qr_code = request.args.get("QRcode")
+    if not CF:
+        return jsonify({"success": False, "message": "Nessun operaio selezionato"})
+    
+    conn = connessione()
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("INSERT INTO lavora (CF_U, QRCode_C) VALUES (?, ?)", (CF, qr_code))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message" : str(e)})

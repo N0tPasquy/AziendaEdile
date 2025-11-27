@@ -12,6 +12,9 @@
     - Anno Accademico: 2025/2026
 */
 
+// VARIABILE GLOBALE PER CAPIRE QUALE CANTIERE STIAMO MODIFICANDO
+var cantiereAttuale = "";
+
 // Funzione che carica i cantieri nel menù a tendina
 async function caricaCantieriAzienda() {
     const select = document.getElementById("select_cantiere");
@@ -68,6 +71,8 @@ async function caricaCantieriAzienda() {
 async function caricaSquadra(qrcode) {
     // Controllo di sicurezza: se non c'è qrcode, non succede nulla
     if (!qrcode) return;
+
+    cantiereAttuale = qrcode;
 
     try {
         console.log("Caricamento squadra per cantiere:", qrcode);
@@ -221,6 +226,11 @@ async function caricaVeicoliCantiere(qrcode) {
 // Funzioni per aprire e chiudere i modali di assegnazione su ogni cantiere
 function openAssegnaOperaioModal() {
     document.getElementById("add-operaio-modal").classList.remove("hidden");
+    assegnaOperaio();
+}
+
+function closeAddOperaioModal(){
+    document.getElementById("add-operaio-modal").classList.add("hidden");
 }
 
 function openAssegnaVeicoloModal() {
@@ -241,16 +251,69 @@ function closeAddAttrezzodModal(){
 
 }
 
-function assegnaOperaio(){
-    // Codice per far uscire gli operai dell'azienda che non sono associati a cantieri -
-    // - (SOLO GLI OPERAI CHE NON SONO ASSOCIATI A CANTIERI - QUELLI NON PRESENTI SULLA TABELLA LAVORA)
-    //
-    // usare try: const res = await fetch("/get_lista_cantieri");
-    //            const data = await res.json();
-    // come abbiamo fatto per il caricamento dei cantieri alla riga 24
-    //
-    // Ripetere questo passaggio anche per gli attrezzi e i veicoli
-    console.log("Palle")
+async function assegnaOperaio(qrCodeDelCantiere) {
+    
+    // Se passi il QR code quando apri il modale, lo salviamo
+    if(qrCodeDelCantiere) cantiereAttuale = qrCodeDelCantiere;
+
+    const select = document.getElementById("select_operaio");
+    if (!select) return;
+
+    try {
+        const res = await fetch("/get_operaiLiberi");
+        const data = await res.json();
+
+        if (!data.success) {
+            console.error("Errore Backend:", data.message);
+            return;
+        }
+
+        // Resettiamo la select
+        select.innerHTML = '<option value="" disabled selected>-- Seleziona un operaio --</option>';
+        
+        data.operai.forEach(o => {
+            const option = document.createElement("option");
+            option.value = o.cf; 
+            option.textContent = `${o.nome} ${o.cognome}`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Errore fetch:", err);
+        select.innerHTML = '<option value="">Errore di rete</option>';
+    }
+}
+
+// Funzione da collegare al pulsante "Assegna" nel tuo HTML
+function clickAssegnaOperaio() {
+    const select = document.getElementById("select_operaio");
+    const cf = select.value;
+
+    if (!cf) {
+        alert("Seleziona prima un operaio!");
+        return;
+    }
+    if (!cantiereAttuale) {
+        alert("Errore: Codice cantiere mancante.");
+        return;
+    }
+
+    fetch(`inserisci_OperaioCantiere?cf=${cf}&QRcode=${cantiereAttuale}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            closeAddOperaioModal();
+            caricaSquadra(cantiereAttuale);
+        } else {
+            alert("Errore: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Errore fetch:", err);
+        alert("Errore di comunicazione col server");
+    });
 }
 
 function assegnaVeicolo(){}
