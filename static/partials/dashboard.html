@@ -206,7 +206,7 @@
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddVeicolodModal()" class="cancel-btn">Annulla</button>
-            <button onclick="assegnaVeicolo()" class="confirm-btn">Assegna</button>
+            <button onclick="clickAssegnaVeicolo()" class="confirm-btn">Assegna</button>
         </div>
     </div>
 </div>
@@ -245,7 +245,52 @@
 
         <div class="flex justify-end mt-4 gap-3">
             <button onclick="closeAddAttrezzodModal()" class="cancel-btn">Annulla</button>
-            <button onclick="assegnaAttrezzo()" class="confirm-btn">Assegna</button>
+            <button onclick="clickAssegnaAttrezzo()" class="confirm-btn">Assegna</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA ELIMINAZIONE BENE ASSEGNATO -->
+<div id="delete-bene-assegnato-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
+
+        <p id="delete-message" class="text-gray-700 mb-5">
+            Sei sicuro di togliere questo bene dal cantiere?
+        </p>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeDeleteBeneAssegnatoModal()" class="cancel-btn">Annulla</button>
+            <button id="btn-confirm-delete-bene" class="delete-btn">Elimina</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modale di successo -->
+<div id="success-modal" class="modal hidden">
+    <div class="modal-content flex flex-col items-center text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
+        <p id="success-message" class="text-gray-700 mb-5"></p>
+        <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
+    </div>
+</div>
+
+<!-- MODALE CONFERMA ELIMINAZIONE OPERAIO ASSEGNATO -->
+<div id="delete-operaio-assegnato-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
+
+        <p id="delete-message" class="text-gray-700 mb-5">
+            Sei sicuro di togliere questo operaio dal cantiere?
+        </p>
+
+        <div class="flex justify-end mt-4 gap-3">
+            <button onclick="closeDeleteOperaioAssegnatoModal()" class="cancel-btn">Annulla</button>
+            <button id="btn-confirm-delete-operaio" class="delete-btn">Elimina</button>
         </div>
     </div>
 </div>

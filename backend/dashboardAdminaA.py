@@ -121,7 +121,7 @@ def get_AttrezziCantiere():
         cursor.execute("""
                         SELECT B.ID, B.Marca, B.Modello, A.Tipo, A.Seriale 
                         FROM tracciamento T JOIN bene B ON T.ID_B = B.ID JOIN attrezzo A ON B.ID = A.ID_A AND B.NomeAzienda = A.NomeAzienda
-                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? AND T.InDeposito = 0 """, (qrcode_cantiere, nome_azienda))
+                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? """, (qrcode_cantiere, nome_azienda))
         
         rows = cursor.fetchall()
         conn.close()
@@ -162,7 +162,7 @@ def get_VeicoliCantiere():
         cursor.execute("""
                         SELECT B.ID, B.Marca, B.Modello, V.Targa, V.Anno 
                         FROM tracciamento T JOIN bene B ON T.ID_B = B.ID JOIN veicolo V ON B.ID = V.ID_V AND B.NomeAzienda = V.NomeAzienda
-                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? AND T.InDeposito = 0 """, (qrcode_cantiere, nome_azienda)) 
+                        WHERE T.QRCode_C = ? AND B.NomeAzienda = ? """, (qrcode_cantiere, nome_azienda)) 
         
         
         
@@ -260,7 +260,7 @@ def get_VeicoliLiberi():
     nome_azienda = session.get("nome_azienda")
     try:
         cursor.execute("SELECT B.ID, B.Marca, B.Modello, V.Targa "
-                       "FROM (bene B JOIN veicolo V ON B.ID = V.ID_V) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
+                       "FROM (bene B JOIN veicolo V ON B.ID = V.ID_V AND B.NomeAzienda = V.NomeAzienda) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
                        "WHERE B.NomeAzienda = ? AND T.ID_B IS NULL ",(nome_azienda,))
         rows = cursor.fetchall()
         veicoli = []
@@ -293,7 +293,7 @@ def get_AttrezziLiberi():
     nome_azienda = session.get("nome_azienda")
     try:
         cursor.execute("SELECT B.ID, B.Marca, B.Modello, A.Tipo "
-                       "FROM (bene B JOIN attrezzo A ON B.ID = A.ID_A) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
+                       "FROM (bene B JOIN attrezzo A ON B.ID = A.ID_A AND B.NomeAzienda = A.NomeAzienda) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
                        "WHERE B.NomeAzienda = ? AND T.ID_B IS NULL ",(nome_azienda,))
         rows = cursor.fetchall()
         attrezzi = []
@@ -333,4 +333,57 @@ def inserisci_BeneCantiere():
         return jsonify({"success": True})
     except Exception as e:
         conn.close()
-        return jsonify({"success": False, "message" : str(e)})
+        return jsonify({"success": False, "message" : str(e) + "ERRORE QUI!"})
+    
+
+@dashboardAa_bp.route("/delete_BeneAssegnato", methods=["DELETE"])
+def delete_bene():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    
+    id = request.args.get("id")
+    qr_code = request.args.get("QRcode")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+    cursor = conn.cursor()
+
+    try:
+            cursor.execute("DELETE FROM tracciamento WHERE ID_B = ? AND QRCode_C = ?", (id, qr_code))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+
+            
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({"success": False, "message": str(e)}) 
+    
+@dashboardAa_bp.route("/delete_OperaioAssegnato", methods=["DELETE"])
+def delete_operaio():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    
+    cf = request.args.get("cf")
+    qr_code = request.args.get("QRcode")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore durante la connessione al DB"})
+    cursor = conn.cursor()
+
+    try:
+            cursor.execute("DELETE FROM lavora WHERE CF_U = ? AND QRCode_C = ?", (cf, qr_code))
+            conn.commit()
+            conn.close()
+            return jsonify({"success": True})
+
+            
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({"success": False, "message": str(e)}) 
