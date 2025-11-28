@@ -244,3 +244,93 @@ def inserisci_OperaioCantiere():
     except Exception as e:
         conn.close()
         return jsonify({"success": False, "message" : str(e)})
+    
+
+@dashboardAa_bp.route("/get_VeicoliLiberi",methods=["GET"])
+def get_VeicoliLiberi():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Accesso negato"})
+    
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore DB"})
+    
+    cursor = conn.cursor()
+    nome_azienda = session.get("nome_azienda")
+    try:
+        cursor.execute("SELECT B.ID, B.Marca, B.Modello, V.Targa "
+                       "FROM (bene B JOIN veicolo V ON B.ID = V.ID_V) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
+                       "WHERE B.NomeAzienda = ? AND T.ID_B IS NULL ",(nome_azienda,))
+        rows = cursor.fetchall()
+        veicoli = []
+
+        for r in rows:
+            veicoli.append({
+                "id" : r[0],
+                "marca" : r[1],
+                "modello" : r[2],
+                "targa" : r[3]
+            })
+        conn.close()
+        return jsonify({"success" : True, "veicoli" : veicoli})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+    
+
+@dashboardAa_bp.route("/get_AttrezziLiberi",methods=["GET"])
+def get_AttrezziLiberi():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Accesso negato"})
+    
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore DB"})
+    
+    cursor = conn.cursor()
+    nome_azienda = session.get("nome_azienda")
+    try:
+        cursor.execute("SELECT B.ID, B.Marca, B.Modello, A.Tipo "
+                       "FROM (bene B JOIN attrezzo A ON B.ID = A.ID_A) LEFT JOIN tracciamento T ON B.ID = T.ID_B "
+                       "WHERE B.NomeAzienda = ? AND T.ID_B IS NULL ",(nome_azienda,))
+        rows = cursor.fetchall()
+        attrezzi = []
+
+        for r in rows:
+            attrezzi.append({
+                "id" : r[0],
+                "marca" : r[1],
+                "modello" : r[2],
+                "tipo" : r[3]
+            })
+        conn.close()
+        return jsonify({"success" : True, "attrezzi" : attrezzi})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})
+    
+
+@dashboardAa_bp.route("/inserisci_BeneCantiere", methods=["POST"])
+def inserisci_BeneCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    ID = request.args.get("id")
+    qr_code = request.args.get("QRcode")
+    if not ID:
+        return jsonify({"success": False, "message": "Nessun bene selezionato"})
+    
+    conn = connessione()
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("INSERT INTO tracciamento (ID_B, QRCode_C) VALUES (?, ?)", (ID, qr_code))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message" : str(e)})

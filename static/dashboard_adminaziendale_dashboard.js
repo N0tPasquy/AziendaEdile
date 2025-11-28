@@ -316,7 +316,38 @@ function clickAssegnaOperaio() {
     });
 }
 
-function assegnaVeicolo(){}
+async function assegnaVeicolo(qrCodeDelCantiere) {
+    
+    // Se passi il QR code quando apri il modale, lo salviamo
+    if(qrCodeDelCantiere) cantiereAttuale = qrCodeDelCantiere;
+
+    const select = document.getElementById("select_veicolo");
+    if (!select) return;
+
+    try {
+        const res = await fetch("/get_VeicoliLiberi");
+        const data = await res.json();
+
+        if (!data.success) {
+            console.error("Errore Backend:", data.message);
+            return;
+        }
+
+        // Resettiamo la select
+        select.innerHTML = '<option value="" disabled selected>-- Seleziona un veicolo --</option>';
+        
+        data.veicoli.forEach(v => {
+            const option = document.createElement("option");
+            option.value = v.id; 
+            option.textContent = `${v.marca} ${v.modello} ${v.targa}`;
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Errore fetch:", err);
+        select.innerHTML = '<option value="">Errore di rete</option>';
+    }
+}
 function assegnaAttrezzo(){}
 
 function deleteOperaioCantiere(cf, qrcode) {}
