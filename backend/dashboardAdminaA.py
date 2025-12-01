@@ -53,7 +53,6 @@ def get_lista_cantieri():
                 "citta" : r[2],
                 "civico" : r[3],
                 "CAP" : r[4]
-                # Aggiungi altri campi se servono
             })
         
         return jsonify({"success" : True, "cantieri" : cantieri})

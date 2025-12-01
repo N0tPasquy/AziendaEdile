@@ -397,7 +397,6 @@ function clickAssegnaAttrezzo() {
 }
 
 async function assegnaAttrezzo(qrCodeDelCantiere) {
-
     // Se passi il QR code quando apri il modale, lo salviamo
     if (qrCodeDelCantiere) cantiereAttuale = qrCodeDelCantiere;
 

@@ -1,0 +1,210 @@
+/* === RESET BASE E SFONDO === */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif; /* O il font che preferisci */
+    
+    /* Percorso immagine di sfondo */
+    background-image: url('../img/background.png'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
+    min-height: 100vh;
+}
+
+/* === LAYOUT CENTRALE === */
+.page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra anche verticalmente */
+    
+    /* CAMBIA QUESTO: Solo un piccolo margine attorno */
+    padding: 5rem;
+    
+    box-sizing: border-box;
+    width: 100vw;        /* Larghezza totale viewport */
+    height: 100vh;       /* Altezza totale viewport */
+    overflow: hidden;    /* Evita scrollbar doppie sulla pagina principale */
+}
+
+/* === LA CARD PRINCIPALE (EFFETTO VETRO) === */
+.dashboard-card {
+    /* CAMBIA QUESTO: Larghezza e Altezza totali */
+    width: 100%;         
+    height: 100%;        /* Riempie tutto il .page-wrapper (meno il padding) */
+    
+    /* RIMUOVI o imposta a 'none' il limite massimo */
+    max-width: none;     
+    
+    /* Il resto rimane uguale per l'effetto vetro */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Mantiene i bordi tondi */
+}
+
+/* === LA STRISCIA BIANCA IN ALTO (HEADER) === */
+.card-header {
+    background-color: #ffffff; /* Bianco solido */
+    height: 70px;              /* Altezza fissa header */
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* Spinge logo a sx e bottone a dx */
+    align-items: center;
+    padding: 0 2rem;           /* Spazio laterale interno */
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(0,0,0,0.05); /* Separatore sottilissimo */
+}
+
+/* Stile Logo e Testo a sinistra */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Spazio tra logo e testo */
+}
+
+.logo-icon {
+    height: 40px;
+    width: auto;
+}
+
+.company-name {
+    font-weight: 700;
+    color: #1e3a8a; /* Blu scuro (simile alla foto) */
+    font-size: 1.2rem;
+}
+
+/* === IL BOTTONE ROSSO "ESCI" === */
+/* === BOTTONE ESCI (Stile Tailwind Replicato) === */
+.btn-logout {
+    /* Layout Flexbox (flex items-center gap-2 justify-center) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* gap-2 (8px) */
+
+    /* Colori (bg-red-500 text-white) */
+    background-color: #ef4444; 
+    color: white;
+    
+    /* Font (font-medium) */
+    font-weight: 500;
+    font-family: inherit; /* Usa il font della pagina */
+
+    /* Spaziatura (py-1.5 px-4) */
+    padding-top: 0.375rem;    /* 6px */
+    padding-bottom: 0.375rem; /* 6px */
+    padding-left: 1rem;       /* 16px */
+    padding-right: 1rem;      /* 16px */
+
+    /* Bordi (rounded) */
+    border-radius: 0.25rem;   /* 4px standard tailwind */
+    border: none;             /* Rimuove bordo default */
+
+    /* Transizioni (transition duration-200) */
+    transition: background-color 200ms ease;
+    
+    /* Ombra (shadow-sm) */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+    /* Cursore */
+    cursor: pointer;
+
+    /* Dimensioni Mobile (text-sm w-full) */
+    font-size: 0.875rem; 
+    width: 100%; 
+}
+
+/* Stato Hover (hover:bg-red-600) */
+.btn-logout:hover {
+    background-color: #dc2626; 
+}
+
+/* Icona SVG (h-4 w-4) */
+.logout-icon {
+    height: 1rem;
+    width: 1rem;
+}
+
+/* === AREA CONTENUTI (SOTTO L'HEADER) === */
+.card-body {
+    flex-grow: 1;
+    padding: 2rem;
+    
+    /* AGGIUNGI QUESTO per lo scroll interno */
+    overflow-y: auto; 
+    
+    /* Opzionale: rende lo scroll fluido su mobile */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* === RESPONSIVE (MEDIA QUERY) === */
+/* Corrisponde a md: (min-width: 768px) */
+@media (min-width: 768px) {
+    .btn-logout {
+        width: auto;         /* md:w-auto */
+        font-size: 1rem;     /* md:text-base */
+    }
+}
+
+/* Contenitore per allineare i pulsanti */
+.actions-container {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Stile del pulsante Fotocamera */
+.btn-camera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    background-color: #3b82f6; /* Blu acceso */
+    color: white;
+    
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* Ombra per staccarlo dallo sfondo */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-camera:hover {
+    background-color: #2563eb; /* Blu più scuro */
+    transform: translateY(-2px); /* Effetto sollevamento */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-camera:active {
+    transform: translateY(0);
+}
+
+/* Stile per l'immagine di anteprima */
+.preview-image {
+    max-width: 100%;
+    max-height: 300px; /* Non farla diventare gigante */
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    margin-top: 10px;
+}
+
+#reader video {
+    /* Forza il video a riempire il contenitore con bordi tondi */
+    border-radius: 15px; 
+    object-fit: cover;
+}

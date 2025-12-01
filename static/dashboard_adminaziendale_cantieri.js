@@ -150,7 +150,22 @@ function closeQRModal() {
     img.src = "";
     modal.classList.add("hidden");
 }
+function downloadQR() {
+    const img = document.getElementById("qr-modal-img");
 
+    if (!img.src) {
+        alert("QR non disponibile.");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "qr_cantiere.png";  // nome del file da scaricare
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 
 
@@ -230,7 +245,6 @@ function updateCantiere() {
     document.getElementById("err_edit_stato").classList.add("hidden");
 
 
-
     if (stato === "") {
         document.getElementById("err_edit_stato").classList.remove("hidden");
         valid = false;
@@ -264,7 +278,6 @@ function updateCantiere() {
         document.getElementById("err_edit_capo").classList.remove("hidden");
         valid = false;
     }
-
 
     if (!valid) return;
 

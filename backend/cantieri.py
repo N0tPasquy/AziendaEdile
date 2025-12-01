@@ -12,6 +12,7 @@
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
 """
+
 import qrcode
 from io import BytesIO
 from flask import Blueprint, request, jsonify, session
@@ -104,8 +105,6 @@ def create_cantiere():
     citta = data.get("citta")
     civico = data.get("civico")
     CAP = data.get("CAP")
-    #stato = data.get("stato")
-    #cf_capo = data.get("cf_capo")
     descrizione = data.get("descrizione")
 
     conn = connessione()
