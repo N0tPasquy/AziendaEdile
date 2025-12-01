@@ -135,7 +135,6 @@ def create_cantiere():
 def update_cantiere():
     data = request.get_json()
 
-    cf = session.get("cf")
     qr = data.get("QRCode")
     via = data.get("via")
     citta = data.get("citta")
@@ -143,7 +142,7 @@ def update_cantiere():
     CAP = data.get("CAP")
     stato = data.get("stato")
     descrizione = data.get("descrizione")
-    cf_capo = data.get("cf_capo")
+    nuovo_cf_capo = data.get("cf_capo") # Questo è il CF selezionato dalla dropdown
 
     conn = connessione()
     if conn is None:
@@ -152,17 +151,31 @@ def update_cantiere():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("UPDATE Cantiere "
-                       "SET Via = ?, Citta = ?, Civico = ?, CAP = ?, Stato = ?, CFCapo = ?, Descrizione = ? "
-                       "WHERE QRCode = ?",(via, citta, civico, CAP, stato, cf_capo, descrizione, qr))
+        # 1. RECUPERO IL VECCHIO CAPOCANTIERE (se esiste)
+        cursor.execute("SELECT CFCapo FROM Cantiere WHERE QRCode = ?", (qr,))
+        row = cursor.fetchone()
+        vecchio_cf_capo = row[0] if row else None
+
+        # 2. SE C'ERA UN VECCHIO CAPO ED È DIVERSO DAL NUOVO -> LO PORTIAMO A 'OP'
+        if vecchio_cf_capo and vecchio_cf_capo != nuovo_cf_capo:
+            cursor.execute("UPDATE utente SET TipoUtente = 'OP' WHERE CF = ?", (vecchio_cf_capo,))
+
+        # 3. AGGIORNIAMO IL CANTIERE
+        cursor.execute("""
+            UPDATE Cantiere 
+            SET Via = ?, Citta = ?, Civico = ?, CAP = ?, Stato = ?, CFCapo = ?, Descrizione = ? 
+            WHERE QRCode = ?
+        """, (via, citta, civico, CAP, stato, nuovo_cf_capo, descrizione, qr))
         
-        cursor.execute("UPDATE utente "
-                        "SET TipoUtente = 'CC' "
-                        "WHERE CF = ? ", (cf_capo,))
+        # 4. PROMUOVIAMO IL NUOVO CAPO A 'CC'
+        # Questo update è necessario affinché il ruolo sia coerente nella tabella utente
+        if nuovo_cf_capo:
+            cursor.execute("UPDATE utente SET TipoUtente = 'CC' WHERE CF = ?", (nuovo_cf_capo,))
         
         conn.commit()
         conn.close()
         return jsonify({"success" : True})
+    
     except Exception as e:
         conn.rollback()
         conn.close()
@@ -193,3 +206,41 @@ def delete_cantiere():
     except Exception as e:
         conn.close()
         return jsonify({"success": False, "message": str(e)})
+
+
+@cantieri_bp.route("/get_operaiDelCantiere", methods=["GET"])
+def get_operaiDelCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore di connessione al DB"})
+    
+    nome_azienda = session.get("nome_azienda")
+    cantiere = request.args.get("cantiere")
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(" SELECT U.CF, U.Nome, U.Cognome " 
+                        "FROM utente U JOIN lavora L ON U.CF = L.CF_U "
+                        "WHERE (U.NomeAzienda = ? AND L.QRCode_C = ?) AND U.TipoUtente IN ('OP', 'CC') ",(nome_azienda, cantiere)
+                        )
+        
+        rows = cursor.fetchall()
+
+        operai = []
+
+        for r in rows:
+            operai.append({
+                "cf" : r[0],
+                "nome" : r[1],
+                "cognome" : r[2]
+            })
+        conn.close()
+        return jsonify({"success" : True, "operai" : operai})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})

@@ -115,7 +115,6 @@ function createOperaio() {
     const data_nascita = document.getElementById("new_dataNascita").value;
     const numero_telefono = document.getElementById("new_NumeroTelefono").value.trim();
     const passwordInput = document.getElementById("new_password").value.trim();
-    const capocantiere = document.getElementById("new_capocantiere").checked;
 
     if (!validateCF(cf)) {
         document.getElementById("err_new_cf").classList.remove("hidden");
@@ -154,8 +153,7 @@ function createOperaio() {
         cognome: cognome,
         password: passwordInput,
         data_nascita: data_nascita,
-        numero_telefono: numero_telefono,
-        capocantiere: capocantiere
+        numero_telefono: numero_telefono
     };
 
     fetch("/create_operaio", {
@@ -198,7 +196,6 @@ function closeAddModal() {
     document.getElementById("new_password").value = "";
     document.getElementById("new_dataNascita").value = "";
     document.getElementById("new_NumeroTelefono").value = "";
-    document.getElementById("new_capocantiere").checked = false; // Resetta la checkbox
 }
 
 function openSuccessModal(message) {
@@ -230,10 +227,6 @@ function editOperaio(cf) {
             document.getElementById("edit_password").value = operaio.password;
             document.getElementById("edit_dataNascita").value = formatoData(operaio.data_nascita);
             document.getElementById("edit_NumeroTelefono").value = operaio.numero_telefono;
-
-            // *** NUOVO: Imposta la checkbox in base al ruolo attuale ***
-            // Se il tipo è 'CC' mette la spunta, altrimenti la toglie
-            document.getElementById("edit_capocantiere").checked = (operaio.tipo === 'CC');
             document.getElementById("edit-operaio-modal").classList.remove("hidden");
         });
 }
@@ -282,9 +275,6 @@ function updateOperaio() {
 
     if(!valid) return;  
     
-    // *** NUOVO: Leggi il valore della checkbox ***
-    const isCapocantiere = document.getElementById("edit_capocantiere").checked;
-    
     const payload = {
         cf: document.getElementById("edit_cf").value,
         nome: nome,
@@ -292,7 +282,6 @@ function updateOperaio() {
         password: passwordInput !== "" ? passwordInput : null,
         data_nascita: data_nascita,
         numero_telefono: numero_telefono,
-        capocantiere: isCapocantiere // Invia il dato al backend
     };
 
     // Ricordati di usare la rotta corretta che hai creato prima
@@ -391,19 +380,6 @@ function closeDeleteModal() {
     const deleteModal = document.getElementById("delete-modal");
     if (deleteModal) deleteModal.classList.add("hidden");
 }
-
-/* === CONTROLLO SESSIONE === */
-/*fetch("/session_user")
-    .then(res => res.json())
-    .then(data => {
-        if (!data.logged_in) {
-            window.location.href = "/";
-            return;
-        }
-
-        console.log("Utente loggato:", data.nome, data.cognome, data.ruolo);
-
-    });*/
 
 
 window.onload = () => caricaOperai;

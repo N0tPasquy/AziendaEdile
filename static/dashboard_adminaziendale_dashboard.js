@@ -53,10 +53,7 @@ async function caricaCantieriAzienda() {
                 const tbody = document.getElementById("beni-table-body");
                 tbody.innerHTML = ""; 
 
-                // 2. Chiamata per la squadra (presumo tu abbia la funzione)
-                if (typeof caricaSquadra === "function") {
-                    caricaSquadra(QRSelezionato);
-                }
+                caricaSquadra(QRSelezionato);
 
                 // 3. Caricamento sequenziale (o parallelo) dei beni
                 // Usiamo await per essere sicuri che abbiano finito prima di controllare se è vuoto
@@ -103,7 +100,7 @@ async function caricaSquadra(qrcode) {
 
         // Controllo se esiste almeno un elemente di squadra
         if (data.squadra.length === 0) {
-            //tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Il cantiere non ha una squadra</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Il cantiere non ha una squadra</td></tr>`;
             return;
         }
 

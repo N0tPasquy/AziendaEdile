@@ -11,8 +11,16 @@ function caricaCantieri() {
 
             const tbody = document.getElementById("cantieri-table-body");
             tbody.innerHTML = "";
+            
+            const mappaStati = {
+                'DA': 'Da iniziare',
+                'IN': 'In corso',
+                'SO': 'Sospeso',
+                'FI': 'Finito'
+            };
 
             data.cantieri.forEach(cantieri => {
+                const statoEsteso = mappaStati[cantieri.stato] || cantieri.stato;
 
                 const row = `
                     <tr>
@@ -23,7 +31,7 @@ function caricaCantieri() {
                                 <img src = "/static/img/qrcode.png" alt="QR" style="width:24px">
                             </button>
                         </td>
-                        <td>${cantieri.stato}</td>
+                        <td>${statoEsteso}</td>
                         <td class = "actions">
                             <button class = "icon-btn" onclick = "editCantiere('${cantieri.QRCode}')">
                                 <img src="/static/img/edit.png" alt="Modifica"></button>
@@ -382,11 +390,11 @@ function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
 
-async function caricaOperaiAzienda(cantiere) {
+async function caricaOperaiAzienda(qrcode) {
     const select = document.getElementById("edit_capo");
 
     try {
-        const res = await fetch(`/get_operaiCantiere?cantiere=${cantiere}`);
+        const res = await fetch(`/get_operaiDelCantiere?cantiere=${qrcode}`);
         const data = await res.json();
 
         if (!data.success) {
@@ -394,15 +402,13 @@ async function caricaOperaiAzienda(cantiere) {
             return;
         }
 
-       // const operai = data.utenti.filter(u => u.tipo === "OP" || u.tipo === "CC");
-
         // Reset select
         select.innerHTML = '<option value="">-- Seleziona un operaio --</option>';
 
         data.operai.forEach(op => {
             const option = document.createElement("option");
-            option.value = op.cf;
-            option.textContent = `${op.nome} ${op.cognome}`;
+            option.value = op.cf; // Al backend inviamo il CF
+            option.textContent = `${op.nome} ${op.cognome}`; // A video mostriamo il Nome
             select.appendChild(option);
         });
 

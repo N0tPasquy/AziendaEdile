@@ -101,9 +101,7 @@ def create_operaio():
     password = data.get("password")
     data_nascita = data.get("data_nascita")
     numero_telefono = data.get("numero_telefono")
-    capocantiere = data.get("capocantiere")  # restituisce True o False
-
-    tipo = "CC" if capocantiere else "OP"
+    tipo = "OP"
 
     conn = connessione()
     if conn is None:
