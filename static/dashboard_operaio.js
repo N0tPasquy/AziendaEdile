@@ -36,7 +36,7 @@
 
         // Opzionale: Ferma lo scanner appena ha letto un codice?
         // Se vuoi che si fermi subito scommenta la riga sotto:
-        // stopScanner(); 
+        stopScanner(); 
         
         // Opzionale: Fai qualcosa con la variabile (es. invia al server)
         // inviaDati(variabileQR);
