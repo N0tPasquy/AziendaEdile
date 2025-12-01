@@ -186,3 +186,40 @@ def delete_operaio():
     except Exception as e:
         conn.close()
         return jsonify({"success": False, "message": str(e)})
+    
+@operai_bp.route("/get_operaiCantiere", methods=["GET"])
+def get_operaiCantiere():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore di connessione al DB"})
+    
+    nome_azienda = session.get("nome_azienda")
+    cantiere = request.args.get("cantiere")
+
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("SELECT U.CF, U.Nome, U.Cognome " 
+                        "FROM utente U JOIN lavora L ON U.CF = L.CF_U "
+                        "WHERE (U.NomeAzienda = ? AND L.QRCode_C = ?) AND U.TipoUtente = 'OP'",(nome_azienda, cantiere)
+                        )
+        
+        rows = cursor.fetchall()
+
+        operai = []
+
+        for r in rows:
+            operai.append({
+                "cf" : r[0],
+                "nome" : r[1],
+                "cognome" : r[2]
+            })
+        conn.close()
+        return jsonify({"success" : True, "operai" : operai})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})

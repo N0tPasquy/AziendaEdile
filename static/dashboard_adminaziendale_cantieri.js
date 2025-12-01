@@ -18,7 +18,11 @@ function caricaCantieri() {
                     <tr>
                         <td>Via ${cantieri.via} ${cantieri.civico}, ${cantieri.citta} ${cantieri.CAP} </td>
                         <td>${cantieri.descrizione}</td>    
-                        <td>${cantieri.QRCode}</td>
+                        <td>
+                            <button class = "icon-btn" onclick = "openQRModal('${cantieri.QRCode}')">
+                                <img src = "/static/img/qrcode.png" alt="QR" style="width:24px">
+                            </button>
+                        </td>
                         <td>${cantieri.stato}</td>
                         <td class = "actions">
                             <button class = "icon-btn" onclick = "editCantiere('${cantieri.QRCode}')">
@@ -123,6 +127,24 @@ function closeAddCantiereModal() {
     document.getElementById("new_descrizione").value = "";
 }
 
+function openQRModal(qrCode) {
+    console.log("Apro modale QR per", qrCode); // debug
+    const modal = document.getElementById("qr-modal");
+    const img = document.getElementById("qr-modal-img");
+
+    img.src = `/qr_image/${qrCode}?t=${Date.now()}`;
+    modal.classList.remove("hidden");
+}
+
+function closeQRModal() {
+    const modal = document.getElementById("qr-modal");
+    const img = document.getElementById("qr-modal-img");
+    img.src = "";
+    modal.classList.add("hidden");
+}
+
+
+
 
 function editCantiere(QRCode) {
     document.getElementById("err_edit_citta").classList.add("hidden");
@@ -134,7 +156,7 @@ function editCantiere(QRCode) {
     document.getElementById("err_edit_stato").classList.add("hidden");
 
     // Carico operai prima del fetch del cantiere
-    caricaOperaiAzienda().then(() => {
+    caricaOperaiAzienda(QRCode).then(() => {
 
         fetch("/get_cantieri")
             .then(res => res.json())
@@ -349,7 +371,7 @@ function closeDeleteCantiereModal() {
 }
 
 // CORRETTO: Esegui la funzione, non restituirla e basta
-window.onload = caricaCantieri;
+//window.onload = caricaCantieri;
 
 function openSuccessModal(message) {
     document.getElementById("success-message").innerText = message;
@@ -360,11 +382,11 @@ function closeSuccessModal() {
     document.getElementById("success-modal").classList.add("hidden");
 }
 
-async function caricaOperaiAzienda() {
+async function caricaOperaiAzienda(cantiere) {
     const select = document.getElementById("edit_capo");
 
     try {
-        const res = await fetch("/get_operai");
+        const res = await fetch(`/get_operaiCantiere?cantiere=${cantiere}`);
         const data = await res.json();
 
         if (!data.success) {
@@ -372,12 +394,12 @@ async function caricaOperaiAzienda() {
             return;
         }
 
-        const operai = data.utenti.filter(u => u.tipo === "OP" || u.tipo === "CC");
+       // const operai = data.utenti.filter(u => u.tipo === "OP" || u.tipo === "CC");
 
         // Reset select
         select.innerHTML = '<option value="">-- Seleziona un operaio --</option>';
 
-        operai.forEach(op => {
+        data.operai.forEach(op => {
             const option = document.createElement("option");
             option.value = op.cf;
             option.textContent = `${op.nome} ${op.cognome}`;
@@ -391,4 +413,4 @@ async function caricaOperaiAzienda() {
 }
 
 
-window.onload = () => caricaCantieri;
+window.onload = () => caricaCantieri();

@@ -12,12 +12,14 @@
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
 """
-
+import qrcode
+from io import BytesIO
 from flask import Blueprint, request, jsonify, session
 from backend.db import connessione
 from backend.decorators import login_required
 import string
 import secrets
+import base64
 
 cantieri_bp = Blueprint('cantieri', __name__)
 
@@ -25,6 +27,12 @@ cantieri_bp = Blueprint('cantieri', __name__)
 def genera_stringa_codice():
     caratteri = string.ascii_letters+string.digits
     return ''.join(secrets.choice(caratteri) for _ in range(50))
+
+def genera_qr_bytes(data:str) -> bytes:
+    img = qrcode.make(data)
+    buffer = BytesIO()
+    img.save(buffer, format = "PNG")
+    return buffer.getvalue()
 
 @cantieri_bp.route("/get_cantieri", methods=["GET"])
 def get_cantieri():
@@ -50,7 +58,7 @@ def get_cantieri():
     for r in rows:
         cantieri.append({
             "QRCode" : r[0],
-            #QRImage : r[1],
+            "QRImage" : base64.b64encode(r[1]).decode("utf-8") if r[1] else None,
             "via" : r[2],
             "citta" : r[3],
             "civico" : r[4],
@@ -61,6 +69,28 @@ def get_cantieri():
         })
     
     return jsonify({"success" : True, "cantieri" : cantieri})
+
+from flask import send_file
+
+@cantieri_bp.route("/qr_image/<string:qr>", methods=["GET"])
+def qr_image(qr):
+    conn = connessione()
+    if conn is None:
+        return "Errore DB", 500
+
+    cursor = conn.cursor()
+    cursor.execute("SELECT QRImage FROM Cantiere WHERE QRCode = ?", (qr,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row or row[0] is None:
+        return "QR non trovato", 404
+
+    return send_file(
+        BytesIO(row[0]),
+        mimetype="image/png"
+    )
+
 
 @cantieri_bp.route("/create_cantiere",methods=["POST"])
 def create_cantiere():
@@ -85,9 +115,10 @@ def create_cantiere():
 
     cursor = conn.cursor()
     QRCode = genera_stringa_codice()
+    QRImage = genera_qr_bytes(QRCode)
     try:
-        cursor.execute("INSERT INTO cantiere (QRCode, Via, Citta, Civico, CAP, Descrizione) VALUES (?, ?, ?, ?, ?, ?)",
-                       (QRCode, via, citta, civico, CAP, descrizione))
+        cursor.execute("INSERT INTO cantiere (QRCode, Via, Citta, Civico, CAP, Descrizione, QRImage) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                       (QRCode, via, citta, civico, CAP, descrizione, QRImage))
         
         cursor.execute("INSERT INTO lavora (CF_U, QRCode_C) VALUES (?, ?)", (cf, QRCode))
 
