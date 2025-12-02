@@ -21,6 +21,7 @@ from backend.cantieri import cantieri_bp
 from backend.operai import operai_bp
 from backend.beni import beni_bp
 from backend.dashboardAdminaA import dashboardAa_bp
+from backend.dashboardOperaio import dashboardOperaio_bp
 from backend.db import connessione
 
 app = Flask(__name__, 
@@ -37,6 +38,7 @@ app.register_blueprint(operai_bp)
 app.register_blueprint(cantieri_bp)
 app.register_blueprint(beni_bp)
 app.register_blueprint(dashboardAa_bp)
+app.register_blueprint(dashboardOperaio_bp)
 
 
 # Configurazione Headers e Cache
