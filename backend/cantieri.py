@@ -114,7 +114,9 @@ def create_cantiere():
 
     cursor = conn.cursor()
     QRCode = genera_stringa_codice()
-    QRImage = genera_qr_bytes(QRCode)
+    base_url = "https://192.168.178.21:443/presenza"
+    qr_url = f"{base_url}/{QRCode}"
+    QRImage = genera_qr_bytes(qr_url)
     try:
         cursor.execute("INSERT INTO cantiere (QRCode, Via, Citta, Civico, CAP, Descrizione, QRImage) VALUES (?, ?, ?, ?, ?, ?, ?)",
                        (QRCode, via, citta, civico, CAP, descrizione, QRImage))

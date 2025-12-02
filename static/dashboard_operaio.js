@@ -37,7 +37,7 @@
         // Opzionale: Ferma lo scanner appena ha letto un codice?
         // Se vuoi che si fermi subito scommenta la riga sotto:
         stopScanner(); 
-        
+        registraPresenza(variabileQR);  
         // Opzionale: Fai qualcosa con la variabile (es. invia al server)
         // inviaDati(variabileQR);
     }
@@ -60,3 +60,34 @@
             });
         }
     }
+
+function registraPresenza(qrURL) {
+    try {
+    
+        const parts = qrURL.split("/presenza/");
+        if (parts.length < 2) {
+            alert("QR non valido");
+            return;
+        }
+
+        const qrCode = parts[1];
+
+        fetch(`/presenza/${qrCode}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Presenza registrata correttamente!");
+                } else {
+                    alert("Errore: " + data.message);
+                }
+            })
+            .catch(err => {
+                console.error("Errore chiamata presenza", err);
+                alert("Errore di connessione col server");
+            });
+
+    } catch (err) {
+        console.error("Errore parsing QR", err);
+        alert("Formato QR non valido");
+    }
+}

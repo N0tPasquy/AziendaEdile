@@ -2,16 +2,34 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Inter', sans-serif; /* O il font che preferisci */
+    font-family: 'Inter', sans-serif;
     
-    /* Percorso immagine di sfondo */
+    /* Assicuriamoci che il body occupi tutto lo spazio */
+    width: 100%;
+    min-height: 100vh;      /* Fallback */
+    min-height: 100dvh;     /* 'dvh' è l'altezza dinamica specifica per mobile */
+    
+    position: relative;     /* Necessario per posizionare lo sfondo */
+    overflow-x: hidden;     /* Evita scroll orizzontale */
+}
+
+/* QUESTO crea lo sfondo fisso perfetto per iPhone */
+body::before {
+    content: "";
+    position: fixed;    /* Fissa lo sfondo rispetto allo schermo */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;       /* Copre tutto lo schermo */
+    z-index: -1;        /* Lo spinge dietro a tutto il contenuto */
+    
+    /* Le tue impostazioni immagine */
     background-image: url('../img/background.png'); 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
     
-    min-height: 100vh;
+    /* NON usare background-attachment: fixed qui, position: fixed fa già il lavoro */
 }
 
 /* === LAYOUT CENTRALE === */
@@ -21,11 +39,11 @@ body {
     align-items: center; /* Centra anche verticalmente */
     
     /* CAMBIA QUESTO: Solo un piccolo margine attorno */
-    padding: 5rem;
+    padding: 2rem;
     
     box-sizing: border-box;
     width: 100vw;        /* Larghezza totale viewport */
-    height: 100vh;       /* Altezza totale viewport */
+    height: 100dvh;       /* Altezza totale viewport */
     overflow: hidden;    /* Evita scrollbar doppie sulla pagina principale */
 }
 
@@ -54,12 +72,12 @@ body {
 /* === LA STRISCIA BIANCA IN ALTO (HEADER) === */
 .card-header {
     background-color: #ffffff; /* Bianco solido */
-    height: 70px;              /* Altezza fissa header */
+    height: 60px;              /* Altezza fissa header */
     width: 100%;
     display: flex;
     justify-content: space-between; /* Spinge logo a sx e bottone a dx */
     align-items: center;
-    padding: 0 2rem;           /* Spazio laterale interno */
+    padding: 0 1rem;           /* Spazio laterale interno */
     box-sizing: border-box;
     border-bottom: 1px solid rgba(0,0,0,0.05); /* Separatore sottilissimo */
 }
@@ -68,22 +86,22 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 15px; /* Spazio tra logo e testo */
+    gap: 10px; /* Spazio tra logo e testo */
 }
 
 .logo-icon {
-    height: 40px;
+    height: 32px;
     width: auto;
 }
 
 .company-name {
-    font-weight: 700;
+    font-weight: 600;
     color: #1e3a8a; /* Blu scuro (simile alla foto) */
-    font-size: 1.2rem;
+    font-size: 1rem;
+    white-space: nowrap;
 }
 
 /* === IL BOTTONE ROSSO "ESCI" === */
-/* === BOTTONE ESCI (Stile Tailwind Replicato) === */
 .btn-logout {
     /* Layout Flexbox (flex items-center gap-2 justify-center) */
     display: flex;
@@ -100,8 +118,8 @@ body {
     font-family: inherit; /* Usa il font della pagina */
 
     /* Spaziatura (py-1.5 px-4) */
-    padding-top: 0.375rem;    /* 6px */
-    padding-bottom: 0.375rem; /* 6px */
+    padding-top: 0.3rem;    /* 6px */
+    padding-bottom: 0.3rem; /* 6px */
     padding-left: 1rem;       /* 16px */
     padding-right: 1rem;      /* 16px */
 
@@ -119,7 +137,7 @@ body {
     cursor: pointer;
 
     /* Dimensioni Mobile (text-sm w-full) */
-    font-size: 0.875rem; 
+    font-size: 0.8rem; 
     width: 100%; 
 }
 

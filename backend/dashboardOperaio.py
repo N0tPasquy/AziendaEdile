@@ -19,7 +19,7 @@ from backend.decorators import login_required, role_required
 
 dashboardOperaio_bp = Blueprint('dashboardOperaio', __name__)
 
-dashboardOperaio_bp.route("/presenza/<string:qr>", methods=["GET"])
+@dashboardOperaio_bp.route("/presenza/<string:qr>", methods=["GET"])
 def presenza(qr):
     if "logged_in" not in session:
         return jsonify({"success" : False, "message" : "Non autorizzato"})
@@ -40,7 +40,7 @@ def presenza(qr):
         conn.close()
         return jsonify({"success" : False, "message" : "QR non valido"})
     
-    cursor.execute("SELECT CF_U, QRCode_C FROM lavora WHERE CF_U = ? AND QRCode = ?", (cf, qr))
+    cursor.execute("SELECT CF_U, QRCode_C FROM lavora WHERE CF_U = ? AND QRCode_C = ?", (cf, qr))
     temp = cursor.fetchone()
 
     if not temp:
@@ -49,7 +49,7 @@ def presenza(qr):
     
     #verifico che non abbia già firmato
     cursor.execute("SELECT COUNT(*) "
-                   "FROM presenze "
+                   "FROM presenza "
                    "WHERE CF_U = ? AND DataPresenza = CURRENT_DATE", (cf,))
     
     temp = cursor.fetchone()[0]
