@@ -106,27 +106,62 @@ def stato_presenza():
         return jsonify({"success": False})
 
     cf = session.get("cf")
-
     conn = connessione()
     cursor = conn.cursor()
 
-    # Cerco una presenza odierna
+    # controllo ingresso
     cursor.execute("""
         SELECT OraInizio, OraFine
         FROM presenza
         WHERE CF_U = ? AND DataPresenza = CURRENT_DATE
     """, (cf,))
-    row = cursor.fetchone()
 
+    row = cursor.fetchone()
     conn.close()
 
     if not row:
-        return jsonify({"success": True, "ingresso": False, "uscita": False})
+        # Nessuna firma oggi
+        return jsonify({"ingresso": False, "uscita": False})
 
     ora_inizio, ora_fine = row
 
     return jsonify({
-        "success": True,
         "ingresso": True,
-        "uscita": ora_fine is not None
+        "uscita": True if ora_fine else False
     })
+
+
+@dashboardOperaio_bp.route("/storico_presenze", methods=["GET"])
+def storico_presenze():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    cf = session.get("cf")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT DataPresenza, OraInizio, OraFine,
+               TIMEDIFF(OraFine, OraInizio) AS OreLavorate
+        FROM presenza
+        WHERE CF_U = ?
+        ORDER BY DataPresenza DESC
+    """, (cf,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    presenze = []
+    for r in rows:
+        presenze.append({
+            "data": str(r[0]),
+            "ora_inizio": str(r[1]),
+            "ora_fine": str(r[2]) if r[2] else "-",
+            "ore_lavorate": str(r[3]) if r[3] else "00:00:00"
+        })
+
+    return jsonify({"success": True, "presenze": presenze})

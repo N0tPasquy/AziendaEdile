@@ -20,9 +20,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard operaio</title>
 
-    <!-- Tailwind PROVO A NON UTILIZZARLO -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- CSS PERSONALIZZATO -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_operaio.css') }}">
 
@@ -55,17 +52,15 @@
                 </div>
 
                 <div class="card-body">
-                    <h2 style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-bottom: 1rem;">
-                        Scansione QR Code
-                    </h2>
-
-                    <div id="reader"
-                        style="width: 100%; border-radius: 15px; overflow: hidden; display: none; margin-bottom: 20px;">
+                    <div class="welcome">
+                        Scansiona il QR Code per registrare l'ingresso.
                     </div>
+
+                    <div id="reader" class="hidden"></div>
 
                     <div class="actions-container" style="flex-direction: column; align-items: center;">
 
-                        <button onclick="startScanner()" id="btn-start" class="btn-camera">
+                        <button onclick="startScanner()" id="btn-start" class="btn-camera hidden">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -81,17 +76,33 @@
 
                     </div>
 
-                    <div id="result-container" style="margin-top: 20px; color: white; text-align: center;">
-                        <p>Risultato: <span id="qr-result" style="font-weight: bold;">In attesa...</span></p>
-                    </div>
-                     <!--PROVA BOTTONE PER FIRMARE USCITA-->
-                    <button id="btn-uscita" onclick="firmaUscita()" disabled class="btn-disabled">
+                    <!--PROVA BOTTONE PER FIRMARE USCITA-->
+                    <button id="btn-uscita" onclick="firmaUscita()" class="btn-uscita hidden">
                         Firma Uscita
                     </button>
+
+                    <!-- Tabella -->
+                    <div class="table-wrapper">
+                        <div class="table-title">
+                        <h3>Storico Presenze</h3>
+                    </div>
+
+                    <table class="table-presenze">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Entrata</th>
+                                <th>Uscita</th>
+                                <th>Ore Tot.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="presenze-table-body"></tbody>
+                    </table>
+                    </div>
+
                 </div>
 
-           
-        <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
+                <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
     </body>
 </body>
 
