@@ -247,6 +247,7 @@ function editAdmin(cf) {
             document.getElementById("edit_azienda").value = admin.nome_azienda; // Aggiunto campo nome_azienda
             document.getElementById("edit_nome").value = admin.nome;
             document.getElementById("edit_cognome").value = admin.cognome;
+            document.getElementById("edit_password").value = admin.password;
             document.getElementById("edit_dataNascita").value = formatoData(admin.data_nascita);
             document.getElementById("edit_NumeroTelefono").value = admin.numero_telefono;
 

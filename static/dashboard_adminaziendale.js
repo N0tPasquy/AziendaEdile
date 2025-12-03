@@ -28,7 +28,7 @@ function toggleSidebar() {
         sidebar.classList.remove('w-64');
         sidebar.classList.add('w-24');
 
-        // Nascondi testi e riduci logo
+        // Nascondi testo e riduci logo
         brandText.classList.add('hidden');
         logo.classList.remove('h-32');
         logo.classList.add('h-10'); // O h-160px ridotto
@@ -49,10 +49,10 @@ function toggleSidebar() {
         sidebar.classList.remove('w-24');
         sidebar.classList.add('w-64');
 
-        // Mostra testi e ingrandisci logo
+        // Mostra testo e ingrandisci logo
         brandText.classList.remove('hidden');
         logo.classList.remove('h-10');
-        logo.classList.add('h-32');
+        logo.classList.add('h-26');
 
         texts.forEach(t => t.classList.remove('hidden'));
 

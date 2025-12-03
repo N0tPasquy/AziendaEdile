@@ -92,11 +92,10 @@ body {
 
 /* ====== LOGO ====== */
 .logo-contained {
-    width: 8.5rem;
+    width: 8rem;
     height: auto;
     object-fit: contain;
     position: relative;
-    top: 0.5rem;
 }
 
 /* ====== TABELLE GENERICHE ====== */
