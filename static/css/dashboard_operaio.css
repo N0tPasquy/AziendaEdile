@@ -226,3 +226,13 @@ body::before {
     border-radius: 15px; 
     object-fit: cover;
 }
+
+/*STILE PER IL BOTTONE DI PROVA PER FIRMARE USCITA*/
+
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #2563eb; /* Blu più scuro */
+    transform: translateY(-2px); /* Effetto sollevamento */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}

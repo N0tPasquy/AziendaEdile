@@ -84,10 +84,13 @@
                     <div id="result-container" style="margin-top: 20px; color: white; text-align: center;">
                         <p>Risultato: <span id="qr-result" style="font-weight: bold;">In attesa...</span></p>
                     </div>
+                     <!--PROVA BOTTONE PER FIRMARE USCITA-->
+                    <button id="btn-uscita" onclick="firmaUscita()" disabled class="btn-disabled">
+                        Firma Uscita
+                    </button>
                 </div>
 
-            </div>
-        </div>
+           
         <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
     </body>
 </body>

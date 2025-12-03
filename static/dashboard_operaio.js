@@ -77,6 +77,9 @@ function registraPresenza(qrURL) {
             .then(data => {
                 if (data.success) {
                     alert("Presenza registrata correttamente!");
+                    const btn = document.getElementById("btn-uscita");
+                    btn.disabled = false;
+                    btn.classList.remove("btn-disabled");
                 } else {
                     alert("Errore: " + data.message);
                 }
@@ -90,4 +93,47 @@ function registraPresenza(qrURL) {
         console.error("Errore parsing QR", err);
         alert("Formato QR non valido");
     }
+}
+
+
+function firmaUscita() {
+    fetch("/uscita", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Uscita registrata!");
+
+                const btn = document.getElementById("btn-uscita");
+                btn.disabled = true;
+                btn.classList.add("btn-disabled");
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => {
+            alert("Errore connessione");
+        });
+}
+
+
+window.onload = function() {
+    fetch("/stato_presenza")
+        .then(res => res.json())
+        .then(data => {
+            const btn = document.getElementById("btn-uscita");
+
+            if (!data.ingresso) {
+                // Nessuna entrata firmata → disabilita
+                btn.disabled = true;
+                btn.classList.add("btn-disabled");
+            } else if (data.ingresso && !data.uscita) {
+                // Entrata sì, uscita no → abilita
+                btn.disabled = false;
+                btn.classList.remove("btn-disabled");
+            } else if (data.uscita) {
+                // Entrata + uscita → disabilita ancora
+                btn.disabled = true;
+                btn.classList.add("btn-disabled");
+            }
+        });
 }

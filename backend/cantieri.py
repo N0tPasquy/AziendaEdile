@@ -114,7 +114,7 @@ def create_cantiere():
 
     cursor = conn.cursor()
     QRCode = genera_stringa_codice()
-    base_url = "https://192.168.178.21:443/presenza"
+    base_url = "https://195.216.202.235:443/presenza"
     qr_url = f"{base_url}/{QRCode}"
     QRImage = genera_qr_bytes(qr_url)
     try:

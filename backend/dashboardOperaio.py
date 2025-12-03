@@ -63,3 +63,70 @@ def presenza(qr):
     conn.close()
 
     return jsonify({"success" : True, "message": "Presenza registrata correttamente"})
+
+@dashboardOperaio_bp.route("/uscita", methods=["POST"])
+def uscita():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    cf = session.get("cf")
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+
+    cursor = conn.cursor()
+
+   
+    cursor.execute("""
+        SELECT 1
+        FROM presenza
+        WHERE CF_U = ? AND DataPresenza = CURRENT_DATE AND OraFine IS NULL
+    """, (cf,))
+    row = cursor.fetchone()
+
+    if not row:
+        conn.close()
+        return jsonify({"success": False, "message": "Non hai una presenza aperta oggi"})
+
+    cursor.execute("""
+        UPDATE presenza
+        SET OraFine = CURRENT_TIME
+        WHERE CF_U = ? AND DataPresenza = CURRENT_DATE AND OraFine IS NULL
+    """, (cf,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"success": True, "message": "Uscita registrata correttamente"})
+
+#route per controllare lo stato della presenza
+@dashboardOperaio_bp.route("/stato_presenza", methods=["GET"])
+def stato_presenza():
+    if "logged_in" not in session:
+        return jsonify({"success": False})
+
+    cf = session.get("cf")
+
+    conn = connessione()
+    cursor = conn.cursor()
+
+    # Cerco una presenza odierna
+    cursor.execute("""
+        SELECT OraInizio, OraFine
+        FROM presenza
+        WHERE CF_U = ? AND DataPresenza = CURRENT_DATE
+    """, (cf,))
+    row = cursor.fetchone()
+
+    conn.close()
+
+    if not row:
+        return jsonify({"success": True, "ingresso": False, "uscita": False})
+
+    ora_inizio, ora_fine = row
+
+    return jsonify({
+        "success": True,
+        "ingresso": True,
+        "uscita": ora_fine is not None
+    })
