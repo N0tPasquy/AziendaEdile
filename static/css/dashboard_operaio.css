@@ -1,111 +1,87 @@
-/* === RESET BASE E SFONDO === */
+/* ==========================================================================
+   SEZIONE 1: BASE (MOBILE FIRST)
+   Tutto il CSS qui sotto è pensato per iPhone/Android.
+   Questa è la configurazione di default.
+   ========================================================================== */
+
+/* === RESET E SFONDO === */
 body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
-
-    /* Assicuriamoci che il body occupi tutto lo spazio */
     width: 100%;
     min-height: 100vh;
-    /* Fallback */
-    min-height: 100dvh;
-    /* 'dvh' è l'altezza dinamica specifica per mobile */
-
+    min-height: 100dvh; /* Altezza dinamica mobile */
     position: relative;
-    /* Necessario per posizionare lo sfondo */
     overflow-x: hidden;
-    /* Evita scroll orizzontale */
 }
 
-/* QUESTO crea lo sfondo fisso perfetto per iPhone */
+/* Sfondo fisso ottimizzato per iOS */
 body::before {
     content: "";
     position: fixed;
-    /* Fissa lo sfondo rispetto allo schermo */
     top: 0;
     left: 0;
     width: 100%;
     height: 100dvh;
-    /* Copre tutto lo schermo */
     z-index: -1;
-    /* Lo spinge dietro a tutto il contenuto */
-
-    /* Le tue impostazioni immagine */
     background-image: url('../img/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-
-    /* NON usare background-attachment: fixed qui, position: fixed fa già il lavoro */
 }
 
-/* === LAYOUT CENTRALE === */
+/* === LAYOUT GENERALE === */
 .page-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Centra anche verticalmente */
-
-    /* CAMBIA QUESTO: Solo un piccolo margine attorno */
-    padding: 2rem;
-
+    padding: 1rem; /* Padding ridotto per mobile */
     box-sizing: border-box;
     width: 100vw;
-    /* Larghezza totale viewport */
     height: 100dvh;
-    /* Altezza totale viewport */
     overflow: hidden;
-    /* Evita scrollbar doppie sulla pagina principale */
 }
 
-/* === LA CARD PRINCIPALE (EFFETTO VETRO) === */
 .dashboard-card {
-    /* CAMBIA QUESTO: Larghezza e Altezza totali */
     width: 100%;
     height: 100%;
-    /* Riempie tutto il .page-wrapper (meno il padding) */
-
-    /* RIMUOVI o imposta a 'none' il limite massimo */
-    max-width: none;
-
-    /* Il resto rimane uguale per l'effetto vetro */
+    max-width: none; /* Su mobile occupa tutto */
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Mantiene i bordi tondi */
 }
 
-/* === LA STRISCIA BIANCA IN ALTO (HEADER) === */
+.card-body {
+    flex-grow: 1;
+    padding: 1.5rem; /* Spazio interno comodo su mobile */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* === HEADER (Striscia Bianca) === */
 .card-header {
     background-color: #ffffff;
-    /* Bianco solido */
     height: 60px;
-    /* Altezza fissa header */
     width: 100%;
     display: flex;
     justify-content: space-between;
-    /* Spinge logo a sx e bottone a dx */
     align-items: center;
     padding: 0 1rem;
-    /* Spazio laterale interno */
     box-sizing: border-box;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    /* Separatore sottilissimo */
 }
 
-/* Stile Logo e Testo a sinistra */
 .header-left {
     display: flex;
     align-items: center;
     gap: 10px;
-    /* Spazio tra logo e testo */
 }
 
 .logo-icon {
@@ -116,127 +92,63 @@ body::before {
 .company-name {
     font-weight: 600;
     color: #1e3a8a;
-    /* Blu scuro (simile alla foto) */
     font-size: 1rem;
     white-space: nowrap;
 }
 
-/* === IL BOTTONE ROSSO "ESCI" === */
-.btn-logout {
-    /* Layout Flexbox (flex items-center gap-2 justify-center) */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    /* gap-2 (8px) */
+/* === ELEMENTI UI (Badge, Pulsanti, Scanner) === */
 
-    /* Colori (bg-red-500 text-white) */
-    background-color: #ef4444;
-    color: white;
-
-    /* Font (font-medium) */
-    font-weight: 500;
-    font-family: inherit;
-    /* Usa il font della pagina */
-
-    /* Spaziatura (py-1.5 px-4) */
-    padding-top: 0.3rem;
-    /* 6px */
-    padding-bottom: 0.3rem;
-    /* 6px */
-    padding-left: 1rem;
-    /* 16px */
-    padding-right: 1rem;
-    /* 16px */
-
-    /* Bordi (rounded) */
-    border-radius: 0.25rem;
-    /* 4px standard tailwind */
-    border: none;
-    /* Rimuove bordo default */
-
-    /* Transizioni (transition duration-200) */
-    transition: background-color 200ms ease;
-
-    /* Ombra (shadow-sm) */
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-
-    /* Cursore */
-    cursor: pointer;
-
-    /* Dimensioni Mobile (text-sm w-full) */
-    font-size: 0.8rem;
-    width: 100%;
+/* Badge "Benvenuto" */
+.welcome {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    margin: 0 auto 1.5rem auto;
+    width: fit-content;
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-shadow: none;
 }
 
-/* Stato Hover (hover:bg-red-600) */
-.btn-logout:hover {
-    background-color: #dc2626;
-}
-
-/* Icona SVG (h-4 w-4) */
-.logout-icon {
-    height: 1rem;
-    width: 1rem;
-}
-
-/* === AREA CONTENUTI (SOTTO L'HEADER) === */
-.card-body {
-    flex-grow: 1;
-    padding: 2rem;
-
-    /* AGGIUNGI QUESTO per lo scroll interno */
-    overflow-y: auto;
-
-    /* Opzionale: rende lo scroll fluido su mobile */
-    -webkit-overflow-scrolling: touch;
-}
-
-/* === RESPONSIVE (MEDIA QUERY) === */
-/* Corrisponde a md: (min-width: 768px) */
-@media (min-width: 768px) {
-    .btn-logout {
-        width: auto;
-        /* md:w-auto */
-        font-size: 1rem;
-        /* md:text-base */
-    }
-}
-
-/* Contenitore per allineare i pulsanti */
+/* Contenitore Azioni (Pulsanti Scanner/Uscita) */
 .actions-container {
     display: flex;
-    flex-direction: column; /* Mette i pulsanti uno sotto l'altro */
+    flex-direction: column; /* MOBILE: Uno sotto l'altro */
+    gap: 1rem;
+    width: 100%; /* Occupa tutto lo spazio disponibile */
 }
 
-/* Stile del pulsante Fotocamera */
+/* Pulsante Blu (Scanner) */
 .btn-camera {
+    width: 100%; /* MOBILE: Largo tutto lo schermo */
     display: flex;
     align-items: center;
+    justify-content: center; /* Centrato */
     gap: 10px;
-
     background-color: #3b82f6;
-    /* Blu acceso */
     color: white;
-
     padding: 0.8rem 1.5rem;
     border-radius: 12px;
     font-weight: 600;
     font-size: 1rem;
-
     cursor: pointer;
     transition: all 0.2s ease;
-
-    /* Ombra per staccarlo dallo sfondo */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
 }
 
 .btn-camera:hover {
     background-color: #2563eb;
-    /* Blu più scuro */
     transform: translateY(-2px);
-    /* Effetto sollevamento */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
@@ -244,132 +156,84 @@ body::before {
     transform: translateY(0);
 }
 
-/* Stile per l'immagine di anteprima */
+/* === STILE GENERALE PULSANTI === */
+/* Questo rimane grande e comodo per il touch su mobile */
+.btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: #ef4444;
+    color: white;
+    font-weight: 500;
+    font-family: inherit;
+    padding: 0.8rem 1.5rem;  /* Grande padding */
+    border-radius: 12px;     /* Molto arrotondato */
+    border: none;
+    transition: background-color 200ms ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
+
+/* === 2. OVERRIDE SPECIFICO PER L'HEADER === */
+/* Queste regole si applicano SOLO se il bottone è dentro .card-header */
+.card-header .btn-logout {
+    width: auto !important;      /* Non più 100%, ma adattato al testo */
+    padding: 0.375rem 1rem;      /* Più sottile (py-1.5 px-4) */
+    border-radius: 0.25rem;      /* Meno arrotondato (4px) */
+    font-size: 0.875rem;         /* Testo più piccolo (14px) */
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    margin: 0;                   /* Rimuove margini extra */
+}
+
+/* Anche l'icona deve rimpicciolirsi nell'header */
+.card-header .btn-logout svg {
+    height: 1rem;
+    width: 1rem;
+}
+/* Scanner e Video */
+#reader video {
+    border-radius: 15px;
+    object-fit: cover;
+    width: 100%; /* Forza larghezza scanner */
+}
+
 .preview-image {
     max-width: 100%;
     max-height: 300px;
-    /* Non farla diventare gigante */
     border-radius: 10px;
     border: 2px solid white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     margin-top: 10px;
 }
 
-#reader video {
-    /* Forza il video a riempire il contenitore con bordi tondi */
-    border-radius: 15px;
-    object-fit: cover;
-}
+.hidden { display: none; }
 
-.hidden {
-    display: none;
-}
+/* === TABELLE E TITOLI (Layout a Vetro) === */
 
-.welcome {
-    /* Crea la forma a pillola di vetro */
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50px; /* Bordi molto tondi */
-    
-    /* Spaziatura */
-    padding: 0.6rem 1.5rem;
-    margin: 0 auto 1.5rem auto; /* Centra orizzontalmente */
-    width: fit-content;         /* Si stringe attorno al testo */
-    display: block;             /* Necessario per il margin auto */
-
-    /* Tipografia pulita */
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #1e3a8a; /* Blu scuro aziendale (coerente con header) */
-    text-align: center;
-    
-    /* Piccola ombra del box, NON del testo */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    
-    /* Rimuoviamo il text-shadow sporco */
-    text-shadow: none;
-}
-
-.btn-uscita {
-    /* CORRETTO: usa inline-flex per non occupare tutta la riga, o flex */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-
-    margin: 2rem auto;
-
-    /* Colori */
-    background-color: #ef4444;
-    color: white;
-
-    /* Font */
-    font-weight: 500;
-    font-family: inherit;
-
-    /* Spaziatura */
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-
-    /* Bordi */
-    border-radius: 0.25rem;
-    border: none;
-
-    /* Transizioni */
-    transition: background-color 200ms ease;
-
-    /* Ombra */
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-
-    /* Cursore */
-    cursor: pointer;
-
-    /* Dimensioni */
-    font-size: 0.8rem;
-
-    /* CAMBIA QUESTO: fit-content adatta la larghezza al contenuto (testo) */
-    width: fit-content;
-    /* Oppure puoi usare: width: auto; */
-}
-
-@media (min-width: 768px) {
-    .btn-uscita {
-        width: fit-content;
-        /* Piccolo su PC/Tablet */
-    }
-}
-
+/* Contenitore Padre che allinea Titolo e Tabella */
 .table-wrapper {
-    /* Si adatta alla larghezza del figlio più largo (la tabella) */
-    width: fit-content; 
-    
-    /* Si centra nella pagina */
-    margin: 0 auto; 
-    
-    /* Assicura che non esca dallo schermo su mobile */
-    max-width: 100%; 
-    
+    width: 100%; /* MOBILE: Occupa tutta la card */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
 }
 
-/* === IL TITOLO (Striscia semitrasparente) === */
+/* Titolo Tabella */
 .table-title {
-    /* ORA SI ESPANDE PER RIEMPIRE IL PADRE */
-    width: 100%; 
-    
-    /* Importante: include il padding nel calcolo della larghezza */
-    box-sizing: border-box; 
-    
+    width: 100%; /* Si espande nel wrapper */
+    box-sizing: border-box;
     margin-bottom: 1.5rem;
-    
-    /* Il resto rimane uguale */
-    background-color: rgba(255, 255, 255, 0.80); 
+    background-color: rgba(255, 255, 255, 0.80);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
@@ -379,30 +243,24 @@ body::before {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-/* Stile del testo dentro il titolo (H3 e P) */
 .table-title h3 {
     margin: 0;
-    color: #111827;            /* Nero morbido / Blu scuro */
+    color: #111827;
     font-size: 1.25rem;
     font-weight: 700;
 }
 
 .table-title p {
-    margin: 5px 0 0 0;         /* Un po' di spazio dal titolo */
-    color: #6b7280;            /* Grigio per la descrizione */
+    margin: 5px 0 0 0;
+    color: #6b7280;
     font-size: 0.9rem;
 }
 
-/* === 2. LA TABELLA (Blocco sotto) === */
+/* Tabella Presenze */
 .table-presenze {
-    /* ORA SI ESPANDE PER RIEMPIRE IL PADRE */
-    width: 100%;
-    
-    /* Rimuovi i margini laterali auto, gestisce tutto il wrapper */
-    margin-bottom: 2rem; 
-    
-    /* Il resto rimane uguale */
-    background-color: rgba(255, 255, 255, 0.80); 
+    width: 100%; /* Si espande nel wrapper */
+    margin-bottom: 2rem;
+    background-color: rgba(255, 255, 255, 0.80);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-collapse: separate;
@@ -412,43 +270,97 @@ body::before {
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    table-layout: fixed;
 }
 
-/* === STILE CELLE TABELLA === */
-/* Intestazione Colonne (TH) */
 .table-presenze thead th {
-    text-align: left;
-    padding: 1rem 1.2rem;
+    padding: 0.8rem 0.25rem;
+    text-align: center;      /* Centrare i dati aiuta visivamente */
+    
     color: #374151;
     font-weight: 700;
-    font-size: 0.95rem;
-    white-space: nowrap; 
+    font-size: 0.8rem;        
     
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Linea un po' più visibile */
-    
-    /* Rendiamo l'intestazione leggermente diversa ma sempre trasparente */
-    background-color: rgba(255, 255, 255, 0.5); 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Righe Dati (TD) */
 .table-presenze tbody td {
-    padding: 0.8rem 1.2rem;
+    padding: 0.8rem 0.25rem; 
+    text-align: center;
+    
     color: #4b5563;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
+    
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     vertical-align: middle;
-    white-space: nowrap;
+    
+    word-break: break-word;  /* Evita che parole lunghe rompano la tabella */
 }
 
 .table-presenze tbody tr {
-    transition: background-color 0.2s ease; /* Rende il cambio di colore fluido e non scattoso */
+    transition: background-color 0.2s ease;
 }
 
 .table-presenze tbody tr:hover {
-    background-color: rgba(59, 130, 246, 0.15); 
+    background-color: rgba(59, 130, 246, 0.15);
 }
 
-/* Rimuovi la riga dall'ultimo elemento per pulizia */
 .table-presenze tbody tr:last-child td {
     border-bottom: none;
+}
+
+/* ==========================================================================
+   SEZIONE 2: DESKTOP OVERRIDES (PC / TABLET)
+   Qui cambiamo le regole SOLO quando lo schermo è grande (> 1024px).
+   Tutto il resto viene ereditato dalla sezione sopra.
+   ========================================================================== */
+@media (min-width: 1024px) {
+
+    /* Layout: La card non deve essere gigante su PC */
+    .dashboard-card {
+        max-width: 1200px; /* Limite larghezza */
+        height: 90vh;      /* Un po' di margine sopra e sotto */
+    }
+
+    /* Pulsanti: Su PC diventano piccoli e affiancati */
+    .btn-camera,
+    .btn-uscita,
+    .btn-logout {
+        width: fit-content; /* Si restringono al testo */
+        padding: 0.6rem 1.5rem; /* Leggermente più compatti */
+    }
+    
+    /* Eccezione: Il bottone Logout nell'Header deve essere sempre compatto */
+    .card-header .btn-logout {
+         width: auto;
+         padding: 0.3rem 1rem;
+         font-size: 0.9rem;
+         border-radius: 0.25rem;
+    }
+
+    /* Contenitore Azioni: I pulsanti vanno uno di fianco all'altro */
+    .actions-container {
+        flex-direction: row;
+        justify-content: center;
+        width: auto; /* Non occupa tutto lo schermo */
+    }
+
+    /* Tabelle: Su PC la tabella non deve per forza essere larga 100% se è vuota */
+    .table-wrapper {
+        width: fit-content; /* Si adatta al contenuto */
+        min-width: 600px;   /* Ma non troppo piccola */
+    }
+
+    .table-presenze {
+        table-layout: auto; /* Torna automatico su PC */
+    }
+
+    .table-presenze thead th,
+    .table-presenze tbody td {
+        padding: 1rem 1.2rem; /* Più spazio */
+        font-size: 0.95rem;   /* Font originale */
+        white-space: nowrap;  /* Niente a capo su PC */
+        text-align: left;     /* O center, come preferisci */
+    }
 }

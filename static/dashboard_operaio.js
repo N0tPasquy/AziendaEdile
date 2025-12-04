@@ -32,7 +32,6 @@ function onScanSuccess(decodedText, decodedResult) {
 
     // Esempio: Mostra a video
     document.getElementById('qr-result').innerText = variabileQR;
-    document.getElementById('qr-result').style.color = '#4ade80'; // Verde chiaro
 
     // Opzionale: Ferma lo scanner appena ha letto un codice?
     // Se vuoi che si fermi subito scommenta la riga sotto:
@@ -189,4 +188,7 @@ window.onload = function () {
     caricaPresenze(); // carica tabella presenze
 };
 
-
+function logout(){
+    // Reindirizza alla rotta Python di logout
+    window.location.href = "/logout";
+}

@@ -27,63 +27,58 @@
 </head>
 
 <body>
+    <div class="page-wrapper">
 
-    <body>
-        <div class="page-wrapper">
+        <div class="dashboard-card">
 
-            <div class="dashboard-card">
-
-                <div class="card-header">
-                    <div class="header-left">
-                        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-icon">
-                        <span id="nome_azineda" class="company-name">Azienda Edile</span>
-                    </div>
-
-                    <div class="header-right">
-                        <button onclick="logout()" class="btn-logout">
-                            <span>Esci</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="logout-icon" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                        </button>
-                    </div>
+            <div class="card-header">
+                <div class="header-left">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-icon">
+                    <span id="nome_azienda" class="company-name">Azienda Edile</span>
                 </div>
 
-                <div class="card-body">
-                    <div class="welcome">
-                        Scansiona il QR Code per registrare l'ingresso.
-                    </div>
+                <div class="header-right">
+                    <button onclick="logout()" class="btn-logout">
+                        <span>Esci</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="logout-icon" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-                    <div id="reader" class="hidden"></div>
+            <div class="card-body">
+                <div class="welcome">
+                    Scansiona il QR Code per registrare l'ingresso.
+                </div>
 
-                    <div class="actions-container" style="flex-direction: column; align-items: center;">
+                <div id="reader" class="hidden" style="margin-bottom: 20px;"></div>
 
-                        <button onclick="startScanner()" id="btn-start" class="btn-camera hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                            </svg>
-                            <span>Apri Scanner</span>
-                        </button>
+                <div class="actions-container">
 
-                        <button onclick="stopScanner()" id="btn-stop" class="btn-logout"
-                            style="display: none; width: auto; margin-top: 10px;">
-                            <span>Chiudi Fotocamera</span>
-                        </button>
+                    <button onclick="startScanner()" id="btn-start" class="btn-camera hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                        </svg>
+                        <span>Apri Scanner</span>
+                    </button>
 
-                    </div>
+                    <button onclick="stopScanner()" id="btn-stop" class="btn-logout hidden">
+                        <span>Chiudi Fotocamera</span>
+                    </button>
 
-                    <!--PROVA BOTTONE PER FIRMARE USCITA-->
                     <button id="btn-uscita" onclick="firmaUscita()" class="btn-uscita hidden">
                         Firma Uscita
                     </button>
 
-                    <!-- Tabella -->
-                    <div class="table-wrapper">
-                        <div class="table-title">
+                </div>
+
+                <div class="table-wrapper" style="margin-top: 2rem;">
+                    <div class="table-title">
                         <h3>Storico Presenze</h3>
                     </div>
 
@@ -98,12 +93,13 @@
                         </thead>
                         <tbody id="presenze-table-body"></tbody>
                     </table>
-                    </div>
-
                 </div>
 
-                <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
-    </body>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
 </body>
 
 </html>
