@@ -69,9 +69,18 @@ function registraPresenza(qrURL) {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert("Presenza registrata correttamente!");
-                    document.getElementById("btn-uscita").classList.remove("hidden");
-                    document.getElementById("btn-start").classList.add("hidden");
+                    document.getElementById('success-message').innerText = "Presenza salvata con successo!";
+                    document.getElementById('success-modal').classList.remove('hidden');
+
+                    const btnUscita = document.getElementById("btn-uscita");
+                    const btnStart = document.getElementById("btn-start");
+
+                    // Mostra uscita
+                    btnUscita.classList.remove("hidden");
+                    
+                    // Nascondi pulsante Scanner forzando lo stile
+                    btnStart.classList.add("hidden");
+                    btnStart.style.display = "none"; // Sovrascrive il 'flex' messo da stopScanner
                 } else {
                     alert("Errore: " + data.message);
                 }
@@ -138,6 +147,14 @@ function caricaPresenze() {
         });
 }
 
+// Funzione per chiudere il modale
+function closeSuccessModal() {
+    document.getElementById('success-modal').classList.add('hidden');
+    
+    const btnStart = document.getElementById("btn-start");
+    btnStart.classList.add("hidden");
+    btnStart.style.display = "none"; // Assicura che rimanga nascosto
+}
 function oreInSecondi(t) {
     const [h, m, s] = t.split(":").map(Number);
     return h * 3600 + m * 60 + s;

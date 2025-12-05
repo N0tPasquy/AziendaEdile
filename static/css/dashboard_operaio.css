@@ -364,3 +364,83 @@ body::before {
         text-align: left;     /* O center, come preferisci */
     }
 }
+
+/* ==========================================================================
+    MODALI E ALTRI ELEMENTI GLOBALI
+   ========================================================================== */
+
+/* === MODALE DI SUCCESSO === */
+
+/* Layout interno del modale (Centratura e Flex) */
+.success-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra orizzontalmente icona e testi */
+    text-align: center;
+}
+
+/* Icona Spunta Verde */
+.success-icon {
+    width: 4rem;   /* w-16 (64px) */
+    height: 4rem;  /* h-16 (64px) */
+    color: #16a34a; /* text-green-600 */
+    margin-bottom: 0.75rem; /* mb-3 */
+}
+
+/* Titolo "Operazione completata" */
+.modal-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700;   /* font-bold */
+    margin: 0 0 0.5rem 0; /* mb-2 */
+    color: #111827;     /* Nero morbido */
+}
+
+/* Messaggio descrittivo */
+.modal-message {
+    color: #374151;      /* text-gray-700 */
+    margin: 0 0 1.25rem 0; /* mb-5 */
+    font-size: 1rem;
+}
+
+/* Stile del bottone OK (riutilizziamo lo stile confirm-btn se esiste già, 
+   altrimenti ecco una base solida) */
+.confirm-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 2rem; /* Un po' più largo per l'OK */
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1rem;
+}
+
+.confirm-btn:hover {
+    background-color: #2563eb;
+}
+
+/* Assicurati che le classi base del modale (che avevamo già) siano presenti: */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55); /* Sfondo scuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100; /* Sopra a tutto */
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}

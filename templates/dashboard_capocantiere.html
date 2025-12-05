@@ -19,22 +19,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard capocantiere</title>
 
-        <!-- Tailwind -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        
         <!-- CSS PERSONALIZZATO -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_styles.css') }}">
     </head>
-    <body class="min-h-screen flex justify-center px-3 relative overflow-y-auto font-sans">
-        <div class="dashboard-card text-center z-10 ">
+    <body>
+        <div class="dashboard-card">
             <!-- CODE HERE -->
-             <nav class="navbar bg-body-tertiary">
-                 <div class="mb-4">
-                     <img src="{{ url_for('static', filename = 'img/logo_aziendaedile.png') }}"
-                        class = "w-40 h-auto mx-auto scale-150"
-                        alt="Logo Azienda Edile">
-                </div>
-            </nav>
         </div>
     </body>
 </html>

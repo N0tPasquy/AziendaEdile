@@ -102,4 +102,19 @@
     <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
 </body>
 
+<!-- MODALE SUCCESSO OPERAZIONE -->
+<div id="success-modal" class="modal hidden">
+    <div class="modal-content success-layout">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" class="success-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+
+        <h3 class="modal-title">Operazione completata</h3>
+        <p id="success-message" class="modal-message">Entrata salvata correttamente</p> <!-- Messaggio dinamico, in caso non carichi esce questo di defaultA -->
+
+        <button onclick="closeSuccessModal()" class="confirm-btn">OK</button>
+    </div>
+</div>
+
 </html>
