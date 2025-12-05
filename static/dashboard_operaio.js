@@ -24,21 +24,17 @@ function startScanner() {
 }
 
 // Funzione chiamata quando trova un QR
-function onScanSuccess(decodedText, decodedResult) {
+function onScanSuccess(decodedText) {
     // === QUI HAI IL TUO RISULTATO ===
     variabileQR = decodedText;
 
     console.log(`Testo scansionato: ${variabileQR}`);
 
-    // Esempio: Mostra a video
-    document.getElementById('qr-result').innerText = variabileQR;
-
     // Opzionale: Ferma lo scanner appena ha letto un codice?
     // Se vuoi che si fermi subito scommenta la riga sotto:
     stopScanner();
     registraPresenza(variabileQR);
-    // Opzionale: Fai qualcosa con la variabile (es. invia al server)
-    // inviaDati(variabileQR);
+    caricaPresenze();
 }
 
 function onScanFailure(error) {

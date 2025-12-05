@@ -150,7 +150,8 @@ function closeQRModal() {
     img.src = "";
     modal.classList.add("hidden");
 }
-function downloadQR() {
+
+async function downloadQR() {
     const img = document.getElementById("qr-modal-img");
 
     if (!img.src) {
@@ -158,13 +159,31 @@ function downloadQR() {
         return;
     }
 
-    const link = document.createElement("a");
-    link.href = img.src;
-    link.download = "qr_cantiere.png";  // nome del file da scaricare
+    try {
+        // 1. Recuperiamo l'immagine come 'blob' (file binario)
+        const response = await fetch(img.src);
+        const blob = await response.blob();
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+        // 2. Creiamo un URL temporaneo per questo blob
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        // 3. Creiamo il link per il download
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = "qr_cantiere.png"; // Nome del file
+
+        // 4. Appendiamo, clicchiamo e rimuoviamo
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 5. Rilasciamo la memoria dell'URL temporaneo
+        window.URL.revokeObjectURL(blobUrl);
+
+    } catch (error) {
+        console.error("Errore durante il download:", error);
+        alert("Impossibile scaricare l'immagine. Prova a tenere premuto sull'immagine e fare 'Salva'.");
+    }
 }
 
 
@@ -390,9 +409,6 @@ function closeDeleteCantiereModal() {
         modal.classList.add("hidden");
     }
 }
-
-// CORRETTO: Esegui la funzione, non restituirla e basta
-//window.onload = caricaCantieri;
 
 function openSuccessModal(message) {
     document.getElementById("success-message").innerText = message;
