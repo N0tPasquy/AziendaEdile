@@ -12,67 +12,105 @@
     - Anno Accademico: 2025/2026
 */
 
-document.getElementById("loginForm").addEventListener("submit", async function(e){
-    e.preventDefault();
+async function accedi() {
+    // 1. Prendi i valori dagli input
+    const cf = document.getElementById("CF").value.trim();
+    const password = document.getElementById("password").value.trim();
 
-    const data = {
-        CF : document.getElementById("CF").value.trim(),
-        password : document.getElementById("password").value.trim()
-    };
+    // Controllo veloce se sono vuoti
+    if (!cf || !password) {
+        showLoginError("Inserisci Codice Fiscale e Password.");
+        return;
+    }
 
     try {
+        // 2. Chiedi al server di fare il login
         const response = await fetch("/login", {
-            method : "POST",
-            headers : { "Content-Type" : "application/json" },
-            body : JSON.stringify(data)
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ CF: cf, password: password })
         });
 
         const result = await response.json();
 
-        if(result.success === true){
-            // ROUTING BASATO SUL RUOLO DA BACKEND
-            switch(result.role){
-                case "AS":
-                    window.location.href = "/dashboard_sysadmin";
-                    break;
-                case "AA":
-                    window.location.href = "/dashboard_adminaziendale";
-                    break;
-                case "CC":
-                    window.location.href = "/dashboard_capocantiere";
-                    break;
-                case "OP":
-                    window.location.href = "/dashboard_operaio";
-                    break;
-                default:
-                    window.location.href = "/";
+        // 3. Se è andato tutto bene, cambia pagina
+        if (result.success) {
+            switch (result.role) {
+                case "AS": window.location.href = "/dashboard_sysadmin"; break;
+                case "AA": window.location.href = "/dashboard_adminaziendale"; break;
+                case "CC": window.location.href = "/dashboard_capocantiere"; break;
+                case "OP": window.location.href = "/dashboard_operaio"; break;
+                default:   window.location.href = "/";
             }
-            return;
+        } else {
+            // Se c'è un errore (es. password sbagliata)
+            showLoginError(result.message || "Credenziali errate.");
         }
 
-        // --- GESTIONE ERRORE LOGIN ---
-        showLoginError(result.message || "Credenziali errate. Controlla CF e password.");
-
-    } catch(error) {
-        console.error("Errore login:", error);
-        showLoginError("Errore di connessione. Riprovare.");
+    } catch (error) {
+        console.error("Errore:", error);
+        showLoginError("Errore di connessione.");
     }
+}
+
+function showLoginError(message) {
+    const errorModal = document.getElementById('login-error-modal');
+    const errorMessage = document.getElementById('login-error-message');
+    
+    if(errorMessage) errorMessage.innerText = message;
+    if(errorModal) errorModal.classList.remove('hidden');
+}
+
+// Chiudi modale errore al click su OK
+document.getElementById('login-error-ok')?.addEventListener('click', function() {
+    document.getElementById('login-error-modal').classList.add('hidden');
 });
 
 
-/* ----------------------------
-   FUNZIONE PER MODALE DI ERRORE
------------------------------*/
-function showLoginError(message){
-    const modal = document.getElementById("login-error-modal");
-    const msg = document.getElementById("login-error-message");
-    const okBtn = document.getElementById("login-error-ok");
+/* ========================
+   PASSWORD DIMENTICATA
+   ======================== */
 
-    if(modal && msg && okBtn){
-        msg.innerText = message;
-        modal.classList.remove("hidden");
-        okBtn.onclick = () => modal.classList.add("hidden");
-    } else {
-        alert(message);
+// 1. Apre la modale
+function forgotPassword() {
+    const modal = document.getElementById('forgot-password-modal');
+    if(modal) modal.classList.remove('hidden');
+}
+
+// 2. Chiude la modale
+function closeForgotModal() {
+    const modal = document.getElementById('forgot-password-modal');
+    if(modal) modal.classList.add('hidden');
+}
+
+// 3. Invia richiesta recupero (Simulata o collegata a Backend)
+async function inviaRichiestaRecupero(e) {
+    e.preventDefault(); // Evita reload
+
+    const cf = document.getElementById('recover-cf').value.trim();
+    const phone = document.getElementById('recover-phone').value.trim();
+
+    if(!cf || !phone) {
+        alert("Compila tutti i campi!");
+        return;
     }
+
+    // ESEMPIO DI CHIAMATA FETCH (da implementare lato server python se vuoi)
+    /*
+    try {
+        const response = await fetch("/recupero_password", {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({ CF: cf, telefono: phone })
+        });
+        const res = await response.json();
+        if(res.success) { alert("Ti abbiamo inviato un SMS/Email!"); closeForgotModal(); }
+        else { alert("Dati non trovati."); }
+    } catch(err) { console.error(err); }
+    */
+
+    // Per ora facciamo solo un alert di conferma simulata
+    console.log("Richiesta recupero per:", cf, phone);
+    alert("Se i dati corrispondono, riceverai istruzioni per il reset.");
+    closeForgotModal();
 }

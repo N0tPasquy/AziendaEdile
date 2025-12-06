@@ -13,94 +13,89 @@
 
 */
 
-/* ====== SFONDO GENERALE ====== */
+/* ====== RESET E BASE ====== */
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    padding: 0;
     font-family: 'Inter', sans-serif;
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
-    /* non bloccare lo scroll dalla pagina di login */
     min-height: 100vh;
     overflow-y: auto;
+    
+    /* Centramento verticale e orizzontale */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem; /* p-4 */
 }
 
-/* ====== CARD PRINCIPALE (Effetto Glassmorphism) ====== */
+/* ====== CARD PRINCIPALE ====== */
 .login-card {
-    background: rgba(245, 245, 245, 0.60); /* Sfondo bianco, opacità 15% */
-    backdrop-filter: blur(10px); /* Sfoca l'area sottostante la card */
-    -webkit-backdrop-filter: blur(10px); /* Per la compatibilità con Safari */
-
-    /* INSERITE QUESTE TRE PROPRIETÀ PER LA RESPONSIVITÀ: */
-    width: 90%; /* Occupa il 90% della larghezza dello schermo, lasciando margini */
-    max-width: 480px; /* Non supererà i 480px su desktop */
-    min-width: 300px; /* Opzionale: Assicura una larghezza minima leggibile */
+    position: relative;
+    z-index: 10;
+    text-align: center;
     
-    padding: 3rem 3rem;
-    padding-top: 1rem;
+    /* Stili Glassmorphism */
+    background: rgba(245, 245, 245, 0.60);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    /* Dimensioni Responsive */
+    width: 100%;
+    max-width: 480px;
+    min-width: 300px; /* Evita che diventi troppo piccola su vecchi telefoni */
+    min-height: 500px;
+    
+    padding: 3rem;
+    padding-top: 2rem;
     border-radius: 55px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
     border: 2px solid rgba(255, 255, 255, 0.3);
-    min-height: 500px;
 }
 
 /* ====== LOGO ====== */
-.w-full.max-w-sm svg {
-    color: #0E6BA8;
+.logo-container {
+    margin-bottom: 1rem; /* mb-4 */
 }
 
-/* ====== TITOLI E TESTI ====== */
-h1 {
-    color: #0E2F44 !important;
-    font-weight: 700 !important;
+.login-logo {
+    width: 15rem; /* w-60 (approx 240px) */
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    color: #0E6BA8; /* Se è un SVG inline */
 }
 
-p {
-    letter-spacing: 2px;
+/* ====== TITOLO ====== */
+.title-access {
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+    color: #0B5788;
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.25rem;
+    letter-spacing: 0.025em; /* tracking-wide */
 }
 
-/* ====== INPUT ====== */
-input[type="text"],
-input[type="password"] {
-    background: #FFFFFF;
-    border: 1px solid #C7D5E0;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
+/* ====== FORM & INPUT ====== */
+#loginForm {
+    text-align: left;
+    width: 100%;
 }
 
-input:focus {
-    border-color: #0B5788;
-    box-shadow: 0 0 5px rgba(14, 107, 168, 0.3);
-}
-
-/* ====== CHECKBOX ====== */
-#remember-cf {
-    accent-color: #0B5788;
-}
-
-/* ====== BOTTONE LOGIN ====== */
-.btn-primary {
-    background: #0B5788 !important;
-    border-radius: 14px;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    transition: 0.2s ease;
-}
-
-.btn-primary:hover {
-    background: #0B5788 !important;
-}
-
-/* ====== LINK PASSWORD DIMENTICATA ====== */
-a {
-    font-weight: 500;
-}
-
-/* ====== FOOTER ====== */
-.text-xs {
-    opacity: 0.8;
-}
 .input-wrapper {
     position: relative;
+}
+
+/* Spaziatura tra gli input (sostituisce space-y-8) */
+.form-spacing {
+    margin-bottom: 2rem;
 }
 
 .input-icon {
@@ -112,30 +107,109 @@ a {
     height: 18px;
     opacity: 0.6;
     pointer-events: none;
+    color: #374151; /* Colore icona default */
 }
 
 .input-with-icon {
-    padding-left: 48px !important; /* spazio per l'icona */
+    width: 100%;
+    padding: 0.75rem; /* p-3 */
+    padding-left: 48px !important; /* Spazio per l'icona */
+    
+    background: #FFFFFF;
+    border: 1px solid #C7D5E0;
+    border-radius: 0.375rem; /* rounded-md */
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    outline: none;
 }
 
-/* Placeholder spostato */
+/* Stato Focus */
+.input-with-icon:focus {
+    border-color: #0B5788; /* blue-500 approx */
+    box-shadow: 0 0 0 3px rgba(11, 87, 136, 0.3); /* ring effect */
+}
+
+/* Placeholder */
 .input-with-icon::placeholder {
     color: #9ca3af;
 }
 
-/* Per superare qualsiasi reset Tailwind */
-.input-with-icon::-webkit-input-placeholder { padding-left: 2px; }
-.input-with-icon::-moz-placeholder { padding-left: 2px; }
-.input-with-icon:-ms-input-placeholder { padding-left: 2px; }
-.input-with-icon::placeholder { padding-left: 2px; }
-
-.title-access {
-    color: #0B5788 !important;
-    font-size: 2 rem;
-    font-weight: 600;
+/* ====== CHECKBOX "RICORDAMI" ====== */
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-/* ====== MODALE ERRORE LOGIN (coerente con gli altri modali) ====== */
+#remember-cf {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #d1d5db;
+    accent-color: #0B5788;
+    cursor: pointer;
+}
+
+.remember-me-container label {
+    margin-left: 0.5rem;
+    font-size: 0.875rem; /* text-sm */
+    color: #111827; /* gray-900 */
+    cursor: pointer;
+}
+
+/* ====== FOOTER FORM (Link + Bottone) ====== */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+}
+
+.forgot-password {
+    color: #0B5788;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s;
+    font-size: 0.95rem;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.btn-primary {
+    background: #0B5788;
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 2rem; /* px-8 py-3 */
+    border-radius: 0.375rem; /* rounded-md */
+    border: none;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+    background: #094a6f;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* ====== COPYRIGHT FOOTER ====== */
+.login-footer {
+    font-size: 0.75rem; /* text-xs */
+    color: rgba(0, 0, 0, 0.5); /* text-black-500 opacity */
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ====== MODALE ERRORE (Layout) ====== */
 .modal {
     position: fixed;
     inset: 0;
@@ -146,30 +220,153 @@ a {
     z-index: 50;
 }
 
-.modal.hidden { display: none; }
-
-.modal-content {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    padding: 1.25rem 1.5rem;
-    border-radius: 14px;
-    width: 92%;
-    max-width: 420px;
-    box-shadow: 0 8px 30px rgba(2, 6, 23, 0.18);
-    border: 1px solid rgba(11, 87, 136, 0.06);
+.modal.hidden {
+    display: none;
 }
 
-.modal-content svg { width: 64px; height: 64px; }
+.error-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 1.5rem;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(11, 87, 136, 0.1);
+}
+
+.error-icon {
+    width: 4rem; /* h-16 w-16 */
+    height: 4rem;
+    color: #dc2626; /* red-600 */
+    margin-bottom: 0.75rem;
+}
+
+.modal-title {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: #000;
+}
+
+.modal-message {
+    color: #374151; /* gray-700 */
+    margin: 0 0 1.25rem 0;
+    font-size: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+}
 
 .confirm-btn {
     background: #0B5788;
     color: #fff;
     border-radius: 10px;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.5rem;
     border: none;
     cursor: pointer;
+    font-weight: 600;
+    transition: background .12s ease;
+}
+
+.confirm-btn:hover {
+    background: #094a6f;
+}
+
+/* RESPONSIVE AGGIUNTIVO (Se serve) */
+@media (max-width: 400px) {
+    .login-card {
+        padding: 2rem 1.5rem; /* Riduci padding su schermi piccolissimi */
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+    }
+}
+
+/* ====== LAYOUT MODALE RECUPERO ====== */
+
+/* Layout interno identico a error-layout */
+.recovery-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Icona Blu (simile a error-icon ma colore diverso) */
+.recovery-icon {
+    width: 4rem;
+    height: 4rem;
+    color: #0B5788; /* Blu aziendale */
+    margin-bottom: 0.75rem;
+}
+
+/* Assicuriamo che il form occupi tutta la larghezza disponibile */
+#recoveryForm {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Stile per i wrapper degli input dentro il modale */
+#recoveryForm .input-wrapper {
+    margin-bottom: 1rem;
+}
+
+/* Se nel modale non usi le icone dentro gli input (svg), 
+   dobbiamo togliere il padding sinistro extra che ha la classe .input-with-icon 
+   altrimenti il testo parte troppo a destra */
+#recoveryForm input.input-with-icon {
+    /* Decommenta la riga sotto se NON metti le icone SVG dentro gli input del modale */
+     padding-left: 1rem !important; 
+}
+
+/* ====== BOTTONI MODALE ====== */
+
+/* Contenitore bottoni */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+/* Bottone Annulla (Grigio) */
+.cancel-btn {
+    background: #9ca3af; /* Grigio neutro */
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
     transition: background .12s ease, transform .06s ease;
 }
 
-.confirm-btn:hover { background: #094a6f; transform: translateY(-1px); }
+.cancel-btn:hover {
+    background: #6b7280; /* Grigio più scuro */
+    transform: translateY(-1px);
+}
+
+.lock-icon {
+    width: 48px;       /* molto più piccolo */
+    height: 48px;
+    color: #0B5788;    /* stesso blu del pulsante "Invia" */
+    margin-bottom: 0.8rem;
+}

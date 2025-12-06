@@ -102,7 +102,8 @@ function firmaUscita() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert("Uscita registrata!");
+                document.getElementById('success-message').innerText = "Uscita registrata con successo!";
+                document.getElementById('success-modal').classList.remove('hidden');
                // document.getElementById("btn-uscita").classList.add("hidden");
                 // document.getElementById("btn-start").classList.remove("hidden");
                 window.onload();
