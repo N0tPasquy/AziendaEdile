@@ -14,197 +14,411 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
+/* ==========================================================================
+   1. RESET E BASE
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+}
+
 body {
-    /* rimuovi overflow: hidden se presente */
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
+    
+    /* Immagine di sfondo fissa */
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
-    /* allow scrolling */
-    overflow-y: auto;
+    
+    min-height: 100vh;
+    overflow-y: auto; /* Permetti lo scroll */
     -webkit-overflow-scrolling: touch;
 }
 
-/* DASHBOARD PRINCIPALE */
-#main-dashboard-card {
-    width: 100%;
-    max-width: none;
-    min-height: calc(100vh - 4rem);
-    height: auto;
-    margin: 0;
+/* ==========================================================================
+   2. LAYOUT GENERALE (STRUTTURA)
+   ========================================================================== */
 
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 30px;
-    padding: 3rem;
-
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+/* Wrapper che contiene Sidebar + Contenuto */
+.app-layout {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Desktop: affiancati */
+    width: 100%;
+    min-height: 100vh;
+    
+    /* Effetto Glassmorphism generale */
+    background: rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
 }
 
-/* ====== SEZIONI CONTENUTE (operai, cantieri, ecc.) ====== */
+/* Logo nella striscia bianca in alto (Dashboard, Cantieri, ecc.) */
+.logo-contained {
+    height: 40px;       /* Altezza fissa (molto più piccolo di prima) */
+    width: auto;        /* La larghezza si adatta da sola */
+    object-fit: contain;
+    display: block;
+}
+
+/* --- MOBILE NAVBAR (Visibile solo su schermi piccoli) --- */
+.mobile-navbar {
+    display: none; /* Nascosta su PC */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background-color: #1E293B;
+    z-index: 100;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.mobile-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-menu-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobile-brand {
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.mobile-logo {
+    height: 40px;
+    width: auto;
+}
+
+.icon-lg {
+    width: 28px;
+    height: 28px;
+}
+
+/* ==========================================================================
+   3. SIDEBAR (Laterale)
+   ========================================================================== */
+.sidebar {
+    width: 6rem; /* Larghezza aperta di default su PC (approx 250px) */
+    background-color: #1E293B; /* Blu scuro */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    transition: width 0.3s ease-in-out;
+    z-index: 90;
+    overflow-y: auto;
+    overflow-x: hidden; /* Nasconde scroll orizzontale durante l'animazione */
+}
+
+/* Header Sidebar */
+.sidebar-header {
+    display: flex;
+    justify-content: center;
+    padding: 1.5rem 0;
+    transition: all 0.3s;
+}
+
+.sidebar-logo-img {
+    height: 2rem;  /* Circa 48px */
+    width: auto;
+    object-fit: contain;
+    /* Importante: transizione fluida per l'animazione */
+    transition: height 0.3s ease-in-out; 
+}
+/* Logo quando la sidebar è APERTA (Grande) */
+/* Questa regola si attiva quando il div #sidebar ha la classe "open" */
+.sidebar.open .sidebar-logo-img {
+    height: 5rem; /* Circa 112px - Molto più grande */
+}
+
+
+/* Testo Brand */
+.sidebar-brand-text {
+    font-weight: 700;
+    font-size: 1.25rem;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+/* Toggle Button (Freccetta) */
+.sidebar-toggle-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.sidebar-toggle-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sidebar-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Navigazione */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+/* Pulsanti Sidebar */
+.sidebar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Allineati a sx quando aperti */
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: #cbd5e1; /* Grigio chiaro */
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+.sidebar-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Stato Attivo */
+.sidebar-btn.active {
+    background-color: #5b84ad; 
+    color: white;
+    font-weight: 700;
+}
+
+/* Pulsante Logout */
+.sidebar-footer {
+    margin-top: auto;
+    padding: 1.5rem;
+    width: 100%;
+}
+
+.btn-logout {
+    background-color: #ef4444;
+    color: white;
+    justify-content: center; /* Il logout sta bene centrato */
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
+
+.icon-container {
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Utility per nascondere elementi (usato dal JS per chiudere la sidebar) */
+.hidden {
+    display: none !important;
+}
+
+
+/* ==========================================================================
+   4. AREA CONTENUTI (MAIN)
+   ========================================================================== */
+.main-content {
+    flex: 1; /* Occupa tutto lo spazio rimanente */
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    width: 100%; /* Fix per le tabelle larghe */
+    overflow-x: hidden;
+}
+
+#content-container {
+    width: 100%;
+}
+
+/* ==========================================================================
+   5. COMPONENTI INTERNI (Presi dal tuo vecchio CSS)
+   ========================================================================== */
+
+/* --- Card Sezioni (es. Lista Operai) --- */
 .section-content {
     width: 100%;
-
-    /* CAMBIA QUESTO: height da 'auto' a 'fit-content' */
     height: fit-content;
-
-    /* CAMBIA QUESTO: Rimuovi o riduci drasticamente il min-height */
-    /* min-height: 95vh;  <-- CANCELLA O COMMENTA QUESTA RIGA */
     min-height: 200px;
-    /* Metti un minimo ragionevole, es. 200px, per evitare che sparisca se vuota */
-
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.45);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-radius: 20px;
     padding: 2rem;
-
-    /* Aggiungi un po' di margine sotto per staccare dal bordo pagina quando la card si allunga */
     margin: 2rem auto;
-
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
-    max-width: calc(100% - 1rem);
 }
 
-/* ====== HEADER STRIP (presente in operai, cantieri, ecc.) ====== */
+/* --- Header Strip (Striscia Titolo Sezione) --- */
 .header-strip {
-    width: calc(100% + 4rem);
+    width: calc(100% + 4rem); /* Sborda dai lati del padding padre */
     margin: -2rem -2rem 2rem -2rem;
-    padding: 0.5rem 2rem;
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(3px);
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(5px);
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: visible;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     color: rgb(20, 100, 150);
 }
 
 .header-content {
-    height: 4rem;
-    display: flex;
-    align-items: center;
+    display: flex;           /* Mette gli elementi sulla stessa riga */
+    align-items: center;     /* Li allinea verticalmente al centro */
+    flex-direction: row;     /* Forza la direzione orizzontale */
+    gap: 1rem;               /* Aggiunge spazio tra il logo e la scritta */
 }
 
-/* ====== LOGO ====== */
-.logo-contained {
-    width: 8rem;
-    height: auto;
-    object-fit: contain;
-    position: relative;
-}
-
-/* ====== TABELLE GENERICHE ====== */
+/* --- Tabelle Generiche --- */
 .table-card {
-    background: rgba(255, 255, 255, 0.40);
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
     border-radius: 20px;
-    padding: 1.5rem;
+    padding: 1rem;
     width: 100%;
-    box-sizing: border-box;
-    color: rgb(80, 80, 80);
-    height: auto;
+    overflow-x: auto; /* Scroll orizzontale su mobile */
 }
 
 .admin-table {
     width: 100%;
     text-align: left;
-    border-collapse: collapse; /* Fondamentale per i bordi delle righe */
-    table-layout: fixed;
+    border-collapse: collapse;
+    table-layout: fixed; /* Mantiene colonne stabili */
+    min-width: 800px; /* Forza scroll su mobile se troppo stretta */
 }
 
 .admin-table th {
-    font-weight: bold;
-    padding: 10px 12px;
-    border-bottom: 2px solid #e5e7eb; 
-}
-
-/* Stile base della riga del corpo tabella */
-.admin-table tbody tr {
-    border-bottom: 1px solid #e5e7eb; 
-    transition: background-color 0.2s ease; 
-}
-
-/* Effetto Hover sulla riga */
-.admin-table tbody tr:hover {
-    background-color: #f9fafb; 
-    /* Più scuro: #f3f4f6 */
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    color: #374151;
 }
 
 .admin-table td {
-    padding: 10px 8px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    vertical-align: middle;
+    color: #4b5563;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.admin-table tbody tr {
+    transition: background 0.2s;
+}
+
+.admin-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* === REGOLE DI ALLINEAMENTO TABELLE === */
+
+/* Allineamento verticale per tutte le celle */
+.admin-table td, 
+.admin-table th {
     vertical-align: middle;
-    box-sizing: border-box;
 }
 
-/* Larghezze colonne - UNIFICATE E PROPORZIONATE */
-.admin-table th:first-child,
-.admin-table td:first-child {
-    width: 20%;
-}
-
-.admin-table th:nth-child(2),
-.admin-table td:nth-child(2) {
-    width: 14%;
-}
-
-.admin-table th:nth-child(3),
-.admin-table td:nth-child(3) {
-    width: 14%;
-}
-
-.admin-table th:nth-child(4),
-.admin-table td:nth-child(4) {
-    width: 14%;
-}
-
-.admin-table th:nth-child(5),
-.admin-table td:nth-child(5) {
-    width: 18%;
-}
-
-.admin-table th:nth-child(6),
-.admin-table td:nth-child(6) {
-    width: 12%;
-}
-
-.admin-table th:nth-child(7),
-.admin-table td:nth-child(7) {
-    width: 8%;
-    min-width: 80px;
-}
-
+/* L'ultima colonna (quella delle Azioni) deve essere SEMPRE centrata */
+.admin-table th:last-child, 
 .admin-table td:last-child {
-    text-align: center;
+    text-align: center !important;
+    width: auto; /* Lascia che prenda lo spazio definito nell'HTML o quello che serve */
 }
 
-/* ====== PULSANTI ====== */
+/* Assicurati che i bottoni dentro l'ultima cella siano centrati */
+.admin-table td:last-child {
+    display: table-cell; /* Ripristina comportamento tabella */
+}
+
+/* Se i bottoni sono dentro un div o fluttuanti */
+.admin-table td:last-child button,
+.admin-table td:last-child .icon-btn {
+    margin: 0 auto; /* Centra i blocchi */
+    display: inline-flex; /* Assicura che stiano in linea o centrati */
+}
+
+/* --- Pulsanti Azione --- */
 .add-btn {
     background: #3b82f6;
     color: white;
-    padding: 0.5rem 1.25rem;
+    padding: 0.6rem 1.25rem;
     border-radius: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
 }
+.add-btn:hover { background: #2563eb; transform: translateY(-1px); }
 
-.add-btn:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Pulsanti Icona (Edit/Delete) */
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
+.icon-btn img {
+    /* CAMBIA QUESTI VALORI */
+    width: 32px;   /* Era 24px -> Prova 30px o 32px */
+    height: 32px;  /* Era 24px -> Metti lo stesso valore della width */
+    
+    object-fit: contain;
+    display: block; /* Assicura che non ci siano spazi strani sotto */
+}
+.icon-btn:hover { background-color: #d7ffca; transform: scale(1.1); }
+.icon-btn.delete:hover { background-color: #fee2e2; }
 
-/* ====== MODALI ====== */
+
+/* ==========================================================================
+   6. MODALI
+   ========================================================================== */
 .modal {
     position: fixed;
     inset: 0;
@@ -212,157 +426,459 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 50;
+    z-index: 200;
 }
-
-.modal.hidden {
-    display: none;
-}
+.modal.hidden { display: none; }
 
 .modal-content {
     background: rgba(255, 255, 255, 0.95);
     padding: 2rem;
     border-radius: 16px;
-    width: 380px;
+    width: 400px;
     max-width: 90vw;
-    backdrop-filter: blur(4px);
-
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     max-height: 90vh;
-    /* Altezza massima 90% dello schermo */
     overflow-y: auto;
-    /* Aggiunge la barra di scorrimento interna se serve */
 }
 
 .input-field {
     width: 100%;
     border: 1px solid #d1d5db;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
     border-radius: 0.5rem;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: inherit;
 }
 
-.cancel-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    background: #e5e7eb;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    font-family: 'Inter', sans-serif;
-}
-
-.cancel-btn:hover {
-    background: #d1d5db;
-}
-
+/* Pulsanti Modale */
 .confirm-btn {
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 0.5rem;
     background: #2563eb;
     color: white;
     border: none;
     cursor: pointer;
-    transition: background 0.2s ease;
-    font-family: 'Inter', sans-serif;
+    font-weight: 600;
 }
+.confirm-btn:hover { background: #1d4ed8; }
 
-.confirm-btn:hover {
-    background: #1d4ed8;
+.cancel-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 0.5rem;
 }
+.cancel-btn:hover { background: #d1d5db; }
 
 .delete-btn {
-    padding: 0.5rem 1rem;
+    padding: 0.6rem 1.2rem;
     border-radius: 0.5rem;
     background: #ef4444;
     color: white;
     border: none;
     cursor: pointer;
-    transition: background 0.12s ease, transform 0.06s ease;
-    font-family: 'Inter', sans-serif;
+    font-weight: 600;
 }
+.delete-btn:hover { background: #dc2626; }
 
-.delete-btn:hover {
-    background: #dc2626;
-    transform: translateY(-1px);
-}
 
-/* Stile base del bottone (il contenitore dell'immagine) */
-.icon-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 6px;          /* Spazio attorno all'icona per il click */
-    border-radius: 8px;    /* Angoli stondati quando passi col mouse */
-    transition: all 0.2s ease;
-    display: inline-flex;  /* Centra l'immagine perfettamente */
-    align-items: center;
-    justify-content: center;
-    margin: 0 2px;         /* Un po' di spazio tra i due bottoni */
-}
-
-/* Stile dell'immagine dentro il bottone */
-.icon-btn img {
-    width: 40px;           /* Dimensione fissa (Sostituisce w-10) */
-    height: 40px;          /* Dimensione fissa (Sostituisce h-auto) */
-    object-fit: contain;   /* Mantiene le proporzioni */
-    display: block;
-}
-
-/* --- EFFETTI HOVER --- */
-
-/* Hover generico (per il tasto Edit) - Sfondo azzurrino */
-.icon-btn:hover {
-    background-color: #d7ffca; /* gray-50 o blue-50 */
-    transform: scale(1.1);     /* Leggero zoom */
-}
-
-/* Hover specifico per tasto DELETE (.delete) - Sfondo rosso chiaro */
-.icon-btn.delete:hover {
-    background-color: #fee2e2; /* red-100 */
-}   
-
-/* ====== SIDEBAR ====== */
-#sidebar {
-    background-color: #2C3E50;
-    /* Sidebar: permetti che si estenda e faccia scroll se necessario */
-    min-height: 100vh;
-    height: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.sidebar-btn.active {
-    background: #5b84ad !important;
-    color: #ffffff !important;
-    font-weight: 700;
-}
-
-/* ====== MEDIA PER MOBILE ====== */
+/* ==========================================================================
+   7. RESPONSIVE (MOBILE)
+   ========================================================================== */
+/* ==========================================================================
+   MEDIA QUERIES (RESPONSIVE MOBILE)
+   ========================================================================== */
 @media (max-width: 768px) {
 
-    /* Rimuovi flex-direction: column dal contenitore principale se c'era */
-    #main-dashboard-card {
-        display: block;
-        /* O flex, ma senza column che schiaccia la sidebar */
+    /* --- 1. NAVBAR E LAYOUT --- */
+    .mobile-navbar { display: flex; }
+    
+    .app-layout {
+        flex-direction: column; /* Impila sidebar e contenuto */
     }
 
-    /* Aggiungi spazio in alto al contenuto perché ora c'è l'header fisso mobile */
-    main.content-area {
-        padding-top: 5rem !important;
-        /* 4rem header + 1rem spazio */
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+    /* --- 2. SIDEBAR OFF-CANVAS --- */
+    .sidebar {
+        position: fixed;
+        left: -100%; /* Nascosta a sinistra */
+        width: 80% !important; 
+        max-width: 300px;
+        height: 100vh;
+        z-index: 200; /* Sopra tutto */
+        transition: left 0.3s ease-in-out;
+        border-right: none;
+        box-shadow: 10px 0 20px rgba(0,0,0,0.3);
     }
 
-    /* Nascondi il toggle interno alla sidebar su mobile, usiamo quello in alto */
-    #toggle-wrap {
-        display: none !important;
+    /* Classe aggiunta via JS per aprire */
+    .sidebar.mobile-open { left: 0; }
+
+    /* Elementi sempre visibili nella sidebar mobile */
+    .sidebar-brand-text, .link-text {
+        opacity: 1 !important;
+        display: inline-block !important;
+    }
+    .sidebar-toggle-container { display: none; }
+
+    /* --- 3. CONTENUTO PRINCIPALE --- */
+    .main-content {
+        padding: 1rem;
+        padding-top: 5rem; /* Spazio per la navbar fissa */
+    }
+
+    /* --- 4. FIX ALLINEAMENTO (Il cuore del problema) --- */
+    
+    /* IMPORTANTE: Togliamo il padding dal contenitore padre.
+       Questo permette alle card interne di allargarsi fino ai bordi,
+       allineandosi perfettamente alla striscia bianca sopra. */
+    .section-content {
+        padding: 0 !important; 
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden; /* Taglia gli angoli retti interni */
+    }
+
+    /* Striscia Bianca in alto */
+    .header-strip {
+        width: 100%; 
+        margin: 0 !important; /* Reset margini desktop */
+        margin-bottom: -2rem !important; /* Tira su la card successiva */
+        
+        padding: 1.5rem 1.5rem 3rem 1.5rem; /* Spazio extra sotto */
+        
+        border-radius: 20px 20px 0 0; /* Tondo solo sopra */
+        position: relative;
+        z-index: 1; /* Livello basso */
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: none;
+    }
+
+    /* La prima Card (che si sovrappone alla striscia) */
+    .dashboard-header-card,
+    .table-card:first-of-type {
+        position: relative;
+        z-index: 10; /* Livello alto (sta sopra) */
+        
+        width: 100%;
+        margin-top: 0 !important;
+        
+        /* Gestione bordi per l'effetto "foglio unico" */
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.05); /* Ombra verso l'alto */
+    }
+    
+    /* Layout Header Interno (Logo + Testo affiancati) */
+    .header-content {
+        flex-direction: row !important; /* Forza riga orizzontale */
+        justify-content: center; 
+        width: 100%;
+    }
+
+    /* Altri aggiustamenti per mobile */
+    .dashboard-header-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-box { max-width: 100%; }
+    
+    /* Card successive (Tabelle) */
+    .table-card {
+        border-radius: 0; 
+        margin-bottom: 1px;
+        box-shadow: none;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    /* Ultima card chiude i bordi */
+    .dashboard-grid .table-card:last-child {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        border-bottom: none;
     }
 }
 
-/* Assicurati che il contenuto principale non sia centrato verticalmente (usa justify-start) */
-.content-area {
-    justify-content: flex-start;
+/* Overlay scuro per quando la sidebar è aperta su mobile */
+.mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    display: none; /* JS lo mostrerà */
+    backdrop-filter: blur(2px);
+}
+.mobile-overlay:not(.hidden) { display: block; }
+
+/* ==========================================================================
+   8. STILI SPECIFICI DASHBOARD (AGGIUNTA)
+   ========================================================================== */
+
+/* Header Interno alla Dashboard */
+.dashboard-header-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+}
+
+.dashboard-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.dashboard-title p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 500;
+}
+
+.company-name {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-left: 1rem;
+}
+
+/* FILTRO CANTIERE (Select personalizzata) */
+.filter-box {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 0.375rem 0.75rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 320px; /* Larghezza massima su desktop */
+    transition: box-shadow 0.2s;
+}
+
+.filter-box:focus-within {
+    box-shadow: 0 0 0 2px #dbeafe; /* Ring blu */
+    border-color: #3b82f6;
+}
+
+.filter-icon {
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+.custom-select {
+    appearance: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    padding-right: 1.5rem; /* Spazio per freccetta */
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #374151;
+    cursor: pointer;
+    outline: none;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #9ca3af;
+}
+
+/* GRIGLIA DASHBOARD (2 Colonne su Desktop, 1 su Mobile) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default Mobile */
+    gap: 1.5rem;
+    width: 100%;
+    flex: 1; /* Riempie altezza */
+    overflow: hidden; /* Evita scroll doppio */
+    padding-bottom: 1rem;
+}
+
+.card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Pulsanti Piccoli (+ Assegna) */
+.small-btn {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
+}
+
+.actions-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Table Responsive Container */
+.table-responsive {
+    overflow-y: auto;
+    flex-grow: 1; /* Prende spazio rimanente nella card */
+    max-height: 60vh; /* Limite altezza su schermi grandi */
+}
+
+/* MODALI SPECIFICI */
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.modal-select-box {
+    max-width: 100%; /* Nei modali prende tutto lo spazio */
+}
+
+/* Stili Modale Successo (Ripresi da prima) */
+.success-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.success-icon {
+    width: 4rem;
+    height: 4rem;
+    color: #16a34a;
+    margin-bottom: 0.75rem;
+}
+
+.modal-message {
+    color: #374151;
+    margin-bottom: 1.25rem;
+}
+
+/* --- MEDIA QUERY SPECIFICHE PER DASHBOARD --- */
+@media (min-width: 1024px) {
+    /* Su schermi grandi, 2 colonne */
+    .dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile: header dashboard impilato */
+    .dashboard-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-box {
+        max-width: 100%; /* Select full width su mobile */
+    }
+    
+    .actions-group {
+        flex-direction: column; /* Bottoni impilati se c'è poco spazio */
+        align-items: flex-end;
+    }
+}
+
+/* ==========================================================================
+   9. STILI SPECIFICI CANTIERI (AGGIUNTA)
+   ========================================================================== */
+
+/* Etichette dei Form */
+.form-label {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+/* Messaggi di Errore */
+.error-msg {
+    color: #ef4444;
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* Textarea senza resize */
+.textarea-resize-none {
+    resize: none;
+}
+
+/* Immagine QR Code nel modale */
+.qr-code-img {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Bottone Download (Verde) */
+.download-btn {
+    background-color: #16a34a; /* Green-600 */
+}
+.download-btn:hover {
+    background-color: #15803d; /* Green-700 */
+}
+
+/* Layout azioni header (Pulsante Aggiungi) */
+.header-actions {
+    position: relative;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .header-actions {
+        width: auto;
+    }
 }

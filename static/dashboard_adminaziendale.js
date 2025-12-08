@@ -15,55 +15,47 @@
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const texts = document.querySelectorAll('.link-text');
-    const brandText = document.getElementById('brand-text');
-    const logo = document.getElementById('sidebar-logo');
-    const toggleWrap = document.getElementById('toggle-wrap');
+    const brand = document.getElementById('brand-text');
     const buttons = document.querySelectorAll('.sidebar-btn');
+    
+    const currentWidth = sidebar.offsetWidth; 
+    const isOpen = currentWidth > 150;
 
-    // Controlliamo la larghezza per capire lo stato
-    const isExpanded = sidebar.classList.contains('w-64');
-
-    if (isExpanded) {
-        // === CHIUSURA ===
-        sidebar.classList.remove('w-64');
-        sidebar.classList.add('w-24');
-
-        // Nascondi testo e riduci logo
-        brandText.classList.add('hidden');
-        logo.classList.remove('h-32');
-        logo.classList.add('h-10'); // O h-160px ridotto
-
+    if (isOpen) {
+        // --- CHIUDI ---
+        sidebar.style.width = '6rem';
+        sidebar.classList.remove('open'); // <--- RIMUOVI CLASSE PER RIMPICCIOLIRE LOGO
+        
         texts.forEach(t => t.classList.add('hidden'));
-
-        // Centra icone
-        toggleWrap.classList.remove('justify-start', 'px-4');
-        toggleWrap.classList.add('justify-center');
-
-        buttons.forEach(btn => {
-            btn.classList.remove('px-3', 'justify-start');
-            btn.classList.add('justify-center');
-        });
-
+        brand.classList.add('hidden');
+        brand.style.opacity = '0';
+        
+        buttons.forEach(b => b.style.justifyContent = 'center');
+        
     } else {
-        // === APERTURA ===
-        sidebar.classList.remove('w-24');
-        sidebar.classList.add('w-64');
-
-        // Mostra testo e ingrandisci logo
-        brandText.classList.remove('hidden');
-        logo.classList.remove('h-10');
-        logo.classList.add('h-26');
-
+        // --- APRI ---
+        sidebar.style.width = '16rem';
+        sidebar.classList.add('open'); // <--- AGGIUNGI CLASSE PER INGRANDIRE LOGO
+        
         texts.forEach(t => t.classList.remove('hidden'));
+        brand.classList.remove('hidden');
+        
+        setTimeout(() => brand.style.opacity = '1', 50);
+        
+        buttons.forEach(b => b.style.justifyContent = 'flex-start');
+    }
+}
 
-        // Allinea a sinistra
-        toggleWrap.classList.remove('justify-center');
-        toggleWrap.classList.add('justify-start', 'px-4');
-
-        buttons.forEach(btn => {
-            btn.classList.remove('justify-center');
-            btn.classList.add('px-3', 'justify-start'); // Aggiungi justify-start per sicurezza
-        });
+function toggleSidebarMobile() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    
+    sidebar.classList.toggle('mobile-open'); // Usa la classe CSS che abbiamo creato
+    
+    if (sidebar.classList.contains('mobile-open')) {
+        overlay.classList.remove('hidden');
+    } else {
+        overlay.classList.add('hidden');
     }
 }
 
@@ -125,20 +117,3 @@ fetch("/session_user")
 document.addEventListener("DOMContentLoaded", () => {
     caricaSezione("dashboard");
 });
-
-/* Funzione per aprire/chiudere la sidebar su mobile - Implementare solo quando sarà finita la versione desktop
-function toggleSidebarMobile() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobile-overlay');
-
-    // Controlla se la sidebar è attualmente nascosta (ha la classe -translate-x-full)
-    if (sidebar.classList.contains('-translate-x-full')) {
-        // APRI SIDEBAR
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('hidden'); // Mostra lo sfondo scuro
-    } else {
-        // CHIUDI SIDEBAR
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden'); // Nascondi lo sfondo scuro
-    }
-}*/

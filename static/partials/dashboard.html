@@ -11,79 +11,63 @@
     - Corso di Laurea: Informatica
     - Anno Accademico: 2025/2026
 -->
+<div class="section-content dashboard-section">
 
-<div class="section-content text-center z-10 mx-auto h-full flex flex-col">
-
-    <!-- Header Strip -->
-    <div class="header-strip flex items-center justify-start shrink-0">
-        <div class="flex items-center header-content">
+    <div class="header-strip">
+        <div class="header-content">
             <img src="/static/img/logo.png" class="logo-contained" alt="Logo Azienda">
-            <span id="nome_azienda" class="ml-4 font-bold text-2xl"></span>
+            <span id="nome_azienda" class="company-name"></span>
         </div>
     </div>
 
-    <div
-        class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
-
-        <div class="text-left w-full md:w-auto">
-            <h1 class="text-2xl font-bold text-gray-800 m-0 leading-tight">Dashboard</h1>
-            <p class="text-gray-500 text-sm m-0 font-medium">Gestione risorse e personale per cantiere</p>
+    <div class="dashboard-header-card">
+        <div class="dashboard-title">
+            <h1>Dashboard</h1>
+            <p>Gestione risorse e personale per cantiere</p>
         </div>
 
-        <div
-            class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-            <div class="pl-2 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        <div class="filter-box">
+            <div class="filter-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
             </div>
-
-            <div class="relative w-full md:w-auto">
-                <select id="select_cantiere"
-                    class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+            <div class="select-wrapper">
+                <select id="select_cantiere" class="custom-select">
                     <option value="" disabled selected>-- Seleziona Cantiere --</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-400">
-                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd">
+                <div class="select-arrow">
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Grid Layout-->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full overflow-hidden pb-4">
+    <div class="dashboard-grid">
 
-        <div class="table-card flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
-                <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <div class="table-card h-full">
+            <div class="card-header-row">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                     Squadra
                 </h2>
-                <button onclick="openAssegnaOperaioModal()"
-                    class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
+                <button onclick="openAssegnaOperaioModal()" class="add-btn small-btn">
                     + Assegna
                 </button>
             </div>
 
-            <div class="overflow-auto grow">
-                <table class="admin-table w-full">
-                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
-                        <tr class="text-left border-b border-gray-300/50">
-                            <th class="pb-3 pl-2" style="width: 35%;">Nome</th>
-                            <th class="pb-3" style="width: 25%;">Ruolo</th>
-                            <th class="pb-3" style="width: 20%;">Stato</th>
-                            <!-- In futuro sarà presente/assente in base alla presenza -->
-                            <th class="pb-3 text-center" style="width: 20%;">Togli dalla squadra</th>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%;">Nome</th>
+                            <th style="width: 25%;">Ruolo</th>
+                            <th style="width: 20%;">Stato</th>
+                            <th style="width: 20%; text-align: center;">Rimuovi</th>
                         </tr>
                     </thead>
                     <tbody id="squadra-table-body"></tbody>
@@ -91,39 +75,34 @@
             </div>
         </div>
 
-        <div class="table-card flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
-                <h2 class="text-xl lg:text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+        <div class="table-card h-full">
+            <div class="card-header-row">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                     </svg>
                     Dotazione Cantiere
                 </h2>
 
-                <div class="flex items-center gap-2">
-                    <button onclick="openAssegnaAttrezzoModal()"
-                        class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
-                        + Assegna attrezzo
+                <div class="actions-group">
+                    <button onclick="openAssegnaAttrezzoModal()" class="add-btn small-btn">
+                        + Attrezzo
                     </button>
-                    <button onclick="openAssegnaVeicoloModal()"
-                        class="add-btn text-xs lg:text-sm px-3 py-1 whitespace-nowrap">
-                        + Assegna veicolo
+                    <button onclick="openAssegnaVeicoloModal()" class="add-btn small-btn">
+                        + Veicolo
                     </button>
                 </div>
             </div>
 
-            <div class="overflow-auto grow">
-                <table class="admin-table w-full">
-                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
-                        <tr class="text-left border-b border-gray-300/50">
-                            <th class="pb-3" style="width: 25%;">Identificativo</th>
-                            <!-- Targa per veicoli e seriale per attrezzi -->
-                            <th class="pb-3 pl-2" style="width: 35%;">Bene</th>
-                            <th class="pb-3" style="width: 20%;">Tipo/Anno</th> <!-- Veicolo o attrezzo -->
-                            <th class="pb-3 text-center" style="width: 20%;">Togli dal cantiere</th>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">ID</th>
+                            <th style="width: 35%;">Bene</th>
+                            <th style="width: 20%;">Tipo</th>
+                            <th style="width: 20%; text-align: center;">Rimuovi</th>
                         </tr>
                     </thead>
                     <tbody id="beni-table-body"></tbody>
@@ -133,164 +112,124 @@
     </div>
 </div>
 
-<!-- MODALE AGGIUNGI OPERAIO ALLA SQUADRA-->
 <div id="add-operaio-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Scegli l'operaio da aggiungere alla squadra</h3>
-
-        <div
-            class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-            <div class="pl-2 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 3a5 5 0 00-5 5v2a2 2 0 002 2h6a2 2 0 002-2V8a5 5 0 00-5-5z M7 8h10" />
+        <h3 class="modal-title">Aggiungi Operaio</h3>
+        
+        <div class="filter-box modal-select-box">
+            <div class="filter-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a5 5 0 00-5 5v2a2 2 0 002 2h6a2 2 0 002-2V8a5 5 0 00-5-5z M7 8h10" />
                 </svg>
             </div>
-
-            <div class="relative w-full md:w-auto">
-                <select id="select_operaio"
-                    class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+            <div class="select-wrapper">
+                <select id="select_operaio" class="custom-select">
                     <option value="" disabled selected>-- Seleziona operaio --</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-5 flex items-center text-gray-400">
-                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd" />
+                <div class="select-arrow">
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-4 gap-3">
+        <div class="modal-actions">
             <button onclick="closeAddModal()" class="cancel-btn">Annulla</button>
             <button onclick="clickAssegnaOperaio()" class="confirm-btn">Assegna</button>
         </div>
     </div>
 </div>
 
-<!-- MODALE AGGIUNGI VEICOLO AL CANTIERE-->
 <div id="add-veicolo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Scegli il veicolo da usare sul cantiere</h3>
-
-        <div
-            class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-            <div class="pl-2 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 3a5 5 0 00-5 5v2a2 2 0 002 2h6a2 2 0 002-2V8a5 5 0 00-5-5z M7 8h10" />
+        <h3 class="modal-title">Aggiungi Veicolo</h3>
+        
+        <div class="filter-box modal-select-box">
+            <div class="filter-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                 </svg>
             </div>
-
-            <div class="relative w-full md:w-auto"> 
-                <select id="select_veicolo"
-                    class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+            <div class="select-wrapper">
+                <select id="select_veicolo" class="custom-select">
                     <option value="" disabled selected>-- Seleziona veicolo --</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-5 flex items-center text-gray-400">
-                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd" />
+                <div class="select-arrow">
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-4 gap-3">
+        <div class="modal-actions">
             <button onclick="closeAddVeicolodModal()" class="cancel-btn">Annulla</button>
             <button onclick="clickAssegnaVeicolo()" class="confirm-btn">Assegna</button>
         </div>
     </div>
 </div>
 
-<!-- MODALE AGGIUNGI ATTREZZO AL CANTIERE-->
 <div id="add-attrezzo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Scegli l'attrezzo da usare sul cantiere</h3>
-
-        <div
-            class="flex items-center gap-3 w-full md:w-auto bg-white p-1.5 rounded-lg border border-gray-200 shadow-sm focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-            <div class="pl-2 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 3a5 5 0 00-5 5v2a2 2 0 002 2h6a2 2 0 002-2V8a5 5 0 00-5-5z M7 8h10" />
+        <h3 class="modal-title">Aggiungi Attrezzo</h3>
+        
+        <div class="filter-box modal-select-box">
+            <div class="filter-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                 </svg>
             </div>
-
-            <div class="relative w-full md:w-auto"> 
-                <select id="select_attrezzo"
-                    class="bg-transparent text-gray-700 font-bold text-sm outline-none cursor-pointer py-1 pr-8 w-full md:min-w-[280px] appearance-none leading-tight">
+            <div class="select-wrapper">
+                <select id="select_attrezzo" class="custom-select">
                     <option value="" disabled selected>-- Seleziona attrezzo --</option>
                 </select>
-                <div class="pointer-events-none absolute inset-y-0 right-5 flex items-center text-gray-400">
-                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd" />
+                <div class="select-arrow">
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-4 gap-3">
+        <div class="modal-actions">
             <button onclick="closeAddAttrezzodModal()" class="cancel-btn">Annulla</button>
             <button onclick="clickAssegnaAttrezzo()" class="confirm-btn">Assegna</button>
         </div>
     </div>
 </div>
 
-<!-- MODALE CONFERMA ELIMINAZIONE BENE ASSEGNATO -->
 <div id="delete-bene-assegnato-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
-
-        <p id="delete-message" class="text-gray-700 mb-5">
-            Sei sicuro di togliere questo bene dal cantiere?
-        </p>
-
-        <div class="flex justify-end mt-4 gap-3">
+        <h3 class="modal-title">Conferma Eliminazione</h3>
+        <p class="modal-message">Sei sicuro di togliere questo bene dal cantiere?</p>
+        <div class="modal-actions">
             <button onclick="closeDeleteBeneAssegnatoModal()" class="cancel-btn">Annulla</button>
             <button id="btn-confirm-delete-bene" class="delete-btn">Elimina</button>
         </div>
     </div>
 </div>
 
-<!-- Modale di successo -->
-<div id="success-modal" class="modal hidden">
-    <div class="modal-content flex flex-col items-center text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-        <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
-        <p id="success-message" class="text-gray-700 mb-5"></p>
-        <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
-    </div>
-</div>
-
-<!-- MODALE CONFERMA ELIMINAZIONE OPERAIO ASSEGNATO -->
 <div id="delete-operaio-assegnato-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
-
-        <p id="delete-message" class="text-gray-700 mb-5">
-            Sei sicuro di togliere questo operaio dal cantiere?
-        </p>
-
-        <div class="flex justify-end mt-4 gap-3">
+        <h3 class="modal-title">Conferma Eliminazione</h3>
+        <p class="modal-message">Sei sicuro di togliere questo operaio dal cantiere?</p>
+        <div class="modal-actions">
             <button onclick="closeDeleteOperaioAssegnatoModal()" class="cancel-btn">Annulla</button>
             <button id="btn-confirm-delete-operaio" class="delete-btn">Elimina</button>
         </div>
+    </div>
+</div>
+
+<div id="success-modal" class="modal hidden">
+    <div class="modal-content success-layout">
+        <svg xmlns="http://www.w3.org/2000/svg" class="success-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <h3 class="modal-title">Operazione completata</h3>
+        <p id="success-message" class="modal-message"></p>
+        <button onclick="closeSuccessModal()" class="confirm-btn">OK</button>
     </div>
 </div>

@@ -12,94 +12,80 @@
     - Anno Accademico: 2025/2026
 -->
 
-<div class="section-content text-center z-10 mx-auto h-full flex flex-col">
+<div class="section-content beni-section">
 
-    <!-- Header striscia bianca con logo progetto e nome dell'azienda -->
-    <div class="header-strip flex items-center justify-start shrink-0">
-        <div class="flex items-center header-content">
-            <img src="/static/img/logo.png" class="logo-contained">
-            <span id="nome_azienda" class="ml-4 font-bold text-2xl"></span>
+    <div class="header-strip">
+        <div class="header-content">
+            <img src="/static/img/logo.png" class="logo-contained" alt="Logo Azienda">
+            <span id="nome_azienda" class="company-name"></span>
         </div>
     </div>
 
-    <!-- Secondo header per coerenza con le altre schermate -->
-    <div
-        class="bg-white/60 backdrop-blur-md border border-white/50 rounded-xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
-
-        <div class="text-left w-full md:w-auto">
-            <h1 class="text-2xl font-bold text-gray-800 m-0 leading-tight">Gestione beni aziendali</h1>
-            <p class="text-gray-500 text-sm m-0 font-medium">Beni della tua azienda</p>
+    <div class="dashboard-header-card">
+        <div class="dashboard-title">
+            <h1>Gestione beni aziendali</h1>
+            <p>Beni della tua azienda</p>
         </div>
     </div>
 
-    <!-- Card principale -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full overflow-hidden pb-4">
+    <div class="dashboard-grid">
 
-        <!-- Card per l'aggiunta dei veicoli -->
-        <div class="table-card flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+        <div class="table-card h-full">
+            <div class="card-header-row">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                     </svg> 
                     Veicoli
                 </h2>
-                <button onclick="openAddVeicoloModal()" class="add-btn text-sm px-3 py-1">
+                <button onclick="openAddVeicoloModal()" class="add-btn small-btn">
                     + Aggiungi Veicolo
                 </button>
             </div>
 
-            <div class="overflow-auto grow">
-                <table class="admin-table w-full">
-                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
-                        <tr class="text-left border-b border-gray-300/50">
-                            <th class="pb-3 pl-2">Targa</th>
-                            <th class="pb-3">Marca</th>
-                            <th class="pb-3">Modello</th>
-                            <th class="pb-3">Anno</th>
-                            <th class="pb-3 text-center">Azioni</th>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Targa</th>
+                            <th style="width: 20%;">Marca</th>
+                            <th style="width: 20%;">Modello</th>
+                            <th style="width: 15%;">Anno</th>
+                            <th style="width: 20%; text-align: center;">Azioni</th>
                         </tr>
                     </thead>
-                    <tbody id="veicoli-table-body">
-                    </tbody>
+                    <tbody id="veicoli-table-body"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Card per l'aggiunta di attrezzi -->
-        <div class="table-card flex flex-col h-full">
-            <div class="flex items-center justify-between mb-4 p-2 border-b border-gray-200">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 10h-2V7a3 3 0 00-3-3H8a3 3 0 00-3 3v3H3v10a2 2 0 002 2h14a2 2 0 002-2V10zM9 7a1 1 0 011-1h4a1 1 0 011 1v3H9V7z" />
-                        <rect x="9" y="14" width="6" height="3" rx="0.5" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" />
+        <div class="table-card h-full">
+            <div class="card-header-row">
+                <h2 class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-2V7a3 3 0 00-3-3H8a3 3 0 00-3 3v3H3v10a2 2 0 002 2h14a2 2 0 002-2V10zM9 7a1 1 0 011-1h4a1 1 0 011 1v3H9V7z" />
+                        <rect x="9" y="14" width="6" height="3" rx="0.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                     </svg>
                     Attrezzi
                 </h2>
-                <button onclick="openAddAttrezzoModal()" class="add-btn text-sm px-3 py-1">
+                <button onclick="openAddAttrezzoModal()" class="add-btn small-btn">
                     + Aggiungi Attrezzo
                 </button>
             </div>
 
-            <div class="overflow-auto grow">
-                <table class="admin-table w-full">
-                    <thead class="sticky top-0 bg-white z-10 shadow-sm">
-                        <tr class="text-left border-b border-gray-300/50">
-                            <th class="pb-3 pl-2">Seriale</th>
-                            <th class="pb-3">Marca</th>
-                            <th class="pb-3">Modello</th>
-                            <th class="pb-3">Tipo</th>
-                            <th class="pb-3 text-center">Azioni</th>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Seriale</th>
+                            <th style="width: 20%;">Marca</th>
+                            <th style="width: 20%;">Modello</th>
+                            <th style="width: 15%;">Tipo</th>
+                            <th style="width: 20%; text-align: center;">Azioni</th>
                         </tr>
                     </thead>
-                    <tbody id="attrezzi-table-body">
-                    </tbody>
+                    <tbody id="attrezzi-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -107,95 +93,81 @@
     </div>
 </div>
 
-<!-- Modale di inserimento veicolo -->
 <div id="add-veicolo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Nuovo Veicolo</h3>
+        <h3 class="modal-title">Nuovo Veicolo</h3>
 
-        <small id="err_veicolo_targa" class="text-red-500 text-sm hidden">Targa obbligatoria</small>
+        <small id="err_veicolo_targa" class="error-msg hidden">Targa obbligatoria</small>
         <input id="new_veicolo_targa" class="input-field" type="text" placeholder="Targa">
 
-        <small id="err_veicolo_marca" class="text-red-500 text-sm hidden">Marca obbligatoria</small>
+        <small id="err_veicolo_marca" class="error-msg hidden">Marca obbligatoria</small>
         <input id="new_veicolo_marca" class="input-field" type="text" placeholder="Marca">
 
-        <small id="err_veicolo_modello" class="text-red-500 text-sm hidden">Modello obbligatorio</small>
+        <small id="err_veicolo_modello" class="error-msg hidden">Modello obbligatorio</small>
         <input id="new_veicolo_modello" class="input-field" type="text" placeholder="Modello">
 
-        <small id="err_veicolo_anno" class="text-red-500 text-sm hidden">Anno obbligatorio</small>
+        <small id="err_veicolo_anno" class="error-msg hidden">Anno obbligatorio</small>
         <input id="new_veicolo_anno" class="input-field" type="text" placeholder="Anno">
 
-        <div class="flex justify-end mt-4 gap-3">
+        <div class="modal-actions">
             <button onclick="closeAddVeicoloModal()" class="cancel-btn">Annulla</button>
             <button onclick="insertVeicolo()" class="confirm-btn">Crea Veicolo</button>
         </div>
     </div>
 </div>
 
-<!-- Modale di inserimento attrezzo -->
 <div id="add-attrezzo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Nuovo Attrezzo</h3>
+        <h3 class="modal-title">Nuovo Attrezzo</h3>
 
-        <small id="err_attrezzo_seriale" class="text-red-500 text-sm hidden">Il codice seriale è obbligatorio</small>
+        <small id="err_attrezzo_seriale" class="error-msg hidden">Il codice seriale è obbligatorio</small>
         <input id="new_attrezzo_seriale" class="input-field" type="text" placeholder="Seriale">
 
-        <small id="err_attrezzo_marca" class="text-red-500 text-sm hidden">Marca dell'attrezzo obbligatoria</small>
+        <small id="err_attrezzo_marca" class="error-msg hidden">Marca dell'attrezzo obbligatoria</small>
         <input id="new_attrezzo_marca" class="input-field" type="text" placeholder="Marca">
 
-        <small id="err_attrezzo_modello" class="text-red-500 text-sm hidden">Modello dell'attrezzo obbligatorio</small>
+        <small id="err_attrezzo_modello" class="error-msg hidden">Modello dell'attrezzo obbligatorio</small>
         <input id="new_attrezzo_modello" class="input-field" type="text" placeholder="Modello">
 
-        <small id="err_attrezzo_tipo" class="text-red-500 text-sm hidden">Tipo di attrezzo obbligatorio</small>
+        <small id="err_attrezzo_tipo" class="error-msg hidden">Tipo di attrezzo obbligatorio</small>
         <input id="new_attrezzo_tipo" class="input-field" type="text" placeholder="Tipo">
 
-        <div class="flex justify-end mt-4 gap-3">
+        <div class="modal-actions">
             <button onclick="closeAddAttrezzoModal()" class="cancel-btn">Annulla</button>
             <button onclick="insertAttrezzo()" class="confirm-btn">Crea Attrezzo</button>
         </div>
     </div>
 </div>
 
-<!-- MODALE CONFERMA ELIMINAZIONE ATTREZZO -->
 <div id="delete-attrezzo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
-
-        <p id="delete-message" class="text-gray-700 mb-5">
-            Sei sicuro di voler eliminare questo attrezzo?
-        </p>
-
-        <div class="flex justify-end mt-4 gap-3">
+        <h3 class="modal-title">Conferma Eliminazione</h3>
+        <p class="modal-message">Sei sicuro di voler eliminare questo attrezzo?</p>
+        <div class="modal-actions">
             <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
             <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
         </div>
     </div>
 </div>
 
-<!-- MODALE CONFERMA ELIMINAZIONE VEICOLO -->
 <div id="delete-veicolo-modal" class="modal hidden">
     <div class="modal-content">
-        <h3 class="text-xl font-bold mb-4">Conferma Eliminazione</h3>
-
-        <p id="delete-message" class="text-gray-700 mb-5">
-            Sei sicuro di voler eliminare questo veicolo?
-        </p>
-
-        <div class="flex justify-end mt-4 gap-3">
+        <h3 class="modal-title">Conferma Eliminazione</h3>
+        <p class="modal-message">Sei sicuro di voler eliminare questo veicolo?</p>
+        <div class="modal-actions">
             <button onclick="closeDeleteModal()" class="cancel-btn">Annulla</button>
             <button id="confirm-delete-btn" class="delete-btn">Elimina</button>
         </div>
     </div>
 </div>
 
-<!-- Modale di successo -->
 <div id="success-modal" class="modal hidden">
-    <div class="modal-content flex flex-col items-center text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-600 mb-3 mx-auto" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <div class="modal-content success-layout">
+        <svg xmlns="http://www.w3.org/2000/svg" class="success-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
         </svg>
-        <h3 class="text-xl font-bold mb-2">Operazione completata</h3>
-        <p id="success-message" class="text-gray-700 mb-5">bene salvato.</p>
-        <button onclick="closeSuccessModal()" class="confirm-btn px-6">OK</button>
+        <h3 class="modal-title">Operazione completata</h3>
+        <p id="success-message" class="modal-message">Bene salvato.</p>
+        <button onclick="closeSuccessModal()" class="confirm-btn">OK</button>
     </div>
 </div>
