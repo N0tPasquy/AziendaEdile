@@ -302,83 +302,79 @@ function updateOperaio() {
         });
 }
 
+// Variabile globale specifica per gli operai
+let operaioDaCancellare = null;
+
+// 1. Funzione chiamata dal tasto cestino nella tabella
 function deleteOperaio(cf) {
-    const deleteModal = document.getElementById("delete-modal");
-    const deleteMessage = document.getElementById("delete-message");
-    const confirmBtn = document.getElementById("confirm-delete-btn");
-    const cancelBtn = document.getElementById("cancel-delete-btn");
-
-    if (deleteModal && deleteMessage && confirmBtn) {
-        fetch("/get_operai")
-            .then(res => res.json())
-            .then(data => {
-                const operaio = data.utenti.find(a => a.cf === cf);
-                const nomeCompleto = operaio ? `${operaio.nome} ${operaio.cognome}` : cf;
-
-                deleteMessage.innerText = `Sei sicuro di voler eliminare l'operaio ${nomeCompleto}?`;
-                deleteModal.classList.remove("hidden");
-
-                confirmBtn.onclick = async function () {
-                    confirmBtn.disabled = true;
-                    try {
-                        const res = await fetch("/delete_operaio", {
-                            method: "DELETE",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ cf: cf })
-                        });
-                        const respData = await res.json();
-
-                        deleteModal.classList.add("hidden");
-                        confirmBtn.disabled = false;
-
-                        if (respData.success) {
-                            caricaOperai();
-                            openSuccessModal("Operaio eliminato con successo!");
-                        } else {
-                            alert("Errore: " + (respData.message || "impossibile eliminare"));
-                        }
-                    } catch (err) {
-                        confirmBtn.disabled = false;
-                        console.error(err);
-                        alert("Errore di connessione");
-                    }
-                };
-
-                if (cancelBtn) {
-                    cancelBtn.onclick = function () { deleteModal.classList.add("hidden"); };
-                }
-            });
+    operaioDaCancellare = cf;
+    
+    // Cerchiamo l'ID specifico NUOVO
+    const modal = document.getElementById("delete-operaio-modal");
+    
+    if (!modal) {
+        console.error("Modale delete-operaio-modal non trovato!");
         return;
     }
 
-    // fallback: conferma browser se il modale non è presente
-    if (!confirm("Sei sicuro di voler eliminare l'operaio " + cf + " ?")) {
-        return;
-    }
-
-    fetch("/delete_operaio", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cf: cf })
-    })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                caricaOperai();
-                openSuccessModal("operaio eliminato con successo!");
-            } else {
-                alert("Errore: " + (data.message || ""));
-            }
-        })
-        .catch(err => {
-            console.error("Errore delete:", err);
-            alert("Errore di connessione: " + (err.message || err));
-        });
+    // Mostra il modale
+    modal.classList.remove("hidden");
 }
 
-function closeDeleteModal() {
-    const deleteModal = document.getElementById("delete-modal");
-    if (deleteModal) deleteModal.classList.add("hidden");
+// 2. Funzione per chiudere il modale (RINOMINATA PER EVITARE CONFLITTI)
+function closeDeleteOperaioModal() {
+    operaioDaCancellare = null;
+    const modal = document.getElementById("delete-operaio-modal");
+    if (modal) modal.classList.add("hidden");
+}
+
+// 3. Funzione di conferma eliminazione
+function confirmDeleteOperaio() {
+    if (!operaioDaCancellare) return;
+
+    const btn = document.getElementById("confirm-delete-btn");
+    if(btn) { btn.innerText = "Eliminazione..."; btn.disabled = true; }
+
+    try {
+        const res = fetch("/delete_operaio", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cf: operaioDaCancellare })
+        });
+
+        const data = res.json();
+
+        // IMPORTANTE: Chiama la funzione di chiusura RINOMINATA
+        closeDeleteOperaioModal();
+        
+        if(btn) { btn.innerText = "Elimina"; btn.disabled = false; }
+
+        if (data.success) {
+            caricaOperai();
+            openSuccessModal("Operaio eliminato con successo!");
+        } else {
+            alert("Errore: " + (data.message || "Impossibile eliminare"));
+        }
+
+    } catch (err) {
+        console.error("Errore delete:", err);
+        closeDeleteOperaioModal(); // Chiude usando il nome corretto
+        if(btn) { btn.innerText = "Elimina"; btn.disabled = false; }
+        alert("Errore di connessione");
+    }
+}
+
+// Funzione helper per il modale di successo (se non l'hai già)
+function openSuccessModal(msg) {
+    const modal = document.getElementById("success-modal");
+    const msgElem = document.getElementById("success-message");
+    
+    if(msgElem) msgElem.innerText = msg;
+    if(modal) modal.classList.remove("hidden");
+}
+
+function closeSuccessModal() {
+    modal = document.getElementById("success-modal").classList.add("hidden");
 }
 
 

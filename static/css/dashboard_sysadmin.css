@@ -13,177 +13,423 @@
 
 */
 
-/* ====== SFONDO E BASE ====== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
+/* ==========================================================================
+   1. RESET E BASE
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    padding: 0;
     font-family: 'Inter', sans-serif;
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
-    margin: 0;
-    padding: 0;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* Layout Centrale per SysAdmin (che non ha sidebar) */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* flex-start così non taglia in alto su schermi piccoli */
+    padding: 2rem;
 }
 
-/* ====== CARD PRINCIPALE ====== */
-.dashboard-card {
+/* ==========================================================================
+   2. CARD PRINCIPALE
+   ========================================================================== */
+.app-layout {
     width: 100%;
-    max-width: 1600px;
-    height: auto;
-    min-height: 60vh;
-    background: rgba(255, 255, 255, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 30px;
-    padding: 3rem;
+    max-width: 1400px;
+    /* Un po' più largo per la tabella grande */
+    min-height: 80vh;
     margin-top: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
 }
 
-/* ====== HEADER STRIP (MODIFICATO PER ESSERE PIÙ SOTTILE) ====== */
+/* ==========================================================================
+   3. HEADER E TITOLI
+   ========================================================================== */
+
+/* Striscia Bianca in alto (Logo e Logout) */
 .header-strip {
-    /* Logica margini negativi */
-    width: calc(100% + 6rem);
-    margin: -3rem -3rem 2rem -3rem;
-    
-    /* MODIFICA 1: Ridotto padding verticale da 0.8rem a 0.4rem */
-    padding: 0.4rem 3rem;
-    
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(3px);
-    border-radius: 30px 30px 0 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: visible;
-    color: rgb(20, 100, 150);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(5px);
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* MODIFICA 2: Aggiunta classe per forzare altezza ridotta */
 .header-content {
-    height: 5.5rem; /* Forza l'altezza massima del contenuto */
     display: flex;
     align-items: center;
+    gap: 1rem;
 }
 
-/* MODIFICA 3: Logo ridotto per stare nella striscia più piccola */
 .logo-contained {
-    width: 8.5rem; /* Era 8.5rem */
-    height: auto;
+    height: 40px;
+    width: auto;
     object-fit: contain;
-    position: relative;
-    top: 0; 
 }
 
-/* ====== TABELLA ====== */
-.table-card {
-    background: rgba(255, 255, 255, 0.40);
+.company-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+/* Pulsante Logout (Rosso) */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
+
+.logout-icon {
+    height: 1rem;
+    width: 1rem;
+}
+
+/* Dashboard Header (Titolo Pagina e Azione) */
+.dashboard-header-card {
+    background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(8px);
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
-    color: rgb(80, 80, 80);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Wrapper per scroll su schermi piccoli */
-.table-responsive-wrapper {
+.dashboard-title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.dashboard-title p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+}
+
+/* ==========================================================================
+   4. TABELLE E DATI
+   ========================================================================== */
+.table-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 1rem;
     width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+    /* Gestito dal wrapper interno */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.table-responsive {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 .admin-table {
     width: 100%;
-    text-align: left;
     border-collapse: collapse;
-    table-layout: fixed;
-    /* RESPONSIVE: Larghezza minima per evitare che le colonne esplodano su laptop */
-    min-width: 900px; 
+    min-width: 900px;
+    /* Forza scroll su mobile */
 }
 
 .admin-table th {
+    text-align: left;
+    padding: 1rem;
     font-weight: 700;
-    padding: 12px 8px;
-    color: rgb(11, 65, 99);
+    color: #374151;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .admin-table td {
-    padding: 12px 8px;
+    padding: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #4b5563;
     vertical-align: middle;
 }
 
-/* Larghezze Colonne Ottimizzate */
-.admin-table th:nth-child(1), .admin-table td:nth-child(1) { width: 22%; }
-.admin-table th:nth-child(2), .admin-table td:nth-child(2) { width: 18%; }
-.admin-table th:nth-child(3), .admin-table td:nth-child(3) { width: 12%; }
-.admin-table th:nth-child(4), .admin-table td:nth-child(4) { width: 12%; }
-.admin-table th:nth-child(5), .admin-table td:nth-child(5) { width: 11%; }
-.admin-table th:nth-child(6), .admin-table td:nth-child(6) { width: 13%; }
-.admin-table th:nth-child(7), .admin-table td:nth-child(7) { width: 12%; text-align: center; }
+.admin-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
 
-/* ====== PULSANTI ====== */
-.add-btn {
-    background: #3b82f6;
-    color: white;
-    padding: 0.6rem 1.25rem;
+/* Pulsanti Azione (Icone) */
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    display: inline-flex;
+}
+
+.icon-btn:hover {
+    background-color: #d1fae5;
+}
+
+.icon-btn.delete:hover {
+    background-color: #fee2e2;
+}
+
+.icon-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+/* ==========================================================================
+   5. MODALI E INPUT
+   ========================================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 20px;
+    width: 450px;
+    max-width: 90vw;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    text-align: center;
+}
+
+/* Input Styles */
+.form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+    margin-left: 0.25rem;
+}
+
+.input-field {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
     border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.disabled-input {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+}
+
+.error-msg {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+.error-msg.hidden {
+    display: none;
+}
+
+/* Bottoni */
+.add-btn,
+.confirm-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    border: none;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-btn:hover,
+.confirm-btn:hover {
+    background-color: #2563eb;
+}
+
+.cancel-btn {
+    background-color: #e5e7eb;
+    color: #374151;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
     border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease-in-out;
-}
-.add-btn:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    font-weight: 600;
+    cursor: pointer;
 }
 
-/* ====== MODALI (Invariati) ====== */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; justify-content: center; align-items: center; z-index: 50; }
-.modal.hidden { display: none; }
-.modal-content { background: rgba(255, 255, 255, 0.95); padding: 2rem; border-radius: 16px; width: 380px; backdrop-filter: blur(4px); max-width: 90vw; }
-.input-field { width: 100%; border: 1px solid #d1d5db; padding: 0.5rem; margin-bottom: 0.75rem; border-radius: 0.5rem; box-sizing: border-box;}
-.cancel-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #e5e7eb; cursor: pointer; border: none;}
-.confirm-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #2563eb; color: white; cursor: pointer; border: none;}
-.delete-btn { padding: 0.5rem 1rem; border-radius: 0.5rem; background: #ef4444; color: white; cursor: pointer; border: none;}
-
-/* ====== MEDIA QUERIES (LAPTOP) ====== */
-@media (max-width: 1280px) {
-    .dashboard-card {
-        padding: 1.5rem; 
-        max-width: 100%;
-        min-height: auto;
-    }
-    .header-strip {
-        /* Ricalcolo margini negativi */
-        width: calc(100% + 3rem);
-        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
-        padding: 0.4rem 1.5rem;
-    }
-    .table-card { padding: 1rem; }
+.cancel-btn:hover {
+    background-color: #d1d5db;
 }
 
-/* ====== MEDIA QUERIES (MOBILE) ====== */
-@media (max-width: 640px) {
-    .dashboard-card {
+.delete-btn {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+
+.delete-btn:hover {
+    background-color: #dc2626;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.modal-actions-center {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Icon Circles (Successo/Errore) */
+.icon-circle-green {
+    background-color: #dcfce7;
+    padding: 1rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.icon-circle-red {
+    background-color: #fee2e2;
+    padding: 1rem;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.success-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #16a34a;
+}
+
+.error-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #dc2626;
+}
+
+.success-layout,
+.delete-layout {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-message {
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
         padding: 1rem;
     }
-    .header-strip {
-        width: calc(100% + 2rem);
-        margin: -1rem -1rem 1.5rem -1rem;
-        padding: 1rem;
-        flex-direction: column; 
-        height: auto; /* Su mobile lasciamo altezza auto per impilare gli elementi */
+
+    .app-layout {
+        padding: 1.5rem;
+        width: 100%;
     }
-    .header-content {
-        height: auto; /* Su mobile reset height */
-        margin-bottom: 0.5rem;
+
+    .header-strip {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .dashboard-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        display: flex;
         justify-content: center;
     }
-    .add-btn { width: 100%; }
+
+    .add-btn {
+        width: 100%;
+    }
 }
