@@ -59,8 +59,8 @@
                 <div class="actions-container">
 
                     <button onclick="startScanner()" id="btn-start" class="btn-camera hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                         </svg>
@@ -75,6 +75,16 @@
                         Firma Uscita
                     </button>
 
+                </div>
+
+                <!-- Pulsante che apre il modale per richiedere un bene -->
+                <div id="sezione-richiesta" class="sezione-richiesta hidden">
+                    <button onclick="openRichiestaVeicoloModal()" class="btn-richiesta">
+                        Richiedi veicolo
+                    </button>
+                    <button onclick="openRichiestaAttrezzoModal()" class="btn-richiesta">
+                        Richiedi attrezzo
+                    </button>
                 </div>
 
                 <div class="table-wrapper" style="margin-top: 2rem;">
@@ -99,22 +109,61 @@
         </div>
     </div>
 
+    <!-- MODALE SUCCESSO OPERAZIONE -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content success-layout">
+
+            <svg xmlns="http://www.w3.org/2000/svg" class="success-icon" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+
+            <h3 class="modal-title">Operazione completata</h3>
+            <p id="success-message" class="modal-message">Entrata salvata correttamente</p>
+            <!-- Messaggio dinamico, in caso non carichi esce questo di default -->
+
+            <button onclick="closeSuccessModal()" class="confirm-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- MODALE RICHIEDI VEICOLO -->
+    <div id="richiedi-veicolo-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="modal-title">Richiedi Veicolo</h3>
+
+            <div class="filter-box modal-select-box">
+                <div class="filter-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                    </svg>
+                </div>
+                <div class="select-wrapper">
+                    <select id="select_veicolo" class="custom-select">
+                        <option value="" disabled selected>-- Seleziona veicolo --</option>
+                    </select>
+                    <div class="select-arrow">
+                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button onclick="closeAddVeicolodModal()" class="cancel-btn">Annulla</button>
+                <button onclick="openRichiestaVeicoloModal()" class="confirm-btn">Richiedi</button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='dashboard_operaio.js') }}"></script>
 </body>
-
-<!-- MODALE SUCCESSO OPERAZIONE -->
-<div id="success-modal" class="modal hidden">
-    <div class="modal-content success-layout">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" class="success-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-
-        <h3 class="modal-title">Operazione completata</h3>
-        <p id="success-message" class="modal-message">Entrata salvata correttamente</p> <!-- Messaggio dinamico, in caso non carichi esce questo di default -->
-
-        <button onclick="closeSuccessModal()" class="confirm-btn">OK</button>
-    </div>
-</div>
 
 </html>

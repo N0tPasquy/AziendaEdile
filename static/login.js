@@ -38,7 +38,7 @@ async function accedi() {
             switch (result.role) {
                 case "AS": window.location.href = "/dashboard_sysadmin"; break;
                 case "AA": window.location.href = "/dashboard_adminaziendale"; break;
-                case "CC": window.location.href = "/dashboard_capocantiere"; break;
+                case "CC": window.location.href = "/dashboard_operaio"; break;
                 case "OP": window.location.href = "/dashboard_operaio"; break;
                 default:   window.location.href = "/";
             }

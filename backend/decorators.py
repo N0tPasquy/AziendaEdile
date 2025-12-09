@@ -25,13 +25,20 @@ def login_required(f):
         return f(*args, **kwargs)
     return wrapper  
 
-# Decoratore per proteggere le rotte in base al ruolo
-def role_required(role):
+# Decoratore per proteggere le rotte in base al ruolo (MODIFICATO)
+def role_required(roles):
     def decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if "ruolo" not in session or session["ruolo"] != role:
+            # Se viene passato un ruolo singolo (stringa), lo trasformiamo in una lista
+            allowed_roles = roles
+            if not isinstance(allowed_roles, list):
+                allowed_roles = [allowed_roles]
+
+            # Controllo: se il ruolo non c'è o non è nella lista dei permessi -> redirect
+            if "ruolo" not in session or session["ruolo"] not in allowed_roles:
                 return redirect(url_for("home"))
+            
             return f(*args, **kwargs)
         return wrapper
     return decorator

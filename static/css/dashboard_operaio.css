@@ -156,6 +156,61 @@ body::before {
     transform: translateY(0);
 }
 
+/* Stile contenitore richiesta bene */
+.sezione-richiesta {
+    display: flex;              /* Abilita flexbox per allineare il contenuto */
+    justify-content: center;    /* Sposta il pulsante tutto a destra */
+    gap: 20px;                  /* Spazio tra i pulsanti */ 
+    width: 100%;                /* Occupa tutta la larghezza disponibile */
+    margin-top: 30px;           /* Spazio sopra per separarlo dagli altri elementi */
+    padding: 0 10px;            /* Un po' di margine laterale di sicurezza */
+    box-sizing: border-box;     /* Assicura che il padding non sballi la larghezza */
+}
+
+/* Opzionale: Se su cellulare vuoi il pulsante al centro */
+@media (max-width: 768px) {
+    .sezione-richiesta {
+        justify-content: center; /* Su schermi piccoli lo centra */
+        margin-bottom: 15px;
+    }
+    
+    .btn-richiesta {
+        width: 100%;
+    }
+}
+
+/* Pulsante richiesta bene */
+.btn-richiesta {
+    background-color: #3b82f6; 
+    color: #ffffff;
+    
+    /* Dimensioni e Spaziatura */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px; /* Coerente con i tuoi icon-btn */
+    
+    /* Tipografia */
+    font-weight: 600; /* Semibold, leggibile */
+    font-size: 1rem;
+    text-align: center;
+    
+    /* Comportamento e Transizioni */
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* Ombra leggera */
+}
+
+/* Effetto Hover (quando passi sopra col mouse) */
+.btn-richiesta:hover {
+    background-color: #2563eb; /* Un blu leggermente più scuro */
+}
+
+/* Effetto Active (quando clicchi) */
+.btn-richiesta:active {
+    background-color: #1d4ed8;
+    transform: translateY(1px); /* Piccolo effetto di pressione */
+}
+
 /* === STILE GENERALE PULSANTI === */
 /* Questo rimane grande e comodo per il touch su mobile */
 .btn-logout {

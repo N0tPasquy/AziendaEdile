@@ -165,3 +165,84 @@ def storico_presenze():
         })
 
     return jsonify({"success": True, "presenze": presenze})
+
+
+@dashboardOperaio_bp.route("/controllo_capocantiere", methods=["GET"])
+def controllo_capocantiere():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+    
+    cf = session.get("cf")
+
+    conn = connessione()
+
+    if conn is None:
+        return jsonify({"success" : False, "message" : "Errore DB"})
+    
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT 1 "
+                   "FROM utente "
+                   "WHERE CF = ? AND TipoUtente = 'CC' ",(cf,))
+    
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return jsonify({"success" : True, "capocantiere" : False})
+    else:
+        return jsonify({"success" : True, "capocantiere" : True})
+    
+
+def get_cantiere(cfcapo):
+    conn = connessione()
+
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT Via, Civico, Citta FROM cantiere WHERE CFCapo = ?",(cfcapo))
+    row = cursor.fetchone()
+
+    via, civico, citta = row
+
+    return via + " " + civico + " " + citta
+
+
+
+@dashboardOperaio_bp.route("/invia_richiesta", methods=["POST"])
+def invia_richiesta():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message" : "Non autorizzato"})
+    
+    cf = session.get("cf")
+    nome_azienda = session.get("nome_azienda")
+    tipo = request.args.get("tipo")
+    data = request.get_json()
+    
+    conn = connessione()
+    cursor = conn.cursor()
+
+    try:
+        marca = data.get("marca")
+        modello = data.get("modello")
+
+        if tipo == "veicolo":
+            targa = data.get("targa")
+            anno = data.get("anno")
+            richiesta = "Richiesta veicolo " + marca + " " + modello + " " + targa + " " + anno + " sul cantiere sito in " + get_cantiere(cf)
+            sql = "INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C) VALUES (CURRENT_DATE, ?, ?, ?)"
+            cursor.execute(sql, (richiesta, nome_azienda, cf))
+            conn.commit()
+            conn.close()
+        elif tipo == "attrezzo":
+            seriale = data.get("seriale")
+            tipo_attrezzo = data.get("tipo_attrezzo")
+            richiesta = "Richiesta attrezzo " + marca + " " + modello + " " + seriale + " " + tipo_attrezzo + " sul cantiere sito in " + get_cantiere(cf)
+            sql = "INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C) VALUES (CURRENT_DATE, ?, ?, ?)"
+            cursor.execute(sql, (richiesta, nome_azienda, cf))
+            conn.commit()
+            conn.close()
+        
+        return jsonify({"success" : True})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success" : False, "message" : str(e)})

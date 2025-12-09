@@ -64,7 +64,7 @@ function registraPresenza(qrURL) {
         }
 
         const qrCode = parts[1];
-        
+
         fetch(`/presenza/${qrCode}`)
             .then(res => res.json())
             .then(data => {
@@ -77,7 +77,7 @@ function registraPresenza(qrURL) {
 
                     // Mostra uscita
                     btnUscita.classList.remove("hidden");
-                    
+
                     // Nascondi pulsante Scanner forzando lo stile
                     btnStart.classList.add("hidden");
                     btnStart.style.display = "none"; // Sovrascrive il 'flex' messo da stopScanner
@@ -102,17 +102,30 @@ function firmaUscita() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                document.getElementById('success-message').innerText = "Uscita registrata con successo!";
-                document.getElementById('success-modal').classList.remove('hidden');
-               // document.getElementById("btn-uscita").classList.add("hidden");
-                // document.getElementById("btn-start").classList.remove("hidden");
-                window.onload();
+                // 1. PRIMA agiamo sui pulsanti (così siamo sicuri che si aggiornino)
+                const btnUscita = document.getElementById("btn-uscita");
+                const btnStart = document.getElementById("btn-start");
+
+                if (btnUscita) btnUscita.classList.add("hidden");
+                if (btnStart) btnStart.classList.remove("hidden");
+
+                // 2. POI gestiamo il modale (con controllo se esiste)
+                const msgElement = document.getElementById('success-message');
+                const modalElement = document.getElementById('success-modal');
+
+                if (msgElement) msgElement.innerText = "Uscita registrata con successo!";
+                if (modalElement) modalElement.classList.remove('hidden');
+
+                // 3. Infine ricarichiamo la tabella
+                caricaPresenze();
+
             } else {
                 alert(data.message);
             }
         })
         .catch(err => {
-            alert("Errore connessione");
+            console.error("Errore firma uscita:", err);
+            alert("Errore connessione o codice javascript interrotto");
         });
 }
 
@@ -144,18 +157,19 @@ function caricaPresenze() {
                 `;
             });
 
-            
+
         });
 }
 
 // Funzione per chiudere il modale
 function closeSuccessModal() {
     document.getElementById('success-modal').classList.add('hidden');
-    
-    const btnStart = document.getElementById("btn-start");
-    btnStart.classList.add("hidden");
-    btnStart.style.display = "none"; // Assicura che rimanga nascosto
+
+    // Forza il ricaricamento della pagina
+    // Questo farà scattare window.onload che leggerà lo stato aggiornato dal DB
+    window.location.reload();
 }
+
 function oreInSecondi(t) {
     const [h, m, s] = t.split(":").map(Number);
     return h * 3600 + m * 60 + s;
@@ -167,6 +181,71 @@ function secondiInOre(sec) {
     return `${h}h ${m}m`;
 }
 
+function openRichiestaVeicoloModal() {
+    document.getElementById("richiedi-veicolo-modal").classList.remove("hidden");
+    // Carica i dati nella select
+    caricaVeicoliPerRichiesta();
+}
+
+async function caricaVeicoliPerRichiesta() {
+    // 1. Prendi la Select corretta (Assicurati di avere questo ID nel tuo HTML del modale)
+    const select = document.getElementById("select_veicolo");
+    
+    // Se non trova la select nella pagina, si ferma (evita errori in console)
+    if (!select) return;
+
+    try {
+        // 2. Chiamata al server
+        const res = await fetch("/get_beni?tipo=veicoli");
+        const data = await res.json();
+
+        // 3. Gestione errori del backend (es. utente non loggato o db down)
+        // Nota: controllo se esiste data.beni perché nel tuo codice precedente usavi quello
+        if (!data.beni) {
+            console.error("Errore Backend o nessun veicolo trovato");
+            return;
+        }
+
+        // 4. Resetta la select (Mette l'opzione di default)
+        select.innerHTML = '<option value="" disabled selected>-- Seleziona un veicolo da richiedere --</option>';
+
+        // 5. Cicla i veicoli e crea le opzioni
+        data.beni.forEach(v => {
+            const option = document.createElement("option");
+            // Usa la targa o l'ID come valore da inviare al server
+            option.value = v.targa; 
+            // Testo visibile all'utente
+            option.textContent = `${v.marca} ${v.modello} - ${v.targa}`;
+            
+            select.appendChild(option);
+        });
+
+    } catch (err) {
+        console.error("Errore fetch:", err);
+        select.innerHTML = '<option value="">Errore di caricamento</option>';
+    }
+}
+
+function inviaRichiestaVeicolo() {
+
+    const select = document.getElementById("veicolo-select");
+
+    fetch(`invia_richiesta?tipo=${veicolo}`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Richiesta inviata con successo!");
+                closeAddVeicolodModal();
+            } else {
+                alert("Errore: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error("Errore invio richiesta veicolo:", err);
+            alert("Errore di connessione col server");
+        });
+}
+
 // controlla stato presenza e mostro il pulsante di uscita se serve
 window.onload = function () {
 
@@ -175,7 +254,7 @@ window.onload = function () {
         .then(data => {
             console.log("STATO PRESENZA:", data);
             const btnEntrata = document.getElementById("btn-start");  // scanner QR
-            const btnUscita  = document.getElementById("btn-uscita"); // firma uscita
+            const btnUscita = document.getElementById("btn-uscita"); // firma uscita
 
             /*
                 data.ingresso = true/false  (firmato entrata oggi?)
@@ -200,9 +279,17 @@ window.onload = function () {
         });
 
     caricaPresenze(); // carica tabella presenze
+
+    fetch("/controllo_capocantiere")
+        .then(res => res.json())
+        .then(data => {
+            if (data.capocantiere) {
+                document.getElementById("sezione-richiesta").classList.remove("hidden");
+            }
+        });
 };
 
-function logout(){
+function logout() {
     // Reindirizza alla rotta Python di logout
     window.location.href = "/logout";
 }
