@@ -193,13 +193,17 @@ body {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
+.admin-table td.actions {
+    text-align: center;
+}
+
 /* Pulsanti Azione (Icone) */
-.icon-btn {
+.icon-btn { 
     background: transparent;
     border: none;
     cursor: pointer;
     padding: 6px;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: background 0.2s;
     display: inline-flex;
 }
@@ -213,8 +217,8 @@ body {
 }
 
 .icon-btn img {
-    width: 24px;
-    height: 24px;
+    width: 34px;
+    height: auto;
 }
 
 /* ==========================================================================
