@@ -216,7 +216,10 @@ async function caricaVeicoliPerRichiesta() {
             option.value = v.targa; 
             // Testo visibile all'utente
             option.textContent = `${v.marca} ${v.modello} - ${v.targa}`;
-            
+            option.dataset.marca = v.marca;
+            option.dataset.modello = v.modello;
+            option.dataset.targa = v.targa;
+            option.dataset.anno = v.anno;
             select.appendChild(option);
         });
 
@@ -227,23 +230,155 @@ async function caricaVeicoliPerRichiesta() {
 }
 
 function inviaRichiestaVeicolo() {
+    const select = document.getElementById("select_veicolo");
+    const opt = select.options[select.selectedIndex];
 
-    const select = document.getElementById("veicolo-select");
+    const marca = opt.dataset.marca;
+    const targa = opt.dataset.targa;
+    const modello = opt.dataset.modello;
+    const anno = opt.dataset.anno; 
 
-    fetch(`invia_richiesta?tipo=${veicolo}`, { method: "POST" })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("Richiesta inviata con successo!");
-                closeAddVeicolodModal();
-            } else {
-                alert("Errore: " + data.message);
+    fetch('/invia_richiesta', {
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({
+            tipo: "veicolo",
+            targa: targa,
+            marca : marca,
+            modello: modello,
+            anno: anno      
+         })
+     })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // 1. Chiudi il modale di richiesta (quello con la select)
+            closeRichiediVeicolodModal();
+
+            // 2. Imposta il messaggio nel modale di successo
+            const successMsg = document.getElementById("success-message");
+            if (successMsg) {
+                successMsg.innerText = "Richiesta inviata con successo!";
             }
-        })
-        .catch(err => {
-            console.error("Errore invio richiesta veicolo:", err);
-            alert("Errore di connessione col server");
+
+            // 3. Mostra il modale di successo (togliendo la classe 'hidden')
+            const successModal = document.getElementById("success-modal");
+            if (successModal) {
+                successModal.classList.remove("hidden");
+            }
+
+        } else {
+            alert("Errore: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Errore invio richiesta veicolo:", err);
+        alert("Errore di connessione col server");
+    });
+}
+
+async function caricaAttrezziPerRichiesta() {
+    // 1. Prendi la Select corretta (Assicurati di avere questo ID nel tuo HTML del modale)
+    const select = document.getElementById("select_attrezzo");
+    
+    // Se non trova la select nella pagina, si ferma (evita errori in console)
+    if (!select) return;
+
+    try {
+        // 2. Chiamata al server
+        const res = await fetch("/get_beni?tipo=attrezzi");
+        const data = await res.json();
+
+        // 3. Gestione errori del backend (es. utente non loggato o db down)
+        // Nota: controllo se esiste data.beni perché nel tuo codice precedente usavi quello
+        if (!data.beni) {
+            console.error("Errore Backend o nessun attrezzo trovato");
+            return;
+        }
+
+        // 4. Resetta la select (Mette l'opzione di default)
+        select.innerHTML = '<option value="" disabled selected>-- Seleziona un attrezzo da richiedere --</option>';
+
+        // 5. Cicla i veicoli e crea le opzioni
+        data.beni.forEach(a => {
+            const option = document.createElement("option");
+            // Usa la targa o l'ID come valore da inviare al server
+            option.value = a.seriale; 
+            // Testo visibile all'utente
+            option.textContent = `${a.marca} ${a.modello} - ${a.seriale}`;
+            option.dataset.marca = a.marca;
+            option.dataset.modello = a.modello;
+            option.dataset.seriale = a.seriale;
+            option.dataset.tipoAttrezzo = a.tipo;
+            select.appendChild(option);
         });
+
+    } catch (err) {
+        console.error("Errore fetch:", err);
+        select.innerHTML = '<option value="">Errore di caricamento</option>';
+    }
+}
+
+function inviaRichiestaAttrezzo() {
+    const select = document.getElementById("select_attrezzo");
+    const opt = select.options[select.selectedIndex];
+
+    const marca = opt.dataset.marca;
+    const seriale = opt.dataset.seriale;
+    const modello = opt.dataset.modello;
+    const tipoAttrezzo = opt.dataset.tipoAttrezzo; 
+
+    fetch('/invia_richiesta', {
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify({
+            tipo: "attrezzo",
+            seriale : seriale,
+            marca : marca,
+            modello: modello,
+            tipo_attrezzo : tipoAttrezzo     
+         })
+     })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // 1. Chiudi il modale di richiesta (quello con la select)
+            closeRichiediAttrezzoModal();
+
+            // 2. Imposta il messaggio nel modale di successo
+            const successMsg = document.getElementById("success-message");
+            if (successMsg) {
+                successMsg.innerText = "Richiesta inviata con successo!";
+            }
+
+            // 3. Mostra il modale di successo (togliendo la classe 'hidden')
+            const successModal = document.getElementById("success-modal");
+            if (successModal) {
+                successModal.classList.remove("hidden");
+            }
+
+        } else {
+            alert("Errore: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Errore invio richiesta attrezzo:", err);
+        alert("Errore di connessione col server");
+    });
+}
+
+function closeRichiediVeicolodModal() {
+    document.getElementById("richiedi-veicolo-modal").classList.add("hidden");
+}
+
+function openRichiestaAttrezzoModal() {
+    document.getElementById("richiedi-attrezzo-modal").classList.remove("hidden");
+    // Carica i dati nella select
+    caricaAttrezziPerRichiesta();
+}
+
+function closeRichiediAttrezzoModal() {
+    document.getElementById("richiedi-attrezzo-modal").classList.add("hidden");
 }
 
 // controlla stato presenza e mostro il pulsante di uscita se serve

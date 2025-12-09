@@ -199,9 +199,12 @@ def get_cantiere(cfcapo):
 
     cursor = conn.cursor()
 
-    cursor.execute("SELECT Via, Civico, Citta FROM cantiere WHERE CFCapo = ?",(cfcapo))
+    cursor.execute("SELECT Via, Civico, Citta FROM cantiere WHERE CFCapo = ?",(cfcapo,))
     row = cursor.fetchone()
 
+    if not row:
+        return "CANTIERE NON ASSEGNATO"
+    
     via, civico, citta = row
 
     return via + " " + civico + " " + citta
@@ -211,38 +214,62 @@ def get_cantiere(cfcapo):
 @dashboardOperaio_bp.route("/invia_richiesta", methods=["POST"])
 def invia_richiesta():
     if "logged_in" not in session:
-        return jsonify({"success": False, "message" : "Non autorizzato"})
+        return jsonify({"success": False, "message": "Non autorizzato"})
     
     cf = session.get("cf")
     nome_azienda = session.get("nome_azienda")
-    tipo = request.args.get("tipo")
-    data = request.get_json()
-    
+
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"success": False, "message": "Formato JSON non valido"}), 400
+
+    tipo = data.get("tipo")
+    marca = data.get("marca")
+    modello = data.get("modello")
+
+    if not tipo or not marca or not modello:
+        return jsonify({"success": False, "message": "Dati incompleti"}), 400
+
     conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+
     cursor = conn.cursor()
 
     try:
-        marca = data.get("marca")
-        modello = data.get("modello")
+        indirizzo_cantiere = get_cantiere(cf)
 
         if tipo == "veicolo":
             targa = data.get("targa")
-            anno = data.get("anno")
-            richiesta = "Richiesta veicolo " + marca + " " + modello + " " + targa + " " + anno + " sul cantiere sito in " + get_cantiere(cf)
-            sql = "INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C) VALUES (CURRENT_DATE, ?, ?, ?)"
-            cursor.execute(sql, (richiesta, nome_azienda, cf))
-            conn.commit()
-            conn.close()
+            if not targa:
+                return jsonify({"success": False, "message": "Targa mancante"}), 400
+
+            richiesta = f"Richiesta veicolo {marca} {modello} {targa} sul cantiere sito in {indirizzo_cantiere}"
+
         elif tipo == "attrezzo":
             seriale = data.get("seriale")
             tipo_attrezzo = data.get("tipo_attrezzo")
-            richiesta = "Richiesta attrezzo " + marca + " " + modello + " " + seriale + " " + tipo_attrezzo + " sul cantiere sito in " + get_cantiere(cf)
-            sql = "INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C) VALUES (CURRENT_DATE, ?, ?, ?)"
-            cursor.execute(sql, (richiesta, nome_azienda, cf))
-            conn.commit()
-            conn.close()
-        
-        return jsonify({"success" : True})
+
+            if not seriale or not tipo_attrezzo:
+                return jsonify({"success": False, "message": "Dati attrezzo mancanti"}), 400
+
+            richiesta = f"Richiesta attrezzo {marca} {modello} {seriale} {tipo_attrezzo} sul cantiere sito in {indirizzo_cantiere}"
+
+        else:
+            return jsonify({"success": False, "message": "Tipo richiesta non valido"}), 400
+
+        sql = """
+            INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C)
+            VALUES (NOW(), ?, ?, ?)
+        """
+        cursor.execute(sql, (richiesta, nome_azienda, cf))
+        conn.commit()
+
+        return jsonify({"success": True, "message": "Richiesta inviata con successo"})
+
     except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+    finally:
         conn.close()
-        return jsonify({"success" : False, "message" : str(e)})
+
