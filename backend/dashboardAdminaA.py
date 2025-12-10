@@ -14,6 +14,7 @@
 """
 
 from flask import Blueprint, request, jsonify, session
+from datetime import datetime
 from backend.db import connessione
 from backend.decorators import login_required
 
@@ -399,9 +400,9 @@ def notifiche_richieste():
     qrcantiere = request.args.get("QRCode")
 
     try:
-        cursor.execute("""SELECT DataNotifica, Richiesta, Identificatore, Marca, Modello
+        cursor.execute("""SELECT DataNotifica, Richiesta, Identificatore, Marca, Modello, QRCode_C
                        FROM notifica 
-                       WHERE NomeAzienda = ? AND QRCode_C = ?""",(nome_azienda, qrcantiere))
+                       WHERE NomeAzienda = ?""",(nome_azienda, ))
         rows = cursor.fetchall()
         conn.close()
 
@@ -413,7 +414,8 @@ def notifiche_richieste():
                 "richiesta" : r[1],
                 "identificatore" : r[2],
                 "marca" : r[3],
-                "modello" : r[4]
+                "modello" : r[4],
+                "qr_code" : r[5]
             })
         return jsonify({"success" : True, "richieste" : richieste})
     except Exception as e:
@@ -454,20 +456,58 @@ def gestione_richiesta():
     cursor = conn.cursor()
 
     try:
-        cursor.execute("UPDATE notifica SET Stato = ? WHERE DataNotifica = ? AND QRCode_C = ? ",(stato, id, qrcantiere))
-        conn.commit()
-
-
+        #cursor.execute("UPDATE notifica SET Stato = ? WHERE DataNotifica = ? AND QRCode_C = ? ",(stato, id, qrcantiere))
+        #conn.commit()
+        data_sql = datetime.strptime(id, "%a, %d %b %Y %H:%M:%S GMT").strftime("%Y-%m-%d %H:%M:%S")
         if stato == "1":
             id_b = get_id_bene(marca, modello)
+
             cursor.execute("DELETE tr FROM tracciamento tr JOIN bene b ON tr.ID_B = b.ID WHERE tr.ID_B = ? AND b.NomeAzienda = ?",(id_b, nome_azienda))
+            
 
             cursor.execute("INSERT INTO tracciamento (QRCode_C, ID_B) VALUES (?, ?)",(qrcantiere, id_b))
             
+
+            cursor.execute("DELETE FROM notifica WHERE DATE(DataNotifica) = ? AND QRCode_C = ? AND TRIM(Identificatore) = TRIM(?)",(data_sql, qrcantiere, identificatore))
+            
+
             conn.commit()
-            conn.close()
-        
+        elif stato == "0":
+            cursor.execute("DELETE FROM notifica WHERE DATE(DataNotifica) = ? AND QRCode_C = ? AND TRIM(Identificatore) = TRIM(?)",(data_sql, qrcantiere, identificatore))
+            conn.commit()
+        conn.close()
+            
         return jsonify({"success" : True, "message" : "Richiesta approvata"})
     except Exception as e:
         conn.close()
         return jsonify({"success":False, "message" : str(e)})
+
+
+@dashboardAa_bp.route("/conteggio_notifiche", methods=["GET"])
+def conteggio_notifiche():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "Non autorizzato"})
+
+    nome_azienda = session.get("nome_azienda")
+
+    conn = connessione()
+    if conn is None:
+        return jsonify({"success": False, "message": "Errore DB"})
+    
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM notifica
+            WHERE NomeAzienda = ?
+        """, (nome_azienda,))
+
+        count = cursor.fetchone()[0]
+
+        conn.close()
+        return jsonify({"success": True, "count": count})
+    
+    except Exception as e:
+        conn.close()
+        return jsonify({"success": False, "message": str(e)})

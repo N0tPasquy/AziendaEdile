@@ -12,6 +12,25 @@
     - Anno Accademico: 2025/2026
 */
 
+// Funzione per formattare la data nel formato gg-mm-aaaa hh:mm
+function formattaData(dataString) {
+    const d = new Date(dataString);
+
+    // Controlla se la data è valida
+    if (isNaN(d.getTime())) return "Data non valida";
+
+    // Estrai i componenti e aggiungi lo zero iniziale se serve (padStart)
+    const gg = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0'); // Ricorda: i mesi in JS vanno da 0 a 11
+    const aaaa = d.getFullYear();
+
+    const ora = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+
+    // Combina nel formato richiesto
+    return `${gg}/${mm}/${aaaa} ${ora}:${min}`;
+}
+
 // VARIABILE GLOBALE PER CAPIRE QUALE CANTIERE STIAMO MODIFICANDO
 var cantiereAttuale = "";
 
@@ -44,14 +63,16 @@ async function caricaCantieriAzienda() {
         const newSelect = select.cloneNode(true);
         select.parentNode.replaceChild(newSelect, select);
 
+        contaNotifiche(); // Aggiorna le notifiche quando carichi i cantieri
+
         newSelect.addEventListener("change", async function () {
             const QRSelezionato = this.value;
             if (QRSelezionato) {
                 console.log("Fetch per QR cantiere:", QRSelezionato);
-                
+
                 // 1. PULIZIA CENTRALE: Qui e SOLO qui si resetta la tabella
                 const tbody = document.getElementById("beni-table-body");
-                tbody.innerHTML = ""; 
+                tbody.innerHTML = "";
 
                 caricaSquadra(QRSelezionato);
 
@@ -64,8 +85,6 @@ async function caricaCantieriAzienda() {
                 if (tbody.innerHTML.trim() === "") {
                     tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun bene assegnato a questo cantiere.</td></tr>`;
                 }
-                caricaRichiesteCantiere(QRSelezionato);
-
             }
         });
     } catch (err) {
@@ -439,8 +458,8 @@ function deleteBeneCantiere(idBene, qrcode) {
 
     // 2. Definiamo cosa succede quando si clicca "Elimina"
     // Usiamo .onclick per sovrascrivere eventuali listener precedenti
-    confirmBtn.onclick = function() {
-        
+    confirmBtn.onclick = function () {
+
         // Disabilita il pulsante per evitare doppi click
         confirmBtn.disabled = true;
         confirmBtn.innerText = "Eliminazione...";
@@ -449,36 +468,36 @@ function deleteBeneCantiere(idBene, qrcode) {
         fetch(`/delete_BeneAssegnato?id=${idBene}&QRcode=${qrcode}`, {
             method: "DELETE"
         })
-        .then(res => res.json())
-        .then(data => {
-            // Riabilita il pulsante
-            confirmBtn.disabled = false;
-            confirmBtn.innerText = "Elimina";
-            closeDeleteBeneAssegnatoModal(); // Chiudi modale
+            .then(res => res.json())
+            .then(data => {
+                // Riabilita il pulsante
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Elimina";
+                closeDeleteBeneAssegnatoModal(); // Chiudi modale
 
-            if (data.success) {
-                // Ora possiamo ripopolare la tabella chiamando le rispettive function
-                caricaAttrezziCantiere(qrcode);
-                caricaVeicoliCantiere(qrcode);
-                
-                // Se hai il modale di successo
-                if (typeof openSuccessModal === "function") {
-                     openSuccessModal("Bene rimosso dal cantiere con successo!");
+                if (data.success) {
+                    // Ora possiamo ripopolare la tabella chiamando le rispettive function
+                    caricaAttrezziCantiere(qrcode);
+                    caricaVeicoliCantiere(qrcode);
+
+                    // Se hai il modale di successo
+                    if (typeof openSuccessModal === "function") {
+                        openSuccessModal("Bene rimosso dal cantiere con successo!");
+                    } else {
+                        alert("Bene rimosso con successo!");
+                    }
                 } else {
-                     alert("Bene rimosso con successo!");
+                    alert("Errore: " + (data.message || "Impossibile eliminare"));
                 }
-            } else {
-                alert("Errore: " + (data.message || "Impossibile eliminare"));
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Errore di connessione");
-            // Riabilita il pulsante in caso di errore
-            confirmBtn.disabled = false;
-            confirmBtn.innerText = "Elimina";
-            closeDeleteBeneAssegnatoModal();
-        });
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Errore di connessione");
+                // Riabilita il pulsante in caso di errore
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Elimina";
+                closeDeleteBeneAssegnatoModal();
+            });
     };
 }
 
@@ -488,7 +507,7 @@ function closeDeleteBeneAssegnatoModal() {
     tbody.innerHTML = "";
 }
 
-function deleteOperaioCantiere(cf, qrcode) { 
+function deleteOperaioCantiere(cf, qrcode) {
     const modal = document.getElementById("delete-operaio-assegnato-modal");
     const confirmBtn = document.getElementById("btn-confirm-delete-operaio"); // Selezioniamo il bottone
 
@@ -497,8 +516,8 @@ function deleteOperaioCantiere(cf, qrcode) {
 
     // 2. Definiamo cosa succede quando si clicca "Elimina"
     // Usiamo .onclick per sovrascrivere eventuali listener precedenti
-    confirmBtn.onclick = function() {
-        
+    confirmBtn.onclick = function () {
+
         // Disabilita il pulsante per evitare doppi click
         confirmBtn.disabled = true;
         confirmBtn.innerText = "Eliminazione...";
@@ -507,108 +526,172 @@ function deleteOperaioCantiere(cf, qrcode) {
         fetch(`/delete_OperaioAssegnato?cf=${cf}&QRcode=${qrcode}`, {
             method: "DELETE"
         })
-        .then(res => res.json())
-        .then(data => {
-            // Riabilita il pulsante
-            confirmBtn.disabled = false;
-            confirmBtn.innerText = "Elimina";
-            closeDeleteOperaioAssegnatoModal(); // Chiudi modale
+            .then(res => res.json())
+            .then(data => {
+                // Riabilita il pulsante
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Elimina";
+                closeDeleteOperaioAssegnatoModal(); // Chiudi modale
 
-            if (data.success) {
-                const tbody = document.getElementById("squadra-table-body");
-                tbody.innerHTML = "";
-                // Ora possiamo ripopolare la tabella chiamando le rispettive function
-                caricaSquadra(qrcode);
+                if (data.success) {
+                    const tbody = document.getElementById("squadra-table-body");
+                    tbody.innerHTML = "";
+                    // Ora possiamo ripopolare la tabella chiamando le rispettive function
+                    caricaSquadra(qrcode);
 
-                // Se hai il modale di successo
-                if (typeof openSuccessModal === "function") {
-                     openSuccessModal("Operaio rimosso dal cantiere con successo!");
+                    // Se hai il modale di successo
+                    if (typeof openSuccessModal === "function") {
+                        openSuccessModal("Operaio rimosso dal cantiere con successo!");
+                    } else {
+                        alert("Operaio rimosso con successo!");
+                    }
                 } else {
-                     alert("Operaio rimosso con successo!");
+                    alert("Errore: " + (data.message || "Impossibile eliminare"));
                 }
-            } else {
-                alert("Errore: " + (data.message || "Impossibile eliminare"));
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Errore di connessione");
-            // Riabilita il pulsante in caso di errore
-            confirmBtn.disabled = false;
-            confirmBtn.innerText = "Elimina";
-            closeDeleteOperaioAssegnatoModal();
-        });
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Errore di connessione");
+                // Riabilita il pulsante in caso di errore
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Elimina";
+                closeDeleteOperaioAssegnatoModal();
+            });
     };
 }
 
-function closeDeleteOperaioAssegnatoModal(){
+function closeDeleteOperaioAssegnatoModal() {
     document.getElementById("delete-operaio-assegnato-modal").classList.add("hidden");
 }
 
-async function caricaRichiesteCantiere(qrCode) {
+// Apre il modale e carica i dati aggiornati
+function openNotificheModal() {
+    document.getElementById("notifications-modal").classList.remove("hidden");
+    caricaNotifiche(); // Chiama la funzione per popolare la tabella
+}
 
-    fetch(`/notifiche_richieste?QRCode=${qrCode}`)
+function closeNotificheModal() {
+    document.getElementById("notifications-modal").classList.add("hidden");
+}
+
+// Funzione per caricare la tabella delle notifiche dal server
+function caricaNotifiche() {
+    const tbody = document.getElementById("tabella-notifiche");
+    tbody.innerHTML = ""; // Pulisce la tabella prima di riempirla
+
+    // Assumiamo che esista una rotta GET /get_notifiche che restituisce un JSON
+    // Se non esiste, devi crearla nel backend Python o adattare l'URL qui sotto.
+    fetch("/notifiche_richieste")
         .then(res => res.json())
         .then(data => {
-            if (!data.success) {
-                alert("Errore nel caricamento richieste: " + data.message);
-                return;
+            if (data.success && data.richieste.length > 0) {
+                data.richieste.forEach(req => {
+                    // Costruiamo la riga della tabella
+                    const row = `
+                        <tr class="admin-table-row">
+                            <td class="admin-table-cell">${formattaData(req.data_notifica)}</td>
+                            <td class="admin-table-cell">${req.richiesta}</td> 
+                            <td class="admin-table-cell admin-actions-cell">
+                                <div class="admin-actions-wrapper">
+                                    
+                                    <button onclick="gestisciRichiesta('1', '${req.qr_code}', '${req.identificativo}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
+                                            class="action-btn approve-btn" 
+                                            title="Approva">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </button>
+
+                                    <button onclick="gestisciRichiesta('0', '${req.qr_code}', '${req.identificativo}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
+                                            class="action-btn reject-btn" 
+                                            title="Rifiuta">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } else {
+                // Se non ci sono notifiche
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 1rem;">Nessuna nuova notifica</td></tr>`;
             }
-
-            const tbody = document.getElementById("richieste-table-body");
-            tbody.innerHTML = "";
-
-            data.richieste.forEach(r => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${r.data_notifica}</td>
-                        <td>${r.richiesta}</td>
-                        <td>${r.identificatore}</td>
-                        <td>${r.marca}</td>
-                        <td>${r.modello}</td>
-                        <td>
-                            <select onchange="gestisciRichiesta(this, '${qrCode}', '${r.identificatore}', '${r.marca}', '${r.modello}', '${r.data_notifica}')">
-                                <option value="">-- Azione --</option>
-                                <option value="1">Approva</option>
-                                <option value="0">Rifiuta</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
-            });
-
         })
         .catch(err => {
-            console.error("Errore caricamento richieste:", err);
-            alert("Errore di connessione col server.");
+            console.error("Errore caricamento notifiche:", err);
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Errore caricamento dati</td></tr>`;
         });
 }
 
-function gestisciRichiesta(select, qrCode, identificatore, marca, modello, dataNotifica) {
-
-    const decisione = select.value;  // "1" o "0"
+// Funzione adattata per funzionare con i bottoni invece che con la select
+// 'decisione' ora è passata direttamente come stringa ("1" o "0")
+function gestisciRichiesta(decisione, qrCode, identificatore, marca, modello, dataNotifica) {
 
     if (decisione === "") return;
 
+    // Uso la tua logica FETCH originale
     fetch(`/gestione_richiesta?data=${dataNotifica}&stato=${decisione}&QRCode=${qrCode}&identificatore=${identificatore}&marca=${marca}&modello=${modello}`, {
         method: "POST"
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert(data.message);
-            // Ricarico la tabella richieste
-            //caricaRichiesteCantiere(qrCode);
-            window.location.reload();
-        } else {
-            alert("Errore: " + data.message);
-        }
-    })
-    .catch(err => {
-        console.error("Errore gestione richiesta:", err);
-        alert("Errore di connessione col server");
-    });
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Invece di un alert brutale, usiamo il modale di successo che abbiamo fatto prima (se presente)
+                // oppure un alert semplice se preferisci
+                alert(data.message);
+
+                // Ricarica solo la tabella delle notifiche, non tutta la pagina
+                caricaNotifiche();
+
+                // Aggiorna anche il pallino rosso delle notifiche
+                contaNotifiche();
+
+                // Aggiorna la lista dei cantieri
+                caricaCantieriAzienda();
+            } else {
+                alert("Errore: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error("Errore gestione richiesta:", err);
+            alert("Errore di connessione col server");
+        });
 }
+
+// Funzione contatore (la tua originale, corretta)
+function contaNotifiche() {
+    fetch(`/conteggio_notifiche`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const numeroNotifiche = data.count;
+                const badge = document.getElementById("pallino-notifica");
+
+                if (badge) {
+                    if (numeroNotifiche > 0) {
+                        badge.classList.remove("hidden");
+                        badge.innerText = numeroNotifiche;
+                    } else {
+                        badge.classList.add("hidden");
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Errore conteggio notifiche:", err);
+        });
+}
+
+// Avvia il conteggio al caricamento della pagina
+window.addEventListener('load', function () {
+    contaNotifiche();
+    // Opzionale: aggiorna ogni 30 secondi
+    // setInterval(contaNotifiche, 30000);
+});
 
 
 document.addEventListener("DOMContentLoaded", () => {

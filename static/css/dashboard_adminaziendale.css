@@ -878,3 +878,216 @@ body {
         width: auto;
     }
 }
+
+/* ==========================================================================
+   STILI PER LE NOTIFICHE (Pulsanti e Badge)
+   ========================================================================== */
+
+/* Stile base per il pulsante campanella */
+.notif-btn-icon-circle,
+.notif-btn-icon-square {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; 
+    width: 3rem;  
+    height: 3rem;
+}
+
+.notif-btn-icon-circle { border-radius: 50%; }
+.notif-btn-icon-square { border-radius: 0.75rem; }
+
+.notif-btn-icon-circle:hover,
+.notif-btn-icon-square:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.notif-btn-icon-circle svg,
+.notif-btn-icon-square svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Badge rosso (Contatore) */
+.badge-container { position: relative; }
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 1.2rem;
+    height: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* ==========================================================================
+   STILI PER IL MODALE TABELLA (Scroll e Layout)
+   ========================================================================== */
+
+.modal-lg {
+    max-width: 900px !important;
+    width: 95% !important;
+}
+
+.scroll-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+}
+
+.sticky-header th {
+    box-shadow: 0 1px 0 #e5e7eb; 
+}
+
+.full-width { width: 100%; }
+.text-center { text-align: center !important; }
+
+/* ==========================================================================
+   STILI MANCANTI: PULSANTI AZIONE DENTRO LA TABELLA
+   (Questi servono per i bottoni Verde e Rosso generati dal JS)
+   ========================================================================== */
+
+.admin-actions-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.admin-actions-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Bottone generico dentro la tabella */
+.action-btn {
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.action-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Stile specifico APPROVA (Verde) */
+.approve-btn {
+    background-color: #dcfce7; /* Verde chiaro */
+    color: #16a34a;            /* Verde scuro */
+}
+.approve-btn:hover {
+    background-color: #bbf7d0;
+}
+
+/* Stile specifico RIFIUTA (Rosso) */
+.reject-btn {
+    background-color: #fee2e2; /* Rosso chiaro */
+    color: #ef4444;            /* Rosso scuro */
+}
+.reject-btn:hover {
+    background-color: #fecaca;
+}
+
+/* =========================================================
+   NUOVA TABELLA SPECIFICA PER LE NOTIFICHE
+   (Progettata per testi lunghi e layout flessibile)
+   ========================================================= */
+
+.notifications-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed; /* Mantiene le larghezze fisse che decidiamo noi */
+}
+
+/* Header */
+.notifications-table th {
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    color: #374151;
+    background-color: #ffffff; /* Sfondo bianco per quando è sticky */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Corpo - Qui sta la magia per il testo lungo */
+.notifications-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    vertical-align: middle; /* Allinea verticalmente al centro */
+    color: #4b5563;
+    
+    /* Queste 3 righe permettono al testo di andare a capo */
+    white-space: normal; 
+    word-wrap: break-word;
+    overflow: visible;
+}
+
+/* Righe hover */
+.notifications-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- LARGHEZZE COLONNE SPECIFICHE PER NOTIFICHE --- */
+
+/* 1. Data (Stretta) */
+.notifications-table th:nth-child(1), 
+.notifications-table td:nth-child(1) { 
+    width: 15%; 
+}
+
+/* 2. Richiesta (MOLTO LARGA - Qui c'è il testo lungo) */
+.notifications-table th:nth-child(2), 
+.notifications-table td:nth-child(2) { 
+    width: 40%; 
+}
+
+/* 3. Identificativo (Media) */
+/* Se non c'è la colonna identificativo nel tuo HTML attuale, queste regole verranno ignorate */
+.notifications-table th:nth-child(3), 
+.notifications-table td:nth-child(3) { 
+    width: 15%; 
+}
+
+/* 4. Azione (Giusta per i bottoni) */
+/* Se è l'ultima colonna, usa last-child per sicurezza */
+.notifications-table th:last-child, 
+.notifications-table td:last-child { 
+    width: 15%; 
+    text-align: center; 
+}
