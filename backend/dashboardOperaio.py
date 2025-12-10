@@ -206,8 +206,25 @@ def get_cantiere(cfcapo):
         return "CANTIERE NON ASSEGNATO"
     
     via, civico, citta = row
+    conn.close()
 
     return via + " " + civico + " " + citta
+
+def get_QRCode_cantiere(cfcapo):
+    conn = connessione()
+
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT QRCode FROM cantiere WHERE CFCapo = ?",(cfcapo,))
+    row = cursor.fetchone()
+
+    if not row:
+        return "CANTIERE NON TROVATO"
+    
+    qrcode = row[0]
+    conn.close()
+
+    return qrcode
 
 
 
@@ -226,7 +243,7 @@ def invia_richiesta():
     tipo = data.get("tipo")
     marca = data.get("marca")
     modello = data.get("modello")
-
+    qrcantiere = get_QRCode_cantiere(cf)
     if not tipo or not marca or not modello:
         return jsonify({"success": False, "message": "Dati incompleti"}), 400
 
@@ -240,29 +257,29 @@ def invia_richiesta():
         indirizzo_cantiere = get_cantiere(cf)
 
         if tipo == "veicolo":
-            targa = data.get("targa")
-            if not targa:
+            identificatore = data.get("targa")
+            if not identificatore:
                 return jsonify({"success": False, "message": "Targa mancante"}), 400
 
-            richiesta = f"Richiesta veicolo {marca} {modello} {targa} sul cantiere sito in {indirizzo_cantiere}"
+            richiesta = f"Richiesta veicolo {marca} {modello} {identificatore} sul cantiere sito in {indirizzo_cantiere}"
 
         elif tipo == "attrezzo":
-            seriale = data.get("seriale")
+            identificatore = data.get("seriale")
             tipo_attrezzo = data.get("tipo_attrezzo")
 
-            if not seriale or not tipo_attrezzo:
+            if not identificatore or not tipo_attrezzo:
                 return jsonify({"success": False, "message": "Dati attrezzo mancanti"}), 400
 
-            richiesta = f"Richiesta attrezzo {marca} {modello} {seriale} {tipo_attrezzo} sul cantiere sito in {indirizzo_cantiere}"
+            richiesta = f"Richiesta attrezzo {marca} {modello} {identificatore} {tipo_attrezzo} sul cantiere sito in {indirizzo_cantiere}"
 
         else:
             return jsonify({"success": False, "message": "Tipo richiesta non valido"}), 400
 
         sql = """
-            INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C)
-            VALUES (NOW(), ?, ?, ?)
+            INSERT INTO notifica (DataNotifica, Richiesta, NomeAzienda, CF_C, QRCode_C, Identificatore, Marca, Modello)
+            VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?)
         """
-        cursor.execute(sql, (richiesta, nome_azienda, cf))
+        cursor.execute(sql, (richiesta, nome_azienda, cf, qrcantiere, identificatore, marca, modello))
         conn.commit()
 
         return jsonify({"success": True, "message": "Richiesta inviata con successo"})

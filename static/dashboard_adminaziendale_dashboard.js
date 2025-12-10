@@ -64,6 +64,8 @@ async function caricaCantieriAzienda() {
                 if (tbody.innerHTML.trim() === "") {
                     tbody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 py-4">Nessun bene assegnato a questo cantiere.</td></tr>`;
                 }
+                caricaRichiesteCantiere(QRSelezionato);
+
             }
         });
     } catch (err) {
@@ -542,6 +544,72 @@ function deleteOperaioCantiere(cf, qrcode) {
 function closeDeleteOperaioAssegnatoModal(){
     document.getElementById("delete-operaio-assegnato-modal").classList.add("hidden");
 }
+
+async function caricaRichiesteCantiere(qrCode) {
+
+    fetch(`/notifiche_richieste?QRCode=${qrCode}`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert("Errore nel caricamento richieste: " + data.message);
+                return;
+            }
+
+            const tbody = document.getElementById("richieste-table-body");
+            tbody.innerHTML = "";
+
+            data.richieste.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${r.data_notifica}</td>
+                        <td>${r.richiesta}</td>
+                        <td>${r.identificatore}</td>
+                        <td>${r.marca}</td>
+                        <td>${r.modello}</td>
+                        <td>
+                            <select onchange="gestisciRichiesta(this, '${qrCode}', '${r.identificatore}', '${r.marca}', '${r.modello}', '${r.data_notifica}')">
+                                <option value="">-- Azione --</option>
+                                <option value="1">Approva</option>
+                                <option value="0">Rifiuta</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
+            });
+
+        })
+        .catch(err => {
+            console.error("Errore caricamento richieste:", err);
+            alert("Errore di connessione col server.");
+        });
+}
+
+function gestisciRichiesta(select, qrCode, identificatore, marca, modello, dataNotifica) {
+
+    const decisione = select.value;  // "1" o "0"
+
+    if (decisione === "") return;
+
+    fetch(`/gestione_richiesta?data=${dataNotifica}&stato=${decisione}&QRCode=${qrCode}&identificatore=${identificatore}&marca=${marca}&modello=${modello}`, {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            // Ricarico la tabella richieste
+            //caricaRichiesteCantiere(qrCode);
+            window.location.reload();
+        } else {
+            alert("Errore: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("Errore gestione richiesta:", err);
+        alert("Errore di connessione col server");
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Pagina caricata: Avvio caricamento cantieri...");

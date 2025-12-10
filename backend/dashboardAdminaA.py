@@ -386,3 +386,88 @@ def delete_operaio():
         conn.rollback()
         conn.close()
         return jsonify({"success": False, "message": str(e)}) 
+    
+
+@dashboardAa_bp.route("/notifiche_richieste", methods=["GET"])
+def notifiche_richieste():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    conn = connessione()
+    cursor = conn.cursor()
+    nome_azienda = session.get("nome_azienda")
+    qrcantiere = request.args.get("QRCode")
+
+    try:
+        cursor.execute("""SELECT DataNotifica, Richiesta, Identificatore, Marca, Modello
+                       FROM notifica 
+                       WHERE NomeAzienda = ? AND QRCode_C = ?""",(nome_azienda, qrcantiere))
+        rows = cursor.fetchall()
+        conn.close()
+
+        richieste = []
+
+        for r in rows:
+            richieste.append({
+                "data_notifica" : r[0],
+                "richiesta" : r[1],
+                "identificatore" : r[2],
+                "marca" : r[3],
+                "modello" : r[4]
+            })
+        return jsonify({"success" : True, "richieste" : richieste})
+    except Exception as e:
+        return jsonify({"success" : False, "message" : str(e)})
+    
+def get_id_bene(marca, modello):
+
+    conn = connessione()
+    nome_azienda = session.get("nome_azienda")
+
+    cursor = conn.cursor()
+    cursor.execute("SELECT ID FROM Bene WHERE NomeAzienda = ? AND Marca = ? AND Modello = ?", (nome_azienda, marca, modello))
+
+    row = cursor.fetchone()
+    if not row:
+        return jsonify({"success" : False, "message" : "bene non associato all'azienda"})
+    id = row[0]
+    conn.close()
+    return id
+
+@dashboardAa_bp.route("/gestione_richiesta", methods=["POST"])
+def gestione_richiesta():
+    if "logged_in" not in session:
+        return jsonify({"success" : False, "message" : "Non autorizzato"})
+    
+    id = request.args.get("data")
+    stato = request.args.get("stato") # 1 o 0 <stringa>
+    qrcantiere = request.args.get("QRCode")
+    identificatore = request.args.get("identificatore")
+    marca = request.args.get("marca")
+    modello = request.args.get("modello")
+    nome_azienda = session.get("nome_azienda")
+
+    if not id or not stato:
+        return jsonify({"success" : False, "message" : "Parametri mancanti"})
+    
+    conn = connessione()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("UPDATE notifica SET Stato = ? WHERE DataNotifica = ? AND QRCode_C = ? ",(stato, id, qrcantiere))
+        conn.commit()
+
+
+        if stato == "1":
+            id_b = get_id_bene(marca, modello)
+            cursor.execute("DELETE tr FROM tracciamento tr JOIN bene b ON tr.ID_B = b.ID WHERE tr.ID_B = ? AND b.NomeAzienda = ?",(id_b, nome_azienda))
+
+            cursor.execute("INSERT INTO tracciamento (QRCode_C, ID_B) VALUES (?, ?)",(qrcantiere, id_b))
+            
+            conn.commit()
+            conn.close()
+        
+        return jsonify({"success" : True, "message" : "Richiesta approvata"})
+    except Exception as e:
+        conn.close()
+        return jsonify({"success":False, "message" : str(e)})
