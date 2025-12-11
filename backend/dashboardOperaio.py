@@ -261,7 +261,7 @@ def invia_richiesta():
             if not identificatore:
                 return jsonify({"success": False, "message": "Targa mancante"}), 400
 
-            richiesta = f"Richiesta veicolo {marca} {modello} {identificatore} sul cantiere sito in {indirizzo_cantiere}"
+            richiesta = f"Richiesta veicolo {marca} {modello} {identificatore} sul cantiere sito in via {indirizzo_cantiere}"
 
         elif tipo == "attrezzo":
             identificatore = data.get("seriale")

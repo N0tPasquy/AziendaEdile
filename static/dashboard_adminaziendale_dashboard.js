@@ -609,7 +609,7 @@ function caricaNotifiche() {
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
-
+                                    
                                 </div>
                             </td>
                         </tr>
@@ -640,10 +640,6 @@ function gestisciRichiesta(decisione, qrCode, identificatore, marca, modello, da
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Invece di un alert brutale, usiamo il modale di successo che abbiamo fatto prima (se presente)
-                // oppure un alert semplice se preferisci
-                alert(data.message);
-
                 // Ricarica solo la tabella delle notifiche, non tutta la pagina
                 caricaNotifiche();
 
@@ -652,6 +648,11 @@ function gestisciRichiesta(decisione, qrCode, identificatore, marca, modello, da
 
                 // Aggiorna la lista dei cantieri
                 caricaCantieriAzienda();
+
+                document.getElementById("success-modal").classList.remove("hidden");
+                document.getElementById("success-message").innerText = "Richiesta gestita con successo!";
+
+                
             } else {
                 alert("Errore: " + data.message);
             }

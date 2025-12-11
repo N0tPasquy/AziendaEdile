@@ -12,17 +12,29 @@
     - Anno Accademico: 2025/2026
 */
 
+document.addEventListener("DOMContentLoaded", () => {
+    const cfSalvato = localStorage.getItem("cf_salvato");
+    if (cfSalvato) {
+        document.getElementById("CF").value = cfSalvato;
+        document.getElementById("remember-cf").checked = true;
+    }
+});
+
 async function accedi() {
     // 1. Prendi i valori dagli input
     const cf = document.getElementById("CF").value.trim();
     const password = document.getElementById("password").value.trim();
-
-    // Controllo veloce se sono vuoti
+    const remember = document.getElementById("remember-cf").checked;
+    // Controllo veloce se sono vuoti   
     if (!cf || !password) {
         showLoginError("Inserisci Codice Fiscale e Password.");
         return;
     }
-
+    if(remember){
+        localStorage.setItem("cf_salvato", cf);
+    }else{
+        localStorage.removeItem("cf_salvato");
+    }
     try {
         // 2. Chiedi al server di fare il login
         const response = await fetch("/login", {

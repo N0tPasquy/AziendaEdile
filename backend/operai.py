@@ -73,7 +73,7 @@ def get_operai_dinamico():
                 "cf": row[0],
                 "nome": row[1],
                 "cognome": row[2],
-                # "password": row[3], 
+                "password": row[3], 
                 "data_nascita": row[4],
                 "tipo": row[5],         
                 "numero_telefono": row[6],

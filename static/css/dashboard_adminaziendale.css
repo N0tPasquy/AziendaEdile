@@ -25,14 +25,16 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
-    
-    /* Immagine di sfondo fissa */
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
-    
     min-height: 100vh;
-    overflow-y: auto; /* Permetti lo scroll */
+    overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+}
+
+/* Utility per nascondere elementi (usata da JS) */
+.hidden {
+    display: none !important;
 }
 
 /* ==========================================================================
@@ -50,14 +52,6 @@ body {
     background: rgba(255, 255, 255, 0.20);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
-}
-
-/* Logo nella striscia bianca in alto (Dashboard, Cantieri, ecc.) */
-.logo-contained {
-    height: 40px;       /* Altezza fissa (molto più piccolo di prima) */
-    width: auto;        /* La larghezza si adatta da sola */
-    object-fit: contain;
-    display: block;
 }
 
 /* --- MOBILE NAVBAR (Visibile solo su schermi piccoli) --- */
@@ -110,7 +104,7 @@ body {
    3. SIDEBAR (Laterale)
    ========================================================================== */
 .sidebar {
-    width: 6rem; /* Larghezza aperta di default su PC (approx 250px) */
+    width: 6rem; /* Larghezza chiusa di default */
     background-color: #1E293B; /* Blu scuro */
     color: white;
     display: flex;
@@ -123,7 +117,7 @@ body {
     transition: width 0.3s ease-in-out;
     z-index: 90;
     overflow-y: auto;
-    overflow-x: hidden; /* Nasconde scroll orizzontale durante l'animazione */
+    overflow-x: hidden;
 }
 
 /* Header Sidebar */
@@ -135,18 +129,16 @@ body {
 }
 
 .sidebar-logo-img {
-    height: 2rem;  /* Circa 48px */
+    height: 3rem; /* Piccolo quando chiusa */
     width: auto;
     object-fit: contain;
-    /* Importante: transizione fluida per l'animazione */
     transition: height 0.3s ease-in-out; 
 }
-/* Logo quando la sidebar è APERTA (Grande) */
-/* Questa regola si attiva quando il div #sidebar ha la classe "open" */
-.sidebar.open .sidebar-logo-img {
-    height: 5rem; /* Circa 112px - Molto più grande */
-}
 
+/* Logo quando la sidebar è APERTA (classe aggiunta da JS) */
+.sidebar.open .sidebar-logo-img {
+    height: 6rem; 
+}
 
 /* Testo Brand */
 .sidebar-brand-text {
@@ -159,11 +151,20 @@ body {
     transition: opacity 0.3s;
 }
 
-/* Toggle Button (Freccetta) */
+/* Toggle Button (Freccetta/Hamburger) */
 .sidebar-toggle-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 1rem;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+/* Quando aperta, allinea a sinistra */
+.sidebar.open .sidebar-toggle-container {
+    justify-content: flex-start; 
+    padding-left: 1rem; 
 }
 
 .sidebar-toggle-btn {
@@ -193,7 +194,7 @@ body {
 .sidebar-btn {
     display: flex;
     align-items: center;
-    justify-content: center; /* Allineati a sx quando aperti */
+    justify-content: center; /* Centrati quando chiusa */
     gap: 1rem;
     padding: 0.75rem 1rem;
     border-radius: 0.5rem;
@@ -213,14 +214,13 @@ body {
     color: white;
 }
 
-/* Stato Attivo */
 .sidebar-btn.active {
     background-color: #5b84ad; 
     color: white;
     font-weight: 700;
 }
 
-/* Pulsante Logout */
+/* Footer Sidebar (Logout) */
 .sidebar-footer {
     margin-top: auto;
     padding: 1.5rem;
@@ -230,7 +230,6 @@ body {
 .btn-logout {
     background-color: #ef4444;
     color: white;
-    justify-content: center; /* Il logout sta bene centrato */
 }
 
 .btn-logout:hover {
@@ -243,12 +242,6 @@ body {
     justify-content: center;
 }
 
-/* Utility per nascondere elementi (usato dal JS per chiudere la sidebar) */
-.hidden {
-    display: none !important;
-}
-
-
 /* ==========================================================================
    4. AREA CONTENUTI (MAIN)
    ========================================================================== */
@@ -260,7 +253,7 @@ body {
     align-items: flex-start;
     justify-content: flex-start;
     position: relative;
-    width: 100%; /* Fix per le tabelle larghe */
+    width: 100%; 
     overflow-x: hidden;
 }
 
@@ -269,10 +262,10 @@ body {
 }
 
 /* ==========================================================================
-   5. COMPONENTI INTERNI (Presi dal tuo vecchio CSS)
+   5. COMPONENTI INTERNI (HEADER, CARD, TABELLE)
    ========================================================================== */
 
-/* --- Card Sezioni (es. Lista Operai) --- */
+/* --- Card Sezioni (Contenitore trasparente) --- */
 .section-content {
     width: 100%;
     height: fit-content;
@@ -286,9 +279,9 @@ body {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
 }
 
-/* --- Header Strip (Striscia Titolo Sezione) --- */
+/* --- Header Strip (Striscia Bianca Titolo) --- */
 .header-strip {
-    width: calc(100% + 4rem); /* Sborda dai lati del padding padre */
+    width: calc(100% + 4rem); 
     margin: -2rem -2rem 2rem -2rem;
     padding: 1rem 2rem;
     background: rgba(255, 255, 255, 0.65);
@@ -302,326 +295,25 @@ body {
 }
 
 .header-content {
-    display: flex;           /* Mette gli elementi sulla stessa riga */
-    align-items: center;     /* Li allinea verticalmente al centro */
-    flex-direction: row;     /* Forza la direzione orizzontale */
-    gap: 1rem;               /* Aggiunge spazio tra il logo e la scritta */
-}
-
-/* --- Tabelle Generiche --- */
-.table-card {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    border-radius: 20px;
-    padding: 1rem;
-    width: 100%;
-    overflow-x: auto; /* Scroll orizzontale su mobile */
-}
-
-.admin-table {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    table-layout: fixed; /* Mantiene colonne stabili */
-    min-width: 800px; /* Forza scroll su mobile se troppo stretta */
-}
-
-.admin-table th {
-    font-weight: 700;
-    padding: 12px;
-    border-bottom: 2px solid rgba(0,0,0,0.1);
-    color: #374151;
-}
-
-.admin-table td {
-    padding: 12px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    vertical-align: middle;
-    color: #4b5563;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.admin-table tbody tr {
-    transition: background 0.2s;
-}
-
-.admin-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.6);
-}
-
-/* === REGOLE DI ALLINEAMENTO TABELLE === */
-
-/* Allineamento verticale per tutte le celle */
-.admin-table td, 
-.admin-table th {
-    vertical-align: middle;
-}
-
-/* L'ultima colonna (quella delle Azioni) deve essere SEMPRE centrata */
-.admin-table th:last-child, 
-.admin-table td:last-child {
-    text-align: center !important;
-    width: auto; /* Lascia che prenda lo spazio definito nell'HTML o quello che serve */
-}
-
-/* Assicurati che i bottoni dentro l'ultima cella siano centrati */
-.admin-table td:last-child {
-    display: table-cell; /* Ripristina comportamento tabella */
-}
-
-/* Se i bottoni sono dentro un div o fluttuanti */
-.admin-table td:last-child button,
-.admin-table td:last-child .icon-btn {
-    margin: 0 auto; /* Centra i blocchi */
-    display: inline-flex; /* Assicura che stiano in linea o centrati */
-}
-
-/* --- Pulsanti Azione --- */
-.add-btn {
-    background: #3b82f6;
-    color: white;
-    padding: 0.6rem 1.25rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s;
-}
-.add-btn:hover { background: #2563eb; transform: translateY(-1px); }
-
-/* Pulsanti Icona (Edit/Delete) */
-.icon-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.icon-btn img {
-    /* CAMBIA QUESTI VALORI */
-    width: 32px;   /* Era 24px -> Prova 30px o 32px */
-    height: 32px;  /* Era 24px -> Metti lo stesso valore della width */
-    
-    object-fit: contain;
-    display: block; /* Assicura che non ci siano spazi strani sotto */
-}
-.icon-btn:hover { background-color: #d7ffca; transform: scale(1.1); }
-.icon-btn.delete:hover { background-color: #fee2e2; }
-
-
-/* ==========================================================================
-   6. MODALI
-   ========================================================================== */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 200;
-}
-.modal.hidden { display: none; }
-
-.modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 2rem;
-    border-radius: 16px;
-    width: 400px;
-    max-width: 90vw;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    max-height: 90vh;
-    overflow-y: auto;
+    flex-direction: row;
+    gap: 1rem;
 }
 
-.input-field {
-    width: 100%;
-    border: 1px solid #d1d5db;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
-    font-family: inherit;
+.logo-contained {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
-/* Pulsanti Modale */
-.confirm-btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    background: #2563eb;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-.confirm-btn:hover { background: #1d4ed8; }
-
-.cancel-btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    background: #e5e7eb;
-    color: #374151;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    margin-right: 0.5rem;
-}
-.cancel-btn:hover { background: #d1d5db; }
-
-.delete-btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 0.5rem;
-    background: #ef4444;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-.delete-btn:hover { background: #dc2626; }
-
-/* ==========================================================================
-   MEDIA QUERIES (RESPONSIVE MOBILE)
-   ========================================================================== */
-@media (max-width: 768px) {
-
-    /* --- 1. NAVBAR E LAYOUT --- */
-    .mobile-navbar { display: flex; }
-    
-    .app-layout {
-        flex-direction: column; /* Impila sidebar e contenuto */
-    }
-
-    /* --- 2. SIDEBAR OFF-CANVAS --- */
-    .sidebar {
-        position: fixed;
-        left: -100%; /* Nascosta a sinistra */
-        width: 80% !important; 
-        max-width: 300px;
-        height: 100vh;
-        z-index: 200; /* Sopra tutto */
-        transition: left 0.3s ease-in-out;
-        border-right: none;
-        box-shadow: 10px 0 20px rgba(0,0,0,0.3);
-    }
-
-    /* Classe aggiunta via JS per aprire */
-    .sidebar.mobile-open { left: 0; }
-
-    /* Elementi sempre visibili nella sidebar mobile */
-    .sidebar-brand-text, .link-text {
-        opacity: 1 !important;
-        display: inline-block !important;
-    }
-    .sidebar-toggle-container { display: none; }
-
-    /* --- 3. CONTENUTO PRINCIPALE --- */
-    .main-content {
-        padding: 1rem;
-        padding-top: 5rem; /* Spazio per la navbar fissa */
-    }
-
-    /* --- 4. FIX ALLINEAMENTO (Il cuore del problema) --- */
-    
-    /* IMPORTANTE: Togliamo il padding dal contenitore padre.
-       Questo permette alle card interne di allargarsi fino ai bordi,
-       allineandosi perfettamente alla striscia bianca sopra. */
-    .section-content {
-        padding: 0 !important; 
-        width: 100%;
-        margin: 0 auto;
-        border-radius: 20px;
-        overflow: hidden; /* Taglia gli angoli retti interni */
-    }
-
-    /* Striscia Bianca in alto */
-    .header-strip {
-        width: 100%; 
-        margin: 0 !important; /* Reset margini desktop */
-        margin-bottom: -2rem !important; /* Tira su la card successiva */
-        
-        padding: 1.5rem 1.5rem 3rem 1.5rem; /* Spazio extra sotto */
-        
-        border-radius: 20px 20px 0 0; /* Tondo solo sopra */
-        position: relative;
-        z-index: 1; /* Livello basso */
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: none;
-    }
-
-    /* La prima Card (che si sovrappone alla striscia) */
-    .dashboard-header-card,
-    .table-card:first-of-type {
-        position: relative;
-        z-index: 10; /* Livello alto (sta sopra) */
-        
-        width: 100%;
-        margin-top: 0 !important;
-        
-        /* Gestione bordi per l'effetto "foglio unico" */
-        border-top-left-radius: 20px;
-        border-top-right-radius: 20px;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(15px);
-        box-shadow: 0 -4px 15px rgba(0,0,0,0.05); /* Ombra verso l'alto */
-    }
-    
-    /* Layout Header Interno (Logo + Testo affiancati) */
-    .header-content {
-        flex-direction: row !important; /* Forza riga orizzontale */
-        justify-content: center; 
-        width: 100%;
-    }
-
-    /* Altri aggiustamenti per mobile */
-    .dashboard-header-card {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .filter-box { max-width: 100%; }
-    
-    /* Card successive (Tabelle) */
-    .table-card {
-        border-radius: 0; 
-        margin-bottom: 1px;
-        box-shadow: none;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    /* Ultima card chiude i bordi */
-    .dashboard-grid .table-card:last-child {
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
-        border-bottom: none;
-    }
+.company-name {
+    font-weight: 700;
+    font-size: 1.5rem;
 }
 
-/* Overlay scuro per quando la sidebar è aperta su mobile */
-.mobile-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 150;
-    display: none; /* JS lo mostrerà */
-    backdrop-filter: blur(2px);
-}
-.mobile-overlay:not(.hidden) { display: block; }
-
-/* ==========================================================================
-   8. STILI SPECIFICI DASHBOARD (AGGIUNTA)
-   ========================================================================== */
-
-/* Header Interno alla Dashboard */
+/* --- Dashboard Header (Titolo + Filtri/Bottoni) --- */
 .dashboard-header-card {
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(10px);
@@ -653,74 +345,23 @@ body {
     font-weight: 500;
 }
 
-.company-name {
-    font-weight: 700;
-    font-size: 1.5rem;
-    margin-left: 1rem;
-}
-
-/* FILTRO CANTIERE (Select personalizzata) */
-.filter-box {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    padding: 0.375rem 0.75rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    gap: 0.75rem;
-    width: 100%;
-    max-width: 320px; /* Larghezza massima su desktop */
-    transition: box-shadow 0.2s;
-}
-
-.filter-box:focus-within {
-    box-shadow: 0 0 0 2px #dbeafe; /* Ring blu */
-    border-color: #3b82f6;
-}
-
-.filter-icon {
-    color: #2563eb;
-    display: flex;
-    align-items: center;
-}
-
-.select-wrapper {
-    position: relative;
-    flex: 1;
-}
-
-.custom-select {
-    appearance: none;
-    background: transparent;
-    border: none;
-    width: 100%;
-    padding-right: 1.5rem; /* Spazio per freccetta */
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #374151;
-    cursor: pointer;
-    outline: none;
-}
-
-.select-arrow {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #9ca3af;
-}
-
-/* GRIGLIA DASHBOARD (2 Colonne su Desktop, 1 su Mobile) */
+/* Griglia Dashboard (2 Colonne) */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Default Mobile */
+    grid-template-columns: 1fr; /* Default mobile */
     gap: 1.5rem;
     width: 100%;
-    flex: 1; /* Riempie altezza */
-    overflow: hidden; /* Evita scroll doppio */
     padding-bottom: 1rem;
+}
+
+/* --- Card Tabelle --- */
+.table-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 1rem;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .card-header-row {
@@ -742,150 +383,254 @@ body {
     gap: 0.5rem;
 }
 
-/* Pulsanti Piccoli (+ Assegna) */
-.small-btn {
-    font-size: 0.875rem;
-    padding: 0.25rem 0.75rem;
-}
-
-.actions-group {
-    display: flex;
-    gap: 0.5rem;
-}
-
-/* Table Responsive Container */
+/* Wrapper responsive per tabelle */
 .table-responsive {
     overflow-y: auto;
-    flex-grow: 1; /* Prende spazio rimanente nella card */
-    max-height: 60vh; /* Limite altezza su schermi grandi */
-}
-
-/* MODALI SPECIFICI */
-.modal-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-}
-
-.modal-select-box {
-    max-width: 100%; /* Nei modali prende tutto lo spazio */
-}
-
-/* Stili Modale Successo (Ripresi da prima) */
-.success-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.success-icon {
-    width: 4rem;
-    height: 4rem;
-    color: #16a34a;
-    margin-bottom: 0.75rem;
-}
-
-.modal-message {
-    color: #374151;
-    margin-bottom: 1.25rem;
-}
-
-/* --- MEDIA QUERY SPECIFICHE PER DASHBOARD --- */
-@media (min-width: 1024px) {
-    /* Su schermi grandi, 2 colonne */
-    .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Mobile: header dashboard impilato */
-    .dashboard-header-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .filter-box {
-        max-width: 100%; /* Select full width su mobile */
-    }
-    
-    .actions-group {
-        flex-direction: column; /* Bottoni impilati se c'è poco spazio */
-        align-items: flex-end;
-    }
+    flex-grow: 1;
+    max-height: 60vh;
 }
 
 /* ==========================================================================
-   9. STILI SPECIFICI CANTIERI (AGGIUNTA)
+   6. TABELLE (Generica e Notifiche)
    ========================================================================== */
 
-/* Etichette dei Form */
-.form-label {
-    display: block;
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 0.25rem;
-}
-
-/* Messaggi di Errore */
-.error-msg {
-    color: #ef4444;
-    font-size: 0.875rem;
-    display: block;
-    margin-bottom: 0.25rem;
-}
-
-/* Textarea senza resize */
-.textarea-resize-none {
-    resize: none;
-}
-
-/* Immagine QR Code nel modale */
-.qr-code-img {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 1.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-/* Bottone Download (Verde) */
-.download-btn {
-    background-color: #16a34a; /* Green-600 */
-}
-.download-btn:hover {
-    background-color: #15803d; /* Green-700 */
-}
-
-/* Layout azioni header (Pulsante Aggiungi) */
-.header-actions {
-    position: relative;
+/* 6a. Tabella GENERICA (.admin-table) - Per dati brevi, testo su una riga */
+.admin-table {
     width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 800px; /* Forza scroll su mobile */
 }
 
-@media (min-width: 768px) {
-    .header-actions {
-        width: auto;
-    }
+.admin-table th {
+    font-weight: 700;
+    padding: 12px;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    color: #374151;
 }
+
+.admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    vertical-align: middle;
+    color: #4b5563;
+    white-space: nowrap; /* Testo su una riga */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-table tbody tr { transition: background 0.2s; }
+.admin-table tbody tr:hover { background-color: rgba(255, 255, 255, 0.6); }
+
+/* Allineamento celle */
+.admin-table th:last-child, 
+.admin-table td:last-child {
+    text-align: center !important;
+    width: auto;
+}
+
+.admin-table td:last-child button,
+.admin-table td:last-child .icon-btn {
+    margin: 0 auto;
+    display: inline-flex;
+}
+
+
+/* 6b. Tabella NOTIFICHE (.notifications-table) - Per testi lunghi */
+/* =========================================================
+   6b. Tabella NOTIFICHE (.notifications-table)
+   ========================================================= */
+
+.notifications-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    table-layout: fixed; /* Mantiene le larghezze fisse */
+}
+
+/* Header */
+.notifications-table th {
+    font-weight: 700;
+    padding: 12px 16px;
+    border-bottom: 2px solid #e5e7eb;
+    color: #374151;
+    background-color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+/* Corpo - Celle */
+.notifications-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+    color: #4b5563;
+    
+    /* REGOLE PER IL TESTO LUNGO (Wrap) */
+    white-space: normal;      
+    word-wrap: break-word;    
+    overflow-wrap: break-word; 
+    overflow: visible;
+}
+
+.notifications-table tbody tr:hover { background-color: #f9fafb; }
+
+/* --- LARGHEZZE COLONNE (Configurazione a 3 Colonne) --- */
+
+/* 1. DATA (Stretta, su una riga) */
+.notifications-table th:nth-child(1), 
+.notifications-table td:nth-child(1) { 
+    width: 20%; 
+    white-space: nowrap; 
+}
+
+/* 2. RICHIESTA (Larga, testo a capo) */
+.notifications-table th:nth-child(2), 
+.notifications-table td:nth-child(2) { 
+    width: 60%; 
+}
+
+/* 3. AZIONE (Stretta e centrata) */
+.notifications-table th:last-child, 
+.notifications-table td:last-child { 
+    width: 20%; 
+    text-align: center !important; 
+}
+
+/* Messaggio "Nessuna nuova notifica" */
+.notifications-table td[colspan] { 
+    text-align: center; 
+    padding: 2rem; 
+    color: #9ca3af; 
+    font-style: italic; 
+}
+
+/* Contenitore flessibile per centrare i due bottoni */
+.admin-actions-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px; /* Spazio tra i due bottoni */
+}
+
+/* Stile base del bottone rotondo */
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%; /* Cerchio perfetto */
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s;
+}
+
+.action-btn:hover {
+    transform: scale(1.1); /* Leggero zoom all'hover */
+}
+
+/* Dimensioni e stile dell'icona SVG dentro il bottone */
+.action-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2.5; /* Rende le linee più spesse e visibili */
+}
+
+/* Variante APPROVA (Verde) */
+.approve-btn {
+    background-color: #dcfce7; /* Verde chiaro sfondo */
+    color: #16a34a;            /* Verde scuro icona */
+}
+.approve-btn:hover {
+    background-color: #bbf7d0;
+}
+
+/* Variante RIFIUTA (Rosso) */
+.reject-btn {
+    background-color: #fee2e2; /* Rosso chiaro sfondo */
+    color: #ef4444;            /* Rosso scuro icona */
+}
+.reject-btn:hover {
+    background-color: #fecaca;
+}
+
 
 /* ==========================================================================
-   STILI PER LE NOTIFICHE (Pulsanti e Badge)
+   7. UI ELEMENTS (Pulsanti, Input, Icone)
    ========================================================================== */
 
-/* Stile base per il pulsante campanella */
-.notif-btn-icon-circle,
-.notif-btn-icon-square {
+/* Pulsanti Standard */
+.add-btn, .confirm-btn {
+    background: #3b82f6;
+    color: white;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+.add-btn:hover, .confirm-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+.small-btn { padding: 0.35rem 0.85rem; font-size: 0.875rem; }
+
+.cancel-btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.75rem;
+    background: #e5e7eb;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+.cancel-btn:hover { background: #d1d5db; }
+
+.delete-btn {
+    background: #ef4444;
+    color: white;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.75rem;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+.delete-btn:hover { background: #dc2626; }
+
+/* Pulsanti Icona (Edit/Delete) */
+.icon-btn, .action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-btn:hover, .action-btn:hover { background-color: #d7ffca; transform: scale(1.1); }
+.icon-btn.delete:hover { background-color: #fee2e2; }
+
+.icon-btn img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Pulsanti Approvazione (nella tabella notifiche) */
+.approve-btn { background-color: #dcfce7; color: #16a34a; }
+.approve-btn:hover { background-color: #bbf7d0; }
+.reject-btn { background-color: #fee2e2; color: #ef4444; }
+.reject-btn:hover { background-color: #fecaca; }
+
+/* Pulsante Campanella Notifiche */
+.notif-btn-icon-circle {
     background: #3b82f6;
     color: white;
     border: none;
@@ -895,199 +640,189 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0; 
-    width: 3rem;  
+    padding: 0;
+    width: 3rem;
     height: 3rem;
+    border-radius: 50%;
 }
+.notif-btn-icon-circle:hover { background: #2563eb; transform: translateY(-1px); }
+.notif-btn-icon-circle svg { width: 24px; height: 24px; }
 
-.notif-btn-icon-circle { border-radius: 50%; }
-.notif-btn-icon-square { border-radius: 0.75rem; }
-
-.notif-btn-icon-circle:hover,
-.notif-btn-icon-square:hover {
-    background: #2563eb;
-    transform: translateY(-1px);
-}
-
-.notif-btn-icon-circle svg,
-.notif-btn-icon-square svg {
-    width: 24px;
-    height: 24px;
-}
-
-/* Badge rosso (Contatore) */
+/* Badge Notifiche */
 .badge-container { position: relative; }
-
 .notif-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: -5px; right: -5px;
     background-color: #ef4444;
     color: white;
     font-size: 0.75rem;
     font-weight: 700;
-    min-width: 1.2rem;
-    height: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-width: 1.2rem; height: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
     border: 2px solid white;
 }
 
-/* ==========================================================================
-   STILI PER IL MODALE TABELLA (Scroll e Layout)
-   ========================================================================== */
+/* Input Fields */
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
 
+.input-field, .custom-select {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+.input-field:focus { outline: none; border-color: #3b82f6; }
+.textarea-resize-none { resize: none; }
+.error-msg { color: #ef4444; font-size: 0.875rem; display: block; margin-bottom: 0.25rem; }
+
+/* Filter Box (Select cantiere) */
+.filter-box {
+    display: flex; align-items: center;
+    background: white; border: 1px solid #e5e7eb;
+    border-radius: 0.5rem; padding: 0.375rem 0.75rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    gap: 0.75rem; width: 100%; max-width: 320px;
+}
+.filter-icon { color: #2563eb; display: flex; align-items: center; }
+.select-wrapper { position: relative; flex: 1; }
+.custom-select { border: none; padding: 0; margin: 0; padding-right: 1.5rem; cursor: pointer; outline: none; background: transparent; font-weight: 700; color: #374151; }
+.select-arrow { position: absolute; right: 0; top: 50%; transform: translateY(-50%); pointer-events: none; color: #9ca3af; }
+
+
+/* ==========================================================================
+   8. MODALI
+   ========================================================================== */
+.modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 200; padding: 1rem;
+}
+.modal.hidden { display: none; }
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 16px;
+    width: 400px; max-width: 90vw;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    max-height: 90vh; overflow-y: auto;
+}
+
+/* Modale Largo (Tabella Notifiche) */
 .modal-lg {
     max-width: 900px !important;
     width: 95% !important;
 }
 
+.modal-title {
+    font-size: 1.25rem; font-weight: 700;
+    margin-bottom: 1rem; text-align: center;
+}
+
+.modal-actions {
+    display: flex; justify-content: flex-end;
+    gap: 0.75rem; margin-top: 1.5rem;
+}
+
+/* Contenitore scrollabile tabella nel modale */
 .scroll-container {
-    max-height: 60vh;
-    overflow-y: auto;
+    max-height: 60vh; overflow-y: auto;
     margin-bottom: 1.5rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border: 1px solid #e5e7eb; border-radius: 8px;
 }
+.sticky-header { position: sticky; top: 0; background-color: white; z-index: 10; }
+.sticky-header th { box-shadow: 0 1px 0 #e5e7eb; }
 
-.sticky-header {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 10;
+/* Success / Delete Layouts */
+.success-layout, .delete-layout {
+    text-align: center; display: flex; flex-direction: column; align-items: center;
 }
+.success-icon { width: 4rem; height: 4rem; color: #16a34a; margin-bottom: 0.75rem; }
+.error-icon { width: 2.5rem; height: 2.5rem; color: #dc2626; }
+.icon-circle-red { background-color: #fee2e2; padding: 1rem; border-radius: 50%; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center;}
+.modal-message { color: #4b5563; margin-bottom: 1.25rem; }
+.modal-actions-center { display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
 
-.sticky-header th {
-    box-shadow: 0 1px 0 #e5e7eb; 
-}
+/* Classi utility per modali specifici */
+.modal-content.modal-left { text-align: left; align-items: flex-start; }
+.icon-centered { display: flex; justify-content: center; width: 100%; margin-bottom: 1rem; color: #111827; }
 
-.full-width { width: 100%; }
-.text-center { text-align: center !important; }
 
 /* ==========================================================================
-   STILI MANCANTI: PULSANTI AZIONE DENTRO LA TABELLA
-   (Questi servono per i bottoni Verde e Rosso generati dal JS)
+   9. MEDIA QUERIES (MOBILE)
    ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Navbar e Layout */
+    .mobile-navbar { display: flex; }
+    .app-layout { flex-direction: column; }
 
-.admin-actions-cell {
-    text-align: center;
-    vertical-align: middle;
-}
+    /* 2. Sidebar Mobile (Off-Canvas) */
+    .sidebar {
+        position: fixed; left: -100%;
+        width: 80% !important; max-width: 300px; height: 100vh;
+        z-index: 200; transition: left 0.3s ease-in-out;
+        border-right: none; box-shadow: 10px 0 20px rgba(0,0,0,0.3);
+    }
+    .sidebar.mobile-open { left: 0; }
+    .sidebar-brand-text, .link-text { opacity: 1 !important; display: inline-block !important; }
+    .sidebar-toggle-container { display: none; }
 
-.admin-actions-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
+    /* 3. Contenuto Principale */
+    .main-content { padding: 1rem; padding-top: 5rem; }
 
-/* Bottone generico dentro la tabella */
-.action-btn {
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease, background-color 0.2s;
-}
+    /* 4. Fix Sovrapposizione Header Strip */
+    .section-content {
+        padding: 0 !important; width: 100%; margin: 0 auto;
+        border-radius: 20px; overflow: hidden;
+    }
 
-.action-btn:hover {
-    transform: scale(1.1);
-}
+    .header-strip {
+        width: 100%; margin: 0 !important; margin-bottom: -2rem !important;
+        padding: 1.5rem 1.5rem 3rem 1.5rem;
+        border-radius: 20px 20px 0 0; position: relative; z-index: 1;
+        background: rgba(255, 255, 255, 0.95); box-shadow: none;
+    }
 
-.action-icon {
-    width: 20px;
-    height: 20px;
-}
+    .dashboard-header-card, .table-card:first-of-type {
+        position: relative; z-index: 10;
+        width: 100%; margin-top: 0 !important;
+        border-top-left-radius: 20px; border-top-right-radius: 20px;
+        border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+        background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px);
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+    }
 
-/* Stile specifico APPROVA (Verde) */
-.approve-btn {
-    background-color: #dcfce7; /* Verde chiaro */
-    color: #16a34a;            /* Verde scuro */
-}
-.approve-btn:hover {
-    background-color: #bbf7d0;
-}
-
-/* Stile specifico RIFIUTA (Rosso) */
-.reject-btn {
-    background-color: #fee2e2; /* Rosso chiaro */
-    color: #ef4444;            /* Rosso scuro */
-}
-.reject-btn:hover {
-    background-color: #fecaca;
-}
-
-/* =========================================================
-   NUOVA TABELLA SPECIFICA PER LE NOTIFICHE
-   (Progettata per testi lunghi e layout flessibile)
-   ========================================================= */
-
-.notifications-table {
-    width: 100%;
-    text-align: left;
-    border-collapse: collapse;
-    table-layout: fixed; /* Mantiene le larghezze fisse che decidiamo noi */
-}
-
-/* Header */
-.notifications-table th {
-    font-weight: 700;
-    padding: 12px;
-    border-bottom: 2px solid rgba(0,0,0,0.1);
-    color: #374151;
-    background-color: #ffffff; /* Sfondo bianco per quando è sticky */
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-/* Corpo - Qui sta la magia per il testo lungo */
-.notifications-table td {
-    padding: 12px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    vertical-align: middle; /* Allinea verticalmente al centro */
-    color: #4b5563;
+    .header-content { flex-direction: row !important; justify-content: center; width: 100%; }
     
-    /* Queste 3 righe permettono al testo di andare a capo */
-    white-space: normal; 
-    word-wrap: break-word;
-    overflow: visible;
+    .dashboard-header-card { flex-direction: column; align-items: stretch; }
+    .filter-box { max-width: 100%; }
+    .header-actions { justify-content: center; }
+    .actions-group { flex-direction: column; align-items: flex-end; }
+
+    .table-card { border-radius: 0; margin-bottom: 1px; box-shadow: none; border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .dashboard-grid .table-card:last-child { border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; border-bottom: none; }
 }
 
-/* Righe hover */
-.notifications-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.6);
+@media (min-width: 1024px) {
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    .header-actions { width: auto; }
 }
 
-/* --- LARGHEZZE COLONNE SPECIFICHE PER NOTIFICHE --- */
-
-/* 1. Data (Stretta) */
-.notifications-table th:nth-child(1), 
-.notifications-table td:nth-child(1) { 
-    width: 15%; 
+/* Overlay Mobile */
+.mobile-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 150; display: none; backdrop-filter: blur(2px);
 }
-
-/* 2. Richiesta (MOLTO LARGA - Qui c'è il testo lungo) */
-.notifications-table th:nth-child(2), 
-.notifications-table td:nth-child(2) { 
-    width: 40%; 
-}
-
-/* 3. Identificativo (Media) */
-/* Se non c'è la colonna identificativo nel tuo HTML attuale, queste regole verranno ignorate */
-.notifications-table th:nth-child(3), 
-.notifications-table td:nth-child(3) { 
-    width: 15%; 
-}
-
-/* 4. Azione (Giusta per i bottoni) */
-/* Se è l'ultima colonna, usa last-child per sicurezza */
-.notifications-table th:last-child, 
-.notifications-table td:last-child { 
-    width: 15%; 
-    text-align: center; 
-}
+.mobile-overlay:not(.hidden) { display: block; }
