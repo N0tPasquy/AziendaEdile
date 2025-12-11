@@ -196,7 +196,7 @@ async function caricaVeicoliPerRichiesta() {
 
     try {
         // 2. Chiamata al server
-        const res = await fetch("/get_beni?tipo=veicoli");
+        const res = await fetch("/get_beni_non_assegnati?tipo=veicoli");
         const data = await res.json();
 
         // 3. Gestione errori del backend (es. utente non loggato o db down)
@@ -286,7 +286,7 @@ async function caricaAttrezziPerRichiesta() {
 
     try {
         // 2. Chiamata al server
-        const res = await fetch("/get_beni?tipo=attrezzi");
+        const res = await fetch("/get_beni_non_assegnati?tipo=attrezzi");
         const data = await res.json();
 
         // 3. Gestione errori del backend (es. utente non loggato o db down)

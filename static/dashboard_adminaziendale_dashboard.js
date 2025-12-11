@@ -594,7 +594,7 @@ function caricaNotifiche() {
                             <td class="admin-table-cell admin-actions-cell">
                                 <div class="admin-actions-wrapper">
                                     
-                                    <button onclick="gestisciRichiesta('1', '${req.qr_code}', '${req.identificativo}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
+                                    <button onclick="gestisciRichiesta('1', '${req.qr_code}', '${req.identificatore}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
                                             class="action-btn approve-btn" 
                                             title="Approva">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -602,7 +602,7 @@ function caricaNotifiche() {
                                         </svg>
                                     </button>
 
-                                    <button onclick="gestisciRichiesta('0', '${req.qr_code}', '${req.identificativo}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
+                                    <button onclick="gestisciRichiesta('0', '${req.qr_code}', '${req.identificatore}', '${req.marca}', '${req.modello}', '${req.data_notifica}')" 
                                             class="action-btn reject-btn" 
                                             title="Rifiuta">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="action-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

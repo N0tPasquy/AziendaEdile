@@ -458,7 +458,7 @@ def gestione_richiesta():
     try:
         #cursor.execute("UPDATE notifica SET Stato = ? WHERE DataNotifica = ? AND QRCode_C = ? ",(stato, id, qrcantiere))
         #conn.commit()
-        data_sql = datetime.strptime(id, "%a, %d %b %Y %H:%M:%S GMT").strftime("%Y-%m-%d %H:%M:%S")
+        data_sql = datetime.strptime(id, "%a, %d %b %Y %H:%M:%S GMT").strftime("%Y-%m-%d")
         if stato == "1":
             id_b = get_id_bene(marca, modello)
 

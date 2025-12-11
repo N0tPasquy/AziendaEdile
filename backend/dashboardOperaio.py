@@ -290,3 +290,86 @@ def invia_richiesta():
     finally:
         conn.close()
 
+
+
+
+@dashboardOperaio_bp.route("/get_beni_non_assegnati", methods=["GET"])
+def get_beni():
+    if "logged_in" not in session:
+        return jsonify({"success": False, "message": "non autorizzato"})
+    
+    cf = session.get("cf")
+    tipo = request.args.get("tipo")
+    nome_azienda = session.get("nome_azienda")
+
+    qr_cantiere = get_QRCode_cantiere(cf)
+
+    if not qr_cantiere:
+        return jsonify({"success" : False, "message" : "Nessun cantiere associato"})
+    
+    conn = connessione()
+    cursor = conn.cursor()
+
+    try:
+        if tipo == "veicoli":
+            # MODIFICA 1: Aggiunto "AND B.NomeAzienda = V.NomeAzienda" nella JOIN, assicura che prendiamo solo i veicoli di QUESTA azienda
+            sql = """
+                SELECT V.Targa, V.Anno, B.Marca, B.Modello 
+                FROM Bene B 
+                JOIN Veicolo V ON B.ID = V.ID_V AND B.NomeAzienda = V.NomeAzienda
+                WHERE B.NomeAzienda = ? AND B.ID NOT IN(
+                    SELECT ID_B
+                    FROM tracciamento
+                    WHERE QRCode_C = ?
+                )
+            """
+            cursor.execute(sql, (nome_azienda, qr_cantiere))
+            
+            rows = cursor.fetchall()
+            conn.close()
+
+            veicoli = []
+            for r in rows:
+                veicoli.append({
+                    "targa": r[0],
+                    "anno": r[1],
+                    "marca": r[2],
+                    "modello": r[3]
+                })
+
+            return jsonify({"success": True, "beni": veicoli})
+            
+        elif tipo == "attrezzi":
+            #Aggiunto controllo Azienda anche per gli attrezzi
+            sql = """
+                SELECT A.Seriale, A.Tipo, B.Marca, B.Modello 
+                FROM Bene B 
+                JOIN Attrezzo A ON B.ID = A.ID_A AND B.NomeAzienda = A.NomeAzienda
+                WHERE B.NomeAzienda = ? AND B.ID NOT IN(
+                    SELECT ID_B
+                    FROM tracciamento
+                    WHERE QRCode_C = ?
+                )
+            """
+            cursor.execute(sql, (nome_azienda, qr_cantiere))
+            
+            rows = cursor.fetchall()
+            conn.close()
+
+            attrezzi = []
+            for r in rows:
+                attrezzi.append({
+                    "seriale": r[0],
+                    "tipo": r[1],
+                    "marca": r[2],
+                    "modello": r[3]
+                })
+            return jsonify({"success": True, "beni": attrezzi})
+        else:
+            conn.close() # Chiudo la connessione se il tipo non è valido
+            return jsonify({"success": False, "message": "Tipo non valido"})
+
+    except Exception as e:
+        if conn: conn.close()
+        return jsonify({"success": False, "message": str(e)})
+
