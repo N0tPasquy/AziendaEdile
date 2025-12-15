@@ -85,19 +85,49 @@ def get_squadra():
                        "WHERE L.QRCode_C = ? AND (U.TipoUtente = 'CC' OR U.TipoUtente = 'OP') ", (qrcode_cantiere,))
         rows = cursor.fetchall()
         conn.close()
-
+        
+        ris = "Assente"
         squadra = []
+
         for r in rows:
+            if controllo_presenza(r[0]) == "Presente":
+                ris = "Presente"
+            else:
+                ris = "Assente"
+
             squadra.append({
                 "cf" : r[0],
                 "nome": r[1],
                 "cognome": r[2],
-                "TipoUtente": r[3]
+                "TipoUtente": r[3],
+                "Stato" : ris
             })
         return jsonify({"success": True, "squadra": squadra })
     
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
+
+# Funzione di supporto per controllo presenza operaio  
+def controllo_presenza(cf):
+    conn = connessione()
+    if conn is None:
+        return "Errore DB"
+    
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT COUNT(*) "
+                       "FROM presenza "
+                       "WHERE CF_U = ? AND DataPresenza = CURRENT_DATE ", (cf,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if row[0] > 0:
+            return "Presente"
+        else:
+            return "Assente"
+    except Exception as e:
+        conn.close()
+        return "Errore"
     
 
 @dashboardAa_bp.route("/get_AttrezziCantiere",methods=["GET"])

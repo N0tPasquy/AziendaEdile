@@ -555,7 +555,7 @@ body {
 }
 .reject-btn:hover {
     background-color: #fecaca;
-}
+}   
 
 
 /* ==========================================================================
@@ -691,12 +691,33 @@ body {
     background: white; border: 1px solid #e5e7eb;
     border-radius: 0.5rem; padding: 0.375rem 0.75rem;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    gap: 0.75rem; width: 100%; max-width: 320px;
+    gap: 0.75rem; width: 100%; max-width: 450px;
 }
-.filter-icon { color: #2563eb; display: flex; align-items: center; }
-.select-wrapper { position: relative; flex: 1; }
-.custom-select { border: none; padding: 0; margin: 0; padding-right: 1.5rem; cursor: pointer; outline: none; background: transparent; font-weight: 700; color: #374151; }
-.select-arrow { position: absolute; right: 0; top: 50%; transform: translateY(-50%); pointer-events: none; color: #9ca3af; }
+.filter-icon { 
+    color: #2563eb; 
+    display: flex; 
+    align-items: center; 
+}
+
+.select-wrapper { 
+    position: relative; 
+    flex: 1; 
+
+}
+
+.custom-select { 
+    border: none;
+    padding: 0;
+    margin: 0;
+    /* Riduciamo il padding-right perché non serve più spazio per l'icona custom */
+    padding-right: 0.5rem; 
+    cursor: pointer;
+    outline: none;
+    background: transparent;
+    font-weight: 700;
+    color: #374151;
+    width: 100%;
+}
 
 
 /* ==========================================================================
@@ -758,6 +779,13 @@ body {
 /* Classi utility per modali specifici */
 .modal-content.modal-left { text-align: left; align-items: flex-start; }
 .icon-centered { display: flex; justify-content: center; width: 100%; margin-bottom: 1rem; color: #111827; }
+
+/* Dimensione immagine QR Code */
+.qr-code-img{
+    width: 300px;
+    height: auto;
+    object-fit: contain;
+}
 
 
 /* ==========================================================================

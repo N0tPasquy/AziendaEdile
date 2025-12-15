@@ -252,7 +252,7 @@ function updateCantiere() {
     const civico = document.getElementById("edit_civico").value;
     const CAP = document.getElementById("edit_CAP").value;
     const descrizione = document.getElementById("edit_descrizione").value;
-    const capo_cantiere = document.getElementById("edit_capo").value;
+    var capo_cantiere = document.getElementById("edit_capo").value;
     const stato = document.getElementById("edit_stato").value;
 
     document.getElementById("err_edit_via").classList.add("hidden");
@@ -294,8 +294,9 @@ function updateCantiere() {
         valid = false;
     }
     if (capo_cantiere === "") {
-        document.getElementById("err_edit_capo").classList.remove("hidden");
-        valid = false;
+        //document.getElementById("err_edit_capo").classList.remove("hidden");
+        //valid = false;
+        capo_cantiere = null; // Permettiamo di togliere il capo cantiere
     }
 
     if (!valid) return;

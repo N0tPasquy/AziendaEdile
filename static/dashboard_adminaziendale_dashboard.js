@@ -51,7 +51,6 @@ async function caricaCantieriAzienda() {
             return;
         }
 
-        select.innerHTML = '<option value="" disabled selected>-- Seleziona un cantiere --</option>';
         data.cantieri.forEach(c => {
             const option = document.createElement("option");
             option.value = c.QRCode;
@@ -126,14 +125,14 @@ async function caricaSquadra(qrcode) {
         }
 
         // Popola la tabella dinamicamente
-        data.squadra.forEach(s => {         // deleteOperaiCantiere apre il modale per togliere un operaio da una squadra - DA IMPLEMENTARE 
+        data.squadra.forEach(s => {
             // la parte <span> deve essere modificato in modo che sia dinamico. Presente/Assente
             tbody.innerHTML += `
                 <tr>
                     <td class="py-3 px-2">${s.nome} ${s.cognome}</td>
                     <td class="py-3 px-2">${s.TipoUtente === 'CC' ? 'Capocantiere' : 'Operaio'}</td>
                     <td class="py-3 px-2">
-                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Presente</span>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">${s.Stato}</span>
                     </td>
                     <td class="py-3 px-2 text-center">
                         <button class="icon-btn delete" onclick="deleteOperaioCantiere('${s.cf}', '${qrcode}')">
@@ -504,7 +503,6 @@ function deleteBeneCantiere(idBene, qrcode) {
 function closeDeleteBeneAssegnatoModal() {
     document.getElementById("delete-bene-assegnato-modal").classList.add("hidden");
     const tbody = document.getElementById("beni-table-body");
-    tbody.innerHTML = "";
 }
 
 function deleteOperaioCantiere(cf, qrcode) {
@@ -572,9 +570,12 @@ function openNotificheModal() {
 
 function closeNotificheModal() {
     document.getElementById("notifications-modal").classList.add("hidden");
+    
+    // Ricarica la pagina dopo aver gestisto le notifiche
+    location.reload();
 }
 
-// Funzione per caricare la tabella delle notifiche dal server
+// Funzione per caricare la tabella delle notifiche dal DB
 function caricaNotifiche() {
     const tbody = document.getElementById("tabella-notifiche");
     tbody.innerHTML = ""; // Pulisce la tabella prima di riempirla
@@ -646,11 +647,8 @@ function gestisciRichiesta(decisione, qrCode, identificatore, marca, modello, da
                 // Aggiorna anche il pallino rosso delle notifiche
                 contaNotifiche();
 
-                // Aggiorna la lista dei cantieri
-                caricaCantieriAzienda();
-
-                document.getElementById("success-modal").classList.remove("hidden");
-                document.getElementById("success-message").innerText = "Richiesta gestita con successo!";
+               // document.getElementById("success-modal").classList.remove("hidden");
+                // document.getElementById("success-message").innerText = "Richiesta gestita con successo!";
 
                 
             } else {
