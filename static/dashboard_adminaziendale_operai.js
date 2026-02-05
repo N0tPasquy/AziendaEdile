@@ -329,20 +329,20 @@ function closeDeleteOperaioModal() {
 }
 
 // 3. Funzione di conferma eliminazione
-function confirmDeleteOperaio() {
+async function confirmDeleteOperaio() {
     if (!operaioDaCancellare) return;
 
     const btn = document.getElementById("confirm-delete-btn");
     if(btn) { btn.innerText = "Eliminazione..."; btn.disabled = true; }
 
     try {
-        const res = fetch("/delete_operaio", {
+        const res = await fetch("/delete_operaio", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cf: operaioDaCancellare })
         });
 
-        const data = res.json();
+        const data = await res.json();
 
         // IMPORTANTE: Chiama la funzione di chiusura RINOMINATA
         closeDeleteOperaioModal();

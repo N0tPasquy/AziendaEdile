@@ -28,7 +28,7 @@ app = Flask(__name__,
             static_folder='../static',
             template_folder='../templates')
 
-app.secret_key = "InterMerdaByPasqualeDaniele2025"
+app.secret_key = "supersecretkeyFNS"
 
 # Registrazione dei Blueprints
 app.register_blueprint(login_bp)
@@ -49,7 +49,7 @@ def add_header(response):
     response.headers["Expires"] = "0"
     return response
 
-# Rotta Home
+# Rotta Home192
 @app.route("/", methods=["GET"])
 def home():
     return render_template("index.html")

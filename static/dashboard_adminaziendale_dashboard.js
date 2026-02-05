@@ -77,6 +77,7 @@ async function caricaCantieriAzienda() {
 
                 // 3. Caricamento sequenziale (o parallelo) dei beni
                 // Usiamo await per essere sicuri che abbiano finito prima di controllare se è vuoto
+                tbody.innerHTML = "";
                 await caricaAttrezziCantiere(QRSelezionato);
                 await caricaVeicoliCantiere(QRSelezionato);
 
@@ -163,21 +164,25 @@ async function caricaAttrezziCantiere(qrcode) {
             return;
         }
 
-        data.attrezzi.forEach(a => {
-            // Usiamo insertAdjacentHTML per non resettare il DOM esistente (più performante di +=)
-            tbody.insertAdjacentHTML('beforeend', `
-                <tr>
-                    <td class="py-3 px-2">${a.seriale}</td>
-                    <td class="py-3 px-2">${a.marca} ${a.modello}</td>
-                    <td class="py-3 px-2">${a.tipo}</td>
-                    <td class="py-3 px-2 text-center">
-                        <button class="icon-btn delete" onclick="deleteBeneCantiere('${a.idBene}', '${qrcode}')">
-                            <img src="/static/img/trash.png" alt="Elimina">
-                        </button>
-                    </td>
-                </tr>
-            `);
-        });
+        if (data.attrezzi && data.attrezzi.length > 0) {
+            let htmlContent = ""; // Costruiamo una stringa unica
+            data.attrezzi.forEach(a => {
+                htmlContent += `
+                    <tr>
+                        <td class="py-3 px-2">${a.seriale}</td>
+                        <td class="py-3 px-2">${a.marca} ${a.modello}</td>
+                        <td class="py-3 px-2">${a.tipo}</td>
+                        <td class="py-3 px-2 text-center">
+                            <button class="icon-btn delete" onclick="deleteBeneCantiere('${a.idBene}', '${qrcode}')">
+                                <img src="/static/img/trash.png" alt="Elimina">
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            // Inseriamo tutto in un colpo solo
+            tbody.insertAdjacentHTML('beforeend', htmlContent);
+        }
 
     } catch (err) {
         console.error("Errore fetch attrezzi:", err);
@@ -448,7 +453,7 @@ async function assegnaAttrezzo(qrCodeDelCantiere) {
     }
 }
 
-function deleteBeneCantiere(idBene, qrcode) {
+async function deleteBeneCantiere(idBene, qrcode) {
     const modal = document.getElementById("delete-bene-assegnato-modal");
     const confirmBtn = document.getElementById("btn-confirm-delete-bene"); // Selezioniamo il bottone
 
@@ -457,27 +462,29 @@ function deleteBeneCantiere(idBene, qrcode) {
 
     // 2. Definiamo cosa succede quando si clicca "Elimina"
     // Usiamo .onclick per sovrascrivere eventuali listener precedenti
-    confirmBtn.onclick = function () {
+    confirmBtn.onclick = async function () {
 
         // Disabilita il pulsante per evitare doppi click
         confirmBtn.disabled = true;
         confirmBtn.innerText = "Eliminazione...";
 
         // 3. Eseguiamo la Fetch
-        fetch(`/delete_BeneAssegnato?id=${idBene}&QRcode=${qrcode}`, {
+        await fetch(`/delete_BeneAssegnato?id=${idBene}&QRcode=${qrcode}`, {
             method: "DELETE"
         })
             .then(res => res.json())
-            .then(data => {
+            .then(async data => {
                 // Riabilita il pulsante
                 confirmBtn.disabled = false;
                 confirmBtn.innerText = "Elimina";
                 closeDeleteBeneAssegnatoModal(); // Chiudi modale
 
                 if (data.success) {
+                    const tbody = document.getElementById("beni-table-body");
+                    tbody.innerHTML = "";
                     // Ora possiamo ripopolare la tabella chiamando le rispettive function
-                    caricaAttrezziCantiere(qrcode);
-                    caricaVeicoliCantiere(qrcode);
+                    await caricaAttrezziCantiere(qrcode);
+                    await caricaVeicoliCantiere(qrcode);
 
                     // Se hai il modale di successo
                     if (typeof openSuccessModal === "function") {
