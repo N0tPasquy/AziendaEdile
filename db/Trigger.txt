@@ -1,0 +1,66 @@
+-- =======================================================
+-- TRIGGER: AziendaEdile
+-- =======================================================
+
+DELIMITER $$
+
+-- Trigger 1: Controllo assegnazione capocantiere all'inserimento
+CREATE TRIGGER IF NOT EXISTS before_cantiere_insert
+BEFORE INSERT ON cantiere
+FOR EACH ROW
+BEGIN
+    DECLARE tipo_assegnato CHAR(2);
+    
+    IF NEW.CFCapo IS NOT NULL THEN
+        -- Controlla il TipoUtente dell'utente assegnato
+        SELECT TipoUtente INTO tipo_assegnato
+        FROM utente
+        WHERE CF = NEW.CFCapo;
+        
+        -- Accetta solo OP (Operaio) o CC (Capocantiere)
+        IF tipo_assegnato NOT IN ('OP', 'CC') THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Errore: Solo gli utenti di tipo OPERAIO o CAPOCANTIERE possono essere assegnati come Capocantiere.';
+        END IF;
+    END IF;
+END$$
+
+-- Trigger 2: Presenza utente consentita solo se assegnato ad almeno un cantiere
+CREATE TRIGGER IF NOT EXISTS before_presenza_insert
+BEFORE INSERT ON presenza
+FOR EACH ROW
+BEGIN
+    DECLARE num_cantieri INT;
+    
+    -- Controlla se l'utente è associato ad almeno un cantiere
+    SELECT COUNT(*) INTO num_cantieri
+    FROM lavora
+    WHERE CF_U = NEW.CF_U;
+    
+    IF num_cantieri = 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Errore: L\'utente deve essere assegnato ad almeno un cantiere prima di registrare una presenza.';
+    END IF;
+END$$
+
+-- Trigger 3: Controllo assegnazione capocantiere all'aggiornamento
+CREATE TRIGGER IF NOT EXISTS before_cantiere_update
+BEFORE UPDATE ON cantiere
+FOR EACH ROW
+BEGIN
+    DECLARE tipo_assegnato CHAR(2);
+    
+    -- Esegue il controllo solo se il CFCapo è stato modificato (ed è diverso da NULL)
+    IF NEW.CFCapo IS NOT NULL AND (OLD.CFCapo IS NULL OR NEW.CFCapo <> OLD.CFCapo) THEN
+        SELECT TipoUtente INTO tipo_assegnato
+        FROM utente
+        WHERE CF = NEW.CFCapo;
+        
+        IF tipo_assegnato NOT IN ('OP', 'CC') THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Errore: L\'utente selezionato deve essere un OPERAIO o un CAPOCANTIERE esistente.';
+        END IF;
+    END IF;
+END$$
+
+DELIMITER ;

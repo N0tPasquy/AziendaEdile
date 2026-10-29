@@ -1,0 +1,122 @@
+-- =======================================================
+-- SCHEMA DEL DATABASE: AziendaEdile
+-- Tabelle create in minuscolo per compatibilità Linux MariaDB
+-- con VIEW per le maiuscole usate nel codice sorgente
+-- =======================================================
+
+-- 1. Tabella UTENTE
+CREATE TABLE IF NOT EXISTS utente (
+    CF VARCHAR(16) PRIMARY KEY,
+    Nome VARCHAR(50) NOT NULL,
+    Cognome VARCHAR(50) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    DataNascita DATE NOT NULL,
+    TipoUtente CHAR(2) DEFAULT 'OP' CHECK (TipoUtente IN ('AS', 'AA', 'OP', 'CC')),
+    Capocantiere BOOLEAN DEFAULT FALSE CHECK (Capocantiere IN (0, 1)),
+    NumeroTelefono VARCHAR(20),
+    NomeAzienda VARCHAR(100)
+);
+
+-- 2. Tabella CANTIERE
+CREATE TABLE IF NOT EXISTS cantiere (
+    QRCode VARCHAR(50) PRIMARY KEY,
+    QRImage BLOB,
+    Via VARCHAR(50) NOT NULL,
+    Citta VARCHAR(50) NOT NULL,
+    Civico VARCHAR(5) NOT NULL,
+    CAP VARCHAR(5) NOT NULL,
+    CFCapo VARCHAR(16),
+    Descrizione TEXT,
+    Stato CHAR(2) DEFAULT 'DA' CHECK (Stato IN ('DA', 'IN', 'SO', 'FI')),
+    FOREIGN KEY (CFCapo) REFERENCES utente(CF) ON DELETE CASCADE ON UPDATE CASCADE
+);
+-- Note Stato cantiere:
+-- DA = Da iniziare
+-- IN = In corso
+-- SO = Sospeso
+-- FI = Finito
+
+-- 3. Tabella LAVORA (Assegnazione Operai / Admin ai Cantieri)
+CREATE TABLE IF NOT EXISTS lavora (
+    CF_U VARCHAR(16),
+    QRCode_C VARCHAR(50),
+    FOREIGN KEY (CF_U) REFERENCES utente(CF) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (QRCode_C) REFERENCES cantiere(QRCode) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (CF_U, QRCode_C)
+);
+
+-- 4. Tabella PRESENZA
+CREATE TABLE IF NOT EXISTS presenza (
+    DataPresenza DATE,
+    OraInizio TIME NOT NULL,
+    OraFine TIME,
+    CF_U VARCHAR(16),
+    FOREIGN KEY (CF_U) REFERENCES utente(CF) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (DataPresenza, CF_U),
+    CONSTRAINT check_ora CHECK (OraFine IS NULL OR OraFine > OraInizio)
+);
+
+-- 5. Tabella BENE
+CREATE TABLE IF NOT EXISTS bene (
+    ID VARCHAR(8) PRIMARY KEY,
+    Marca VARCHAR(50) NOT NULL,
+    Modello VARCHAR(50) NOT NULL,
+    NomeAzienda VARCHAR(100)
+);
+
+-- 6. Tabella ATTREZZO
+CREATE TABLE IF NOT EXISTS attrezzo (
+    Seriale VARCHAR(50) PRIMARY KEY,
+    Tipo VARCHAR(50) NOT NULL,
+    ID_A VARCHAR(8),
+    NomeAzienda VARCHAR(100),
+    FOREIGN KEY (ID_A) REFERENCES bene(ID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 7. Tabella VEICOLO
+CREATE TABLE IF NOT EXISTS veicolo (
+    Targa VARCHAR(7) PRIMARY KEY,
+    Anno INT(4) NOT NULL CHECK (Anno >= 1970 AND Anno <= 2100),
+    ID_V VARCHAR(8),
+    NomeAzienda VARCHAR(100),
+    FOREIGN KEY (ID_V) REFERENCES bene(ID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 8. Tabella TRACCIAMENTO (Posizione beni in cantiere o in deposito)
+CREATE TABLE IF NOT EXISTS tracciamento (
+    QRCode_C VARCHAR(50),
+    ID_B VARCHAR(8),
+    DataTracciamento DATETIME DEFAULT CURRENT_TIMESTAMP,
+    InDeposito TINYINT(1) DEFAULT 0 CHECK (InDeposito IN (0, 1)),
+    FOREIGN KEY (QRCode_C) REFERENCES cantiere(QRCode) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ID_B) REFERENCES bene(ID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- 9. Tabella NOTIFICA (Richieste materiali da capocantieri/operai)
+CREATE TABLE IF NOT EXISTS notifica (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    DataNotifica DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Richiesta TEXT NOT NULL,
+    NomeAzienda VARCHAR(100) NOT NULL,
+    CF_C VARCHAR(16),
+    QRCode_C VARCHAR(50),
+    Identificatore VARCHAR(50),
+    Marca VARCHAR(50),
+    Modello VARCHAR(50),
+    FOREIGN KEY (CF_C) REFERENCES utente(CF) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (QRCode_C) REFERENCES cantiere(QRCode) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- =======================================================
+-- VISTE PER COMPATIBILITÀ CON QUERY CHE USANO LA MAIUSCOLA
+-- (Risolve la case-sensitivity di MariaDB su Linux)
+-- =======================================================
+CREATE OR REPLACE VIEW Utente AS SELECT * FROM utente;
+CREATE OR REPLACE VIEW Cantiere AS SELECT * FROM cantiere;
+CREATE OR REPLACE VIEW Lavora AS SELECT * FROM lavora;
+CREATE OR REPLACE VIEW Presenza AS SELECT * FROM presenza;
+CREATE OR REPLACE VIEW Bene AS SELECT * FROM bene;
+CREATE OR REPLACE VIEW Attrezzo AS SELECT * FROM attrezzo;
+CREATE OR REPLACE VIEW Veicolo AS SELECT * FROM veicolo;
+CREATE OR REPLACE VIEW Tracciamento AS SELECT * FROM tracciamento;
+CREATE OR REPLACE VIEW Notifica AS SELECT * FROM notifica;
